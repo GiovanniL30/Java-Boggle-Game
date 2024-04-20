@@ -11,6 +11,24 @@ module App {
         boolean isAdmin;
     };
 
+    struct Lobby {
+        string lobbyId;
+        string lobbyStatus;
+        string dateCreated;
+        string timeCreated;
+        User topPlayer;
+    };
+
+    struct word{
+        long wordId;
+        string wordName;
+    };
+
+    struct Response {
+        any payload;
+        boolean isSuccess;
+    };
+
     enum ClientActions {
         NEW_MESSAGE
     };
@@ -22,9 +40,10 @@ module App {
 
     interface ApplicationServer {
         void login(in User user, in Controller controller);
-        string helloWord(in string sentence);
         void logout(in User user);
-
+        Response createLobby(in User creator);
+        Response joinLobby(in User user, in string lobbyId);
+        Response leaveLobby(in User user, in string lobbyId);
     };
 
 };

@@ -1,7 +1,8 @@
-package Client_Java.view;
+package Client_Java;
 
 import App.*;
 import Client_Java.controller.ClientController;
+import Client_Java.view.MainFrame;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CosNaming.NamingContextExt;
@@ -21,7 +22,8 @@ public class MainApplication {
             POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootPOA.the_POAManager().activate();
 
-            ClientController clientController = new ClientController();
+            MainFrame mainFrame = new MainFrame();
+            ClientController clientController = new ClientController(mainFrame);
             org.omg.CORBA.Object ref = rootPOA.servant_to_reference(clientController);
 
             Controller controllerRef = ControllerHelper.narrow(ref);
@@ -29,8 +31,6 @@ public class MainApplication {
             User user = new User("userID", "firstName", "lastName", "userName", "password", false, "status", false);
 
             server.login(user, controllerRef);
-
-
 
             System.out.println("Ac");
 
