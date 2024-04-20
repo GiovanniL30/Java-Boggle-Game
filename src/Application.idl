@@ -1,0 +1,30 @@
+module App {
+
+    struct User {
+        string userID;
+        string firstName;
+        string lastName;
+        string userName;
+        string password;
+        boolean isLoggedIn;
+        string status;
+        boolean isAdmin;
+    };
+
+    enum ClientActions {
+        NEW_MESSAGE
+    };
+
+    interface Controller {
+        void receiveUpdates(in ClientActions clientActions);
+        void sendUpdates(in ClientActions clientActions);
+    };
+
+    interface ApplicationServer {
+        void login(in User user, in Controller controller);
+        string helloWord(in string sentence);
+        void logout(in User user);
+
+    };
+
+};
