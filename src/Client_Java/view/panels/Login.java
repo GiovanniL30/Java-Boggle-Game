@@ -8,7 +8,6 @@ import Client_Java.utilities.UtilityMethods;
 import Client_Java.view.components.Button;
 import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.FilledButton;
-import Client_Java.view.components.Picture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +38,7 @@ public class Login extends JPanel {
 
 
         buttonPanel.add(signUpButton);
-        loginButton = new FilledButton("Login", new Dimension(200, 50) ,FontFactory.newPoppinsDefault(12), ColorFactory.red(), Color.white);
+        loginButton = new FilledButton("Login", new Dimension(200, 50) ,FontFactory.newPoppinsDefault(12), ColorFactory.blue(), Color.white);
 
         buttonPanel.add(loginButton);
 
@@ -50,6 +49,7 @@ public class Login extends JPanel {
         add(fieldInputs, constraints);
 
         constraints.gridy = 2;
+
         add(buttonPanel, constraints);
         signUpButton.addActionListener( e -> controller.changeFrame(ClientViews.SIGN_UP));
     }

@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class ColorFactory {
 
-    public static Color red() {
-        return new Color(144, 31, 31);
+    public static Color blue() {
+        return new Color(43, 75, 158);
     }
 
     public static Color lightGrey(){

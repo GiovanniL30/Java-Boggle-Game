@@ -15,10 +15,10 @@ import javax.swing.*;
 
 public class ClientController extends ControllerPOA {
 
-    private MainFrame mainFrame;
-    private User loggedInUser;
     private final ApplicationServer applicationServer;
     private final ORB orb;
+    private MainFrame mainFrame;
+    private User loggedInUser;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -30,7 +30,7 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
-      JOptionPane.showMessageDialog(mainFrame, "Hello Updated");
+        JOptionPane.showMessageDialog(mainFrame, "Hello Updated");
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ClientController extends ControllerPOA {
             if (!user.userName.isEmpty()) {
                 loggedInUser = user;
 
-                Runtime.getRuntime().addShutdownHook(new Thread( () -> {
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     applicationServer.logout(loggedInUser.userID);
                 }));
 
@@ -70,13 +70,13 @@ public class ClientController extends ControllerPOA {
 
     public void createAccount(User user) {
         Response response = applicationServer.createAccount(user);
-        if(response.isSuccess) {
+        if (response.isSuccess) {
             new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Created Account Successfully")).start();
             changeFrame(ClientViews.LOGIN);
-        }else {
-            if(response.payload.extract_string().contains("User name already exist")) {
+        } else {
+            if (response.payload.extract_string().contains("User name already exist")) {
                 mainFrame.getSignup().getUserName().enableError("Username already exist");
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string());
             }
         }
@@ -89,16 +89,9 @@ public class ClientController extends ControllerPOA {
 
                 switch (clientViews) {
                     case LOGIN: {
-
-                        try {
-                            mainFrame.getContentPane().remove(1);
-                            mainFrame.setLogin(new Login(ClientController.this));
-                            mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }
-
-
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setLogin(new Login(ClientController.this));
+                        mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
                         break;
                     }
                     case SIGN_UP: {
@@ -109,7 +102,7 @@ public class ClientController extends ControllerPOA {
                     }
                     case HOME_PAGE: {
                         mainFrame.getContentPane().remove(1);
-                        mainFrame.setHomePage(new HomePage());
+                        mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
                         break;
                     }
