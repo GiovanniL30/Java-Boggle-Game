@@ -2,6 +2,7 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
+import Client_Java.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
@@ -12,16 +13,132 @@ public class Database {
     private static Connection connection;
 
 
-    private static void openConnection(){
-        if(connection != null) return;
+    private static void openConnection() {
+        if (connection != null) return;
         try {
 
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
     }
 
+    public static synchronized User[] lobbyPlayers(String lobbyId) {
+        openConnection();
+
+        String query = "SELECT users.* FROM lobbyplayers INNER JOIN users ON users.userID = lobbyplayers.playerID WHERE lobbyplayers.lobbyID = ?";
+        LinkedList<User> players = new LinkedList<>();
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                players.add(getUser(resultSet));
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return players.toArray(new User[0]);
+    }
+
+    public static synchronized Response<String> createNewLobby(String creatorId) {
+
+        openConnection();
+        String query = "INSERT INTO lobby (lobbyID, lobbyStatus, dateTimeCreated, topPlayerID) VALUES (?, ?, ?, ?)";
+
+        try {
+            String lobbyID = UtilityMethods.generateRandomID();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyID);
+            preparedStatement.setString(2, "Waiting");
+            preparedStatement.setString(3, UtilityMethods.getCurrentDateTime());
+            preparedStatement.setString(4, null);
+
+            if(preparedStatement.executeUpdate() > 0) {
+               addPlayer(creatorId, lobbyID);
+               return new Response<>(lobbyID, true);
+            }else {
+                return new Response<>(lobbyID, false);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return new Response<>("", false);
+    }
+
+    public static synchronized boolean addPlayer(String playerId, String lobbyId) {
+
+        openConnection();
+        String query = "INSERT INTO lobbyplayers (lobbyID, playerID) VALUES (?, ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            preparedStatement.setString(2, playerId);
+            return preparedStatement.executeUpdate() >  0;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static synchronized void deleteLobby(String lobbyId) {
+
+        openConnection();
+
+        User[] players = lobbyPlayers(lobbyId);
+
+        for (User player : players) {
+            removePlayer(player.userID);
+        }
+
+        String query = "DELETE FROM lobby WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    public static synchronized void finishedGame(String topPlayerId, String lobbyId) {
+
+        openConnection();
+
+        String query = "UPDATE lobby SET topPlayerID = ?, lobbyStatus = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, topPlayerId);
+            preparedStatement.setString(2, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public static synchronized void removePlayer( String playerId) {
+        openConnection();
+
+        String query = "DELETE FROM lobbyplayer WHERE playerID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, playerId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
     public static synchronized Response<String> createAccount(User user) {
 
@@ -32,8 +149,8 @@ public class Database {
             PreparedStatement checkUserName = connection.prepareStatement("SELECT count(*) FROM users WHERE username = ?");
             checkUserName.setString(1, user.userName);
             ResultSet resultSet = checkUserName.executeQuery();
-            if(resultSet.next()) {
-                if(resultSet.getInt(1) != 0) {
+            if (resultSet.next()) {
+                if (resultSet.getInt(1) != 0) {
                     return new Response<>("User name already exist", false);
                 }
             }
@@ -46,8 +163,8 @@ public class Database {
             newUser.setString(5, user.password);
             newUser.setInt(6, 0);
             newUser.setString(7, "Offline");
-            if(newUser.executeUpdate() > 0) {
-                 return new Response<>("Created Account Successfully", true);
+            if (newUser.executeUpdate() > 0) {
+                return new Response<>("Created Account Successfully", true);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -55,6 +172,7 @@ public class Database {
 
         return new Response<>("Failed to create the account", false);
     }
+
     public static synchronized LinkedList<Lobby> getLobbies() {
         return new LinkedList<>();
     }
@@ -70,20 +188,20 @@ public class Database {
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 User user = getUser(resultSet);
 
-                if(user.isLoggedIn) {
-                    return new Response<>(new User("Your account is already logged in on another machine","","","", "", false, ""), false);
-                }else {
+                if (user.isLoggedIn) {
+                    return new Response<>(new User("Your account is already logged in on another machine", "", "", "", "", false, ""), false);
+                } else {
                     PreparedStatement updateOnlineStatus = connection.prepareStatement("UPDATE users SET status ='Online', isLoggedIn = '1' WHERE userID = ?");
                     System.out.println(user.userID);
                     updateOnlineStatus.setString(1, user.userID);
 
-                    if(updateOnlineStatus.executeUpdate() > 0) {
+                    if (updateOnlineStatus.executeUpdate() > 0) {
                         return new Response<>(getUser(resultSet), true);
-                    }else {
-                        return new Response<>(new User("Having an error logging you in","","","", "", false, ""), false);
+                    } else {
+                        return new Response<>(new User("Having an error logging you in", "", "", "", "", false, ""), false);
                     }
 
                 }
@@ -95,7 +213,7 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>(new User("Invalid Login Credentials","","","", "", false, ""), false);
+        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", false, ""), false);
     }
 
     public static void logout(String userId) {
@@ -110,7 +228,7 @@ public class Database {
     }
 
     private static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),resultSet.getString(4),resultSet.getString(5),resultSet.getInt(6) == 1, resultSet.getString(7));
+        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6) == 1, resultSet.getString(7));
     }
 
 }

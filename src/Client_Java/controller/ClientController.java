@@ -6,6 +6,8 @@ import Client_Java.view.MainFrame;
 import Client_Java.view.panels.HomePage;
 import Client_Java.view.panels.Login;
 import Client_Java.view.panels.Signup;
+import Client_Java.view.panels.WaitingLobby;
+import Server_Java.dataBase.Database;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
@@ -19,6 +21,7 @@ public class ClientController extends ControllerPOA {
     private final ORB orb;
     private MainFrame mainFrame;
     private User loggedInUser;
+    private String currentLobbyID;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -82,6 +85,32 @@ public class ClientController extends ControllerPOA {
         }
     }
 
+    public void createNewLobby() {
+        Response response = applicationServer.createLobby(loggedInUser);
+        if(response.isSuccess) {
+            currentLobbyID = response.payload.extract_string();
+            changeFrame(ClientViews.GAME_LOBBY);
+        }else {
+            new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
+        }
+
+    }
+
+    public void joinLobby(String lobbyId) {
+
+        if(applicationServer.joinLobby(loggedInUser, lobbyId )) {
+            currentLobbyID = lobbyId;
+            changeFrame(ClientViews.GAME_LOBBY);
+        }else {
+            JOptionPane.showMessageDialog(mainFrame, "Not available lobby id");
+        }
+
+    }
+
+    public User[] lobbyPlayer(String lobbyId) {
+        return applicationServer.getPlayers(lobbyId);
+    }
+
     public void changeFrame(ClientViews clientViews) {
         new SwingWorker<Object, Object>() {
             @Override
@@ -104,6 +133,12 @@ public class ClientController extends ControllerPOA {
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
+                        break;
+                    }
+                    case GAME_LOBBY: {
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, currentLobbyID));
+                        mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);
                         break;
                     }
                     default: {

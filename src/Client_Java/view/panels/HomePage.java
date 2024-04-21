@@ -4,6 +4,7 @@ import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ColorFactory;
 import Client_Java.utilities.FontFactory;
+import Client_Java.utilities.UtilityMethods;
 import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.Button;
 import Client_Java.view.components.FilledButton;
@@ -36,6 +37,17 @@ public class HomePage extends JPanel {
         constraints.gridy = 2;
         centerPanel.add(createNewLobby, constraints);
 
+        joinLobby.addActionListener( e -> {
+
+            String id = lobbyId.getInput();
+
+            if(id == null || id.isEmpty()) {
+                return;
+            }
+
+            clientController.joinLobby(id);
+        });
+        createNewLobby.addActionListener( e -> clientController.createNewLobby());
         add(centerPanel, BorderLayout.CENTER);
     }
 

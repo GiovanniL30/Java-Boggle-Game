@@ -4,10 +4,12 @@ import App.*;
 import Server_Java.dataBase.Database;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.Object;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.LinkedList;
 
 
 public class ApplicationServant extends ApplicationServerPOA {
@@ -51,13 +53,21 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public Response createLobby(User creator) {
+        shared.referenceClasses.Response<String> dataBaseResponse = Database.createNewLobby(creator.userID);
         Any responseData = ORB.init().create_any();
-        return new Response(responseData, true);
+
+        if(dataBaseResponse.isSuccess()) {
+            responseData.insert_string(dataBaseResponse.getData());
+            return new Response(responseData, true);
+        }
+
+        responseData.insert_string("Failed to create a new game lobby");
+        return new Response(responseData, false);
     }
 
     @Override
-    public Response joinLobby(User user, String lobbyId) {
-        return null;
+    public boolean joinLobby(User user, String lobbyId) {
+        return Database.addPlayer(user.userID, lobbyId);
     }
 
     @Override
@@ -68,6 +78,11 @@ public class ApplicationServant extends ApplicationServerPOA {
     @Override
     public Lobby[] getLobbies() {
         return Database.getLobbies().toArray(new Lobby[0]);
+    }
+
+    @Override
+    public User[] getPlayers(String lobbyId) {
+        return Database.lobbyPlayers(lobbyId);
     }
 
 }
