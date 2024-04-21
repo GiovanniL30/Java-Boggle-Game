@@ -2,16 +2,15 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
-import App.UserHelper;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
 import java.util.LinkedList;
-import java.util.Optional;
 
 public class Database {
 
     private static Connection connection;
+
 
     private static void openConnection(){
         if(connection != null) return;
@@ -24,6 +23,38 @@ public class Database {
     }
 
 
+    public static synchronized Response<String> createAccount(User user) {
+
+        openConnection();
+
+
+        try {
+            PreparedStatement checkUserName = connection.prepareStatement("SELECT count(*) FROM users WHERE username = ?");
+            checkUserName.setString(1, user.userName);
+            ResultSet resultSet = checkUserName.executeQuery();
+            if(resultSet.next()) {
+                if(resultSet.getInt(1) != 0) {
+                    return new Response<>("User name already exist", false);
+                }
+            }
+
+            PreparedStatement newUser = connection.prepareStatement("INSERT INTO users (userId, firstName, lastName, username, password, isLoggedIn, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            newUser.setString(1, user.userID);
+            newUser.setString(2, user.firstName);
+            newUser.setString(3, user.lastName);
+            newUser.setString(4, user.userName);
+            newUser.setString(5, user.password);
+            newUser.setInt(6, 0);
+            newUser.setString(7, "Offline");
+            if(newUser.executeUpdate() > 0) {
+                 return new Response<>("Created Account Successfully", true);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return new Response<>("Failed to create the account", false);
+    }
     public static synchronized LinkedList<Lobby> getLobbies() {
         return new LinkedList<>();
     }

@@ -21,6 +21,13 @@ public class ApplicationServant extends ApplicationServerPOA {
 
        if(response.isSuccess()) {
            controllerHashMap.put(user.userID, controller);
+
+           for(Controller controller1 : controllerHashMap.values()) {
+               if(!controller1.equals(controller)) {
+                   controller1.receiveUpdates(ClientActions.NEW_MESSAGE);
+               }
+           }
+
            System.out.println("A new user Logged in total users online: " + controllerHashMap.size() );
        }
 
@@ -32,6 +39,14 @@ public class ApplicationServant extends ApplicationServerPOA {
         Database.logout(userID);
         controllerHashMap.remove(userID);
         System.out.println("A user logged out total users online: " + controllerHashMap.size() );
+    }
+
+    @Override
+    public Response createAccount(User user) {
+        shared.referenceClasses.Response<String> response = Database.createAccount(user);
+        Any anyData = ORB.init().create_any();
+        anyData.insert_string(response.getData());
+        return new Response(anyData, response.isSuccess());
     }
 
     @Override

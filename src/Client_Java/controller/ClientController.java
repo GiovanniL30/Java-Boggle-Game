@@ -1,9 +1,6 @@
 package Client_Java.controller;
 
-import App.ApplicationServer;
-import App.ControllerHelper;
-import App.ControllerPOA;
-import App.User;
+import App.*;
 import Client_Java.utilities.ClientViews;
 import Client_Java.view.MainFrame;
 import Client_Java.view.panels.HomePage;
@@ -33,7 +30,7 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
-        System.out.println("I have received something in here");
+      JOptionPane.showMessageDialog(mainFrame, "Hello Updated");
     }
 
     @Override
@@ -69,6 +66,20 @@ public class ClientController extends ControllerPOA {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public void createAccount(User user) {
+        Response response = applicationServer.createAccount(user);
+        if(response.isSuccess) {
+            new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Created Account Successfully")).start();
+            changeFrame(ClientViews.LOGIN);
+        }else {
+            if(response.payload.extract_string().contains("User name already exist")) {
+                mainFrame.getSignup().getUserName().enableError("Username already exist");
+            }else {
+                JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string());
+            }
+        }
     }
 
     public void changeFrame(ClientViews clientViews) {

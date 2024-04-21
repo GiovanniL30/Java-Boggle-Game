@@ -43,6 +43,7 @@ module App {
     interface ApplicationServer {
         User login(in string userName, in string password, in Controller controller);
         void logout(in string userID);
+        Response createAccount(in User user);
         Response createLobby(in User creator);
         Response joinLobby(in User user, in string lobbyId);
         Response leaveLobby(in User user, in string lobbyId);
