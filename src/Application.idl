@@ -8,7 +8,6 @@ module App {
         string password;
         boolean isLoggedIn;
         string status;
-        boolean isAdmin;
     };
 
     struct Lobby {
@@ -36,14 +35,18 @@ module App {
     interface Controller {
         void receiveUpdates(in ClientActions clientActions);
         void sendUpdates(in ClientActions clientActions);
+        void updateWaitingLobbyView(in User user);
     };
 
+  typedef sequence<Lobby> LobbyList;
+
     interface ApplicationServer {
-        void login(in User user, in Controller controller);
-        void logout(in User user);
+        User login(in string userName, in string password, in Controller controller);
+        void logout(in string userID);
         Response createLobby(in User creator);
         Response joinLobby(in User user, in string lobbyId);
         Response leaveLobby(in User user, in string lobbyId);
+        LobbyList getLobbies();
     };
 
 };

@@ -10,6 +10,8 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
+import javax.swing.*;
+
 public class MainApplication {
 
     public static void main(String[] args) {
@@ -19,25 +21,11 @@ public class MainApplication {
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));
 
-            POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
-            rootPOA.the_POAManager().activate();
-
-            MainFrame mainFrame = new MainFrame();
-            ClientController clientController = new ClientController(mainFrame);
-            org.omg.CORBA.Object ref = rootPOA.servant_to_reference(clientController);
-
-            Controller controllerRef = ControllerHelper.narrow(ref);
-
-            User user = new User("userID", "firstName", "lastName", "userName", "password", false, "status", false);
-
-            server.login(user, controllerRef);
-
-            System.out.println("Ac");
-
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                System.out.println("Hell");
-                server.logout(user);
-            }));
+            SwingUtilities.invokeLater(() -> {
+                ClientController clientController = new ClientController(server, orb);
+                MainFrame mainFrame = new MainFrame(clientController);
+                clientController.setMainFrame(mainFrame);
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

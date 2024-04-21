@@ -1,5 +1,8 @@
 package Client_Java.view;
 
+import Client_Java.controller.ClientController;
+import Client_Java.view.components.Header;
+import Client_Java.view.panels.*;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
 import javax.swing.*;
@@ -10,9 +13,18 @@ public class MainFrame extends JFrame {
     public static final int WIDTH = 1200;
     public static final int HEIGHT = 800;
     private JPanel mainLayout = new JPanel();
+    private Login login;
+    private HomePage homePage;
+    private Signup signup;
+    private WaitingLobby waitingLobby;
+    private GameStartedLobby gameStartedLobby;
 
-    public MainFrame() {
+
+    public MainFrame(ClientController clientController) {
         init();
+        login = new Login(clientController);
+        getContentPane().add(new Header(), BorderLayout.NORTH);
+        getContentPane().add(login, BorderLayout.CENTER);
     }
 
     private void init() {
@@ -44,4 +56,43 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+    public Login getLogin() {
+        return login;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
+    public HomePage getHomePage() {
+        return homePage;
+    }
+
+    public void setHomePage(HomePage homePage) {
+        this.homePage = homePage;
+    }
+
+    public Signup getSignup() {
+        return signup;
+    }
+
+    public void setSignup(Signup signup) {
+        this.signup = signup;
+    }
+
+    public WaitingLobby getWaitingLobby() {
+        return waitingLobby;
+    }
+
+    public void setWaitingLobby(WaitingLobby waitingLobby) {
+        this.waitingLobby = waitingLobby;
+    }
+
+    public GameStartedLobby getGameStartedLobby() {
+        return gameStartedLobby;
+    }
+
+    public void setGameStartedLobby(GameStartedLobby gameStartedLobby) {
+        this.gameStartedLobby = gameStartedLobby;
+    }
 }
