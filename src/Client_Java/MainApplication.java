@@ -11,12 +11,17 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 import javax.swing.*;
+import java.util.Properties;
 
 public class MainApplication {
 
     public static void main(String[] args) {
         try {
-            ORB orb = ORB.init(args, null);
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1099");
+            props.put("org.omg.CORBA.ORBInitialHost", "192.168.5.202");
+
+            ORB orb = ORB.init(args, props);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));

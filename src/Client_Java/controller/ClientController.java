@@ -111,6 +111,7 @@ public class ClientController extends ControllerPOA {
         return applicationServer.getPlayers(lobbyId);
     }
 
+
     public void changeFrame(ClientViews clientViews) {
         new SwingWorker<Object, Object>() {
             @Override
