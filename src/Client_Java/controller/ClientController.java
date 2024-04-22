@@ -192,4 +192,8 @@ public class ClientController extends ControllerPOA {
     public void setMainFrame(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
+
+    public User getLoggedInUser() {
+        return loggedInUser;
+    }
 }

@@ -1,6 +1,5 @@
 package Client_Java.view.panels;
 
-import App.GameLobby;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.FontFactory;
@@ -13,19 +12,20 @@ public class WaitingLobby extends JPanel {
 
     private ClientController clientController;
     private  JPanel playerListPanel = new JPanel();
-    private JPanel centerPanel = new JPanel();
+    private JPanel waitingList = new JPanel();
     private String gameLobby;
-    private JLabel waitingTime = new JLabel();
+    private JLabel waitingTime = new JLabel("GAME WILL START IN: ");
 
     public WaitingLobby(ClientController clientController, String gameLobby) {
         this.clientController = clientController;
         this.gameLobby = gameLobby;
         playerList();
-        centerPanel();
+        waitingPanel();
+        setLayout(new BorderLayout());
 
 
-        add(playerListPanel);
-        add(centerPanel);
+        add(waitingList, BorderLayout.NORTH);
+        add(playerListPanel, BorderLayout.CENTER);
     }
 
     private void playerList() {
@@ -40,7 +40,7 @@ public class WaitingLobby extends JPanel {
                 playerListPanel.removeAll();
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for(User player: players) {
-                    playerListPanel.add(new PlayerNameBlock(player.userName, 0));
+                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0));
                     playerListPanel.revalidate();
                     playerListPanel.repaint();
                 }
@@ -50,15 +50,15 @@ public class WaitingLobby extends JPanel {
 
     }
 
-    private void centerPanel() {
-        centerPanel.setLayout(new BorderLayout());
-        centerPanel.setPreferredSize(new Dimension(600, 400));
+    private void waitingPanel() {
+        waitingList.setLayout(new BorderLayout());
+        waitingList.setPreferredSize(new Dimension(600, 400));
         waitingTime.setFont(FontFactory.newPoppinsBold(20));
-        centerPanel.add(waitingTime);
+        waitingList.add(waitingTime);
     }
 
     public void setTime(int time) {
-        waitingTime.setText(time+"");
+        waitingTime.setText("GAME WILL START IN: " + time);
         waitingTime.revalidate();
         waitingTime.repaint();
     }
