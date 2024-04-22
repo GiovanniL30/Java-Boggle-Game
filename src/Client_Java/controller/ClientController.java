@@ -7,7 +7,6 @@ import Client_Java.view.panels.HomePage;
 import Client_Java.view.panels.Login;
 import Client_Java.view.panels.Signup;
 import Client_Java.view.panels.WaitingLobby;
-import Server_Java.dataBase.Database;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
@@ -21,19 +20,19 @@ public class ClientController extends ControllerPOA {
     private final ORB orb;
     private MainFrame mainFrame;
     private User loggedInUser;
-    private String currentLobbyID;
+    private String gameLobby;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
         this.applicationServer = applicationServer;
         this.orb = orb;
 
-
     }
 
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
         JOptionPane.showMessageDialog(mainFrame, "Hello Updated");
+        JOptionPane.showMessageDialog(mainFrame, "Game will start");
     }
 
     @Override
@@ -43,8 +42,19 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void updateWaitingLobbyView(User user) {
+        mainFrame.getWaitingLobby().updatePlayerList();
+    }
+
+    @Override
+    public void setWaitingTime(int time) {
+        mainFrame.getWaitingLobby().setTime(time);
+    }
+
+    @Override
+    public void setGameTime(int time) {
 
     }
+
 
     public void logIn(String userName, String password) {
 
@@ -72,6 +82,8 @@ public class ClientController extends ControllerPOA {
     }
 
     public void createAccount(User user) {
+
+
         Response response = applicationServer.createAccount(user);
         if (response.isSuccess) {
             new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Created Account Successfully")).start();
@@ -86,23 +98,41 @@ public class ClientController extends ControllerPOA {
     }
 
     public void createNewLobby() {
-        Response response = applicationServer.createLobby(loggedInUser);
-        if(response.isSuccess) {
-            currentLobbyID = response.payload.extract_string();
-            changeFrame(ClientViews.GAME_LOBBY);
-        }else {
-            new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
+
+        try {
+
+            POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+            rootPOA.the_POAManager().activate();
+            Response response = applicationServer.createLobby(loggedInUser, ControllerHelper.narrow(rootPOA.servant_to_reference(this)));
+            if (response.isSuccess) {
+                gameLobby = response.payload.extract_string();
+                changeFrame(ClientViews.GAME_LOBBY);
+            } else {
+                new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+
 
     }
 
     public void joinLobby(String lobbyId) {
 
-        if(applicationServer.joinLobby(loggedInUser, lobbyId )) {
-            currentLobbyID = lobbyId;
-            changeFrame(ClientViews.GAME_LOBBY);
-        }else {
-            JOptionPane.showMessageDialog(mainFrame, "Not available lobby id");
+        try {
+            POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+            rootPOA.the_POAManager().activate();
+
+            if (applicationServer.joinLobby(loggedInUser, lobbyId, ControllerHelper.narrow(rootPOA.servant_to_reference(this)))) {
+                gameLobby = lobbyId;
+                changeFrame(ClientViews.GAME_LOBBY);
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "Not available lobby id");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
     }
@@ -138,7 +168,7 @@ public class ClientController extends ControllerPOA {
                     }
                     case GAME_LOBBY: {
                         mainFrame.getContentPane().remove(1);
-                        mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, currentLobbyID));
+                        mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);
                         break;
                     }

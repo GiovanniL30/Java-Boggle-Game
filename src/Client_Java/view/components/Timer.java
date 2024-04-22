@@ -5,9 +5,6 @@ package Client_Java.view.components;
 import Client_Java.utilities.FontFactory;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Timer extends JLabel {
     private int secondsLeft;
@@ -27,8 +24,13 @@ public class Timer extends JLabel {
                 // Add any action to be performed when the timer reaches zero
             }
         });
+    }
+
+    public void startTime() {
         timer.start();
     }
 
-
+    public int getSecondsLeft() {
+        return secondsLeft;
+    }
 }

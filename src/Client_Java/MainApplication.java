@@ -17,11 +17,11 @@ public class MainApplication {
 
     public static void main(String[] args) {
         try {
-            Properties props = new Properties();
-            props.put("org.omg.CORBA.ORBInitialPort", "1099");
-            props.put("org.omg.CORBA.ORBInitialHost", "192.168.5.202");
+//            Properties props = new Properties();
+//            props.put("org.omg.CORBA.ORBInitialPort", "1099");
+//            props.put("org.omg.CORBA.ORBInitialHost", "25.31.178.46");
 
-            ORB orb = ORB.init(args, props);
+            ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));

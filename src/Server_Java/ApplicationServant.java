@@ -15,6 +15,7 @@ import java.util.LinkedList;
 public class ApplicationServant extends ApplicationServerPOA {
 
     private final HashMap<String, Controller> controllerHashMap = new HashMap<>();
+    private final LobbyServant lobbyServant = new LobbyServant();
 
     @Override
     public User login(String userName, String password, Controller controller) {
@@ -23,13 +24,6 @@ public class ApplicationServant extends ApplicationServerPOA {
 
        if(response.isSuccess()) {
            controllerHashMap.put(user.userID, controller);
-
-           for(Controller controller1 : controllerHashMap.values()) {
-               if(!controller1.equals(controller)) {
-                   controller1.receiveUpdates(ClientActions.NEW_MESSAGE);
-               }
-           }
-
            System.out.println("A new user Logged in total users online: " + controllerHashMap.size() );
        }
 
@@ -52,27 +46,26 @@ public class ApplicationServant extends ApplicationServerPOA {
     }
 
     @Override
-    public Response createLobby(User creator) {
-        shared.referenceClasses.Response<String> dataBaseResponse = Database.createNewLobby(creator.userID);
-        Any responseData = ORB.init().create_any();
-
-        if(dataBaseResponse.isSuccess()) {
-            responseData.insert_string(dataBaseResponse.getData());
-            return new Response(responseData, true);
-        }
-
-        responseData.insert_string("Failed to create a new game lobby");
-        return new Response(responseData, false);
+    public Response createLobby(User creator, Controller clientController) {
+        return lobbyServant.createLobby(creator, clientController);
     }
 
     @Override
-    public boolean joinLobby(User user, String lobbyId) {
-        return Database.addPlayer(user.userID, lobbyId);
+    public boolean joinLobby(User user, String lobbyId, Controller clientController) {
+        for(Controller controller : controllerHashMap.values()) {
+
+            if(!controller.equals(clientController)) {
+                controller.updateWaitingLobbyView(user);
+            }
+
+        }
+        return lobbyServant.joinLobby(user, lobbyId, clientController);
     }
+
 
     @Override
     public Response leaveLobby(User user, String lobbyId) {
-        return null;
+        return lobbyServant.leaveLobby(user, lobbyId);
     }
 
     @Override

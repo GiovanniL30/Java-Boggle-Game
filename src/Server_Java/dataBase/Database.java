@@ -96,7 +96,7 @@ public class Database {
         User[] players = lobbyPlayers(lobbyId);
 
         for (User player : players) {
-            removePlayer(player.userID);
+            removePlayer(player.userID ,lobbyId);
         }
 
         String query = "DELETE FROM lobby WHERE lobbyID = ?";
@@ -127,17 +127,19 @@ public class Database {
         }
     }
 
-    public static synchronized void removePlayer( String playerId) {
+    public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
 
-        String query = "DELETE FROM lobbyplayer WHERE playerID = ?";
+        String query = "DELETE FROM lobbyplayer WHERE playerID = ? AND lobbyID = ?";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, playerId);
-            preparedStatement.executeUpdate();
+            preparedStatement.setString(2, lobbyId);
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        return false;
     }
 
     public static synchronized Response<String> createAccount(User user) {

@@ -23,6 +23,8 @@ module App {
         string wordName;
     };
 
+
+
     struct Response {
         any payload;
         boolean isSuccess;
@@ -32,24 +34,36 @@ module App {
         NEW_MESSAGE
     };
 
-    interface Controller {
+
+
+   interface Controller {
         void receiveUpdates(in ClientActions clientActions);
         void sendUpdates(in ClientActions clientActions);
         void updateWaitingLobbyView(in User user);
-    };
+        void setWaitingTime(in long time);
+        void setGameTime(in long time);
 
-  typedef sequence<Lobby> LobbyList;
-  typedef sequence<User> Players;
+   };
+
+    typedef sequence<Lobby> LobbyList;
+    typedef sequence<User> Players;
 
     interface ApplicationServer {
         User login(in string userName, in string password, in Controller controller);
         void logout(in string userID);
         Response createAccount(in User user);
-        Response createLobby(in User creator);
-        boolean joinLobby(in User user, in string lobbyId);
+        Response createLobby(in User creator, in Controller clientController);
+        boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
         Response leaveLobby(in User user, in string lobbyId);
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);
+    };
+
+    interface LobbyServer {
+            Response createLobby(in User creator, in Controller clientController);
+             boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
+            Response leaveLobby(in User user, in string lobbyId);
+            LobbyList getLobbies();
     };
 
 };
