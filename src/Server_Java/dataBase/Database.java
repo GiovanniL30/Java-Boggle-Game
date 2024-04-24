@@ -120,7 +120,8 @@ public class Database {
             removePlayer(player.userID ,lobbyId);
         }
 
-        String query = "DELETE FROM lobby WHERE lobbyID = ?";
+
+        String query = "DELETE FROM lobby WHERE AND lobbyStatus = 'Waiting' lobbyID = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);

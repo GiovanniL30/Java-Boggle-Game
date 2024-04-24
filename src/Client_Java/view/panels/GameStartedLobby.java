@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public class GameStartedLobby extends JPanel {
 
-    private JLabel gameTime = new JLabel();
-    private JLabel round = new JLabel();
+    private JLabel gameTime = new JLabel("Time remaining: ");
+    private JLabel round = new JLabel("Round: ");
     private FieldInput fieldInput = new FieldInput("", new Dimension(200, 50), 20, 4, false);
     private JPanel wordEnteredPanel = new JPanel();
     private JPanel playerListPanel = new JPanel();
@@ -34,6 +34,9 @@ public class GameStartedLobby extends JPanel {
         initPlayerListPanel();
         setLayout(new BorderLayout());
         setBackground(Color.white);
+
+        add(gameTime, BorderLayout.NORTH);
+        add(round, BorderLayout.SOUTH);
 
         add(playerListPanel, BorderLayout.CENTER);
     }
@@ -92,6 +95,18 @@ public class GameStartedLobby extends JPanel {
 
     public FieldInput getFieldInput() {
         return fieldInput;
+    }
+
+    public void setTime(int time) {
+        gameTime.setText("Time Remaining: (" + time+"s)");
+        gameTime.revalidate();
+        gameTime.repaint();
+    }
+
+    public void setRound(int r) {
+        round.setText("Round: " + r);
+        round.revalidate();
+        round.repaint();
     }
 }
 

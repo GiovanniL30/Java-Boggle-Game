@@ -3,6 +3,7 @@ package Server_Java;
 import App.ClientActions;
 import App.Controller;
 import Server_Java.dataBase.Database;
+import com.sun.media.sound.SF2Region;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import javax.swing.Timer;
@@ -31,7 +32,7 @@ public class GameLobby  {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 5;
+        secondsLeft = 60;
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
@@ -39,7 +40,8 @@ public class GameLobby  {
                 gameStarted = true;
                 startRound();
                 for (Controller controller : players.values()) {
-                    sendRandomLetters(controller);
+                    String[] letters = generateRandomLetters();
+                    controller.receiveLetter(letters);
                     controller.receiveUpdates(ClientActions.START_GAME);
                 }
             } else {
@@ -55,36 +57,42 @@ public class GameLobby  {
     public void addPlayer(String userId, Controller clientController) {
         if(gameStarted) return;
         players.put(userId, clientController);
+        playerScores.put(userId, 0);
     }
 
     public void removePlayer(String userId) {
         players.remove(userId);
+        playerScores.remove(userId);
     }
 
     public void startRound() {
 
-        secondsLeft = 30;
+        secondsLeft = 5;
 
         gameTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
 
-                if(currentRound > 3) {
-                    gameTimer.stop();
-                    gameEnded = true;
+                if(currentRound == 3) {
 
+                    gameEnded = true;
                     String topPlayer = getTopPlayer();
                     for (Controller controller : players.values()) {
                         controller.endGameUpdate(topPlayer, playerScores.get(topPlayer));
                     }
 
                     new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();
+
+                    gameTimer.stop();
                 }else {
-                    secondsLeft = 30;
+                    secondsLeft = 5;
                     currentRound++;
 
+
                     for (Controller controller : players.values()) {
-                        sendRandomLetters(controller);
+                        String[] letters = generateRandomLetters();
+                        controller.receiveLetter(letters);
+                        controller.setRound(currentRound);
                         controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
                     }
 
@@ -95,6 +103,7 @@ public class GameLobby  {
                 secondsLeft--;
                 for (Controller controller : players.values()) {
                     controller.setGameTime(secondsLeft);
+                    controller.setRound(currentRound);
                 }
             }
 
@@ -136,7 +145,7 @@ public class GameLobby  {
         return words.stream().anyMatch(w -> w.equalsIgnoreCase(word));
     }
 
-    private void sendRandomLetters(Controller client) {
+    private String[] generateRandomLetters() {
          Random random = new Random();
 
          String[] vowels = {"a", "e", "i", "o", "u"};
@@ -151,12 +160,12 @@ public class GameLobby  {
             }
         }
 
-        client.receiveLetter(letters.toArray(new String[0]));
+        return letters.toArray(new String[0]);
     }
 
     private String getTopPlayer() {
-        String topPlayer = null;
-        int maxScore = Integer.MIN_VALUE;
+        String topPlayer = "";
+        int maxScore = -1;
 
         for (Map.Entry<String, Integer> entry : playerScores.entrySet()) {
             String playerId = entry.getKey();
@@ -168,6 +177,7 @@ public class GameLobby  {
             }
         }
 
+        System.out.println(topPlayer);
         return topPlayer;
     }
 

@@ -11,6 +11,7 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 import javax.swing.*;
+import java.util.Arrays;
 
 
 public class ClientController extends ControllerPOA {
@@ -59,12 +60,12 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void setGameTime(int time) {
-
+        mainFrame.getGameStartedLobby().setTime(time);
     }
 
     @Override
     public void setRound(int round) {
-
+        mainFrame.getGameStartedLobby().setRound(round);
     }
 
     @Override
@@ -74,12 +75,12 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveLetter(String[] letters) {
-
+        System.out.println(Arrays.toString(letters));
     }
 
     @Override
     public void endGameUpdate(String winner, int score) {
-
+        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Winner ID:  " + winner + " Score: " + score)).start();
     }
 
     public void submitWord(String word) {
@@ -167,7 +168,7 @@ public class ClientController extends ControllerPOA {
             Response response = applicationServer.joinLobby(loggedInUser, lobbyId, ControllerHelper.narrow(rootPOA.servant_to_reference(this)));
             if (response.isSuccess) {
                 gameLobby = lobbyId;
-                changeFrame(ClientViews.GAME_LOBBY);
+                changeFrame(ClientViews.WAIT_LOBBY);
             } else {
                 JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string());
             }
