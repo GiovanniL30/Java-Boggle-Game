@@ -45,6 +45,27 @@ public class Database {
         return players.toArray(new User[0]);
     }
 
+    public static synchronized LinkedList<String> getWords() {
+
+        openConnection();
+
+        LinkedList<String> words = new LinkedList<>();
+
+        try {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM wordlist");
+
+            while (resultSet.next()) {
+                words.add(resultSet.getString(2));
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return words;
+    }
+
     public static synchronized Response<String> createNewLobby(String creatorId) {
 
         openConnection();

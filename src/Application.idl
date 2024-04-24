@@ -30,17 +30,21 @@ module App {
 
 
 
+    typedef sequence<string> Letters;
+
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
         void sendUpdates(in ClientActions clientActions);
         void updateWaitingLobbyView(in User user);
         void setWaitingTime(in long time);
         void setGameTime(in long time);
-
+        void setRound(in long round);
+        void receiveLetter(in Letters letters);
    };
 
     typedef sequence<Lobby> LobbyList;
     typedef sequence<User> Players;
+
 
     interface ApplicationServer {
         User login(in string userName, in string password, in Controller controller);
@@ -55,11 +59,11 @@ module App {
     };
 
     interface LobbyServer {
-            Response createLobby(in User creator, in Controller clientController);
-            boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
-            Response leaveLobby(in User user, in string lobbyId);
-            LobbyList getLobbies();
-            Response submitWord(in string word, in string playerId, in string lobbyId);
+       Response createLobby(in User creator, in Controller clientController);
+       boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
+       Response leaveLobby(in User user, in string lobbyId);
+       LobbyList getLobbies();
+       Response submitWord(in string word, in string playerId, in string lobbyId);
     };
 
 };

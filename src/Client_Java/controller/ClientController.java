@@ -54,6 +54,16 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    @Override
+    public void setRound(int round) {
+
+    }
+
+    @Override
+    public void receiveLetter(String[] letters) {
+
+    }
+
 
     public void logIn(String userName, String password) {
 
