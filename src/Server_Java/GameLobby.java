@@ -9,6 +9,7 @@ import javax.swing.Timer;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -22,7 +23,7 @@ public class GameLobby  {
     private boolean gameStarted = false;
     private boolean gameEnded = false;
     private final String lobbyId;
-    private int curentRound = 1;
+    private int currentRound = 1;
     private LinkedList<String> words;
 
 
@@ -35,16 +36,16 @@ public class GameLobby  {
 
             if (secondsLeft <= 0) {
                 waitingTimer.stop();
-                secondsLeft = 30;
                 gameStarted = true;
+                startRound();
                 for (Controller controller : players.values()) {
+                    sendRandomLetters(controller);
                     controller.receiveUpdates(ClientActions.START_GAME);
                 }
             } else {
                 secondsLeft--;
                 for (Controller controller : players.values()) {
                     controller.setWaitingTime(secondsLeft);
-
                 }
             }
         });
@@ -58,6 +59,49 @@ public class GameLobby  {
 
     public void removePlayer(String userId) {
         players.remove(userId);
+    }
+
+    public void startRound() {
+
+        secondsLeft = 30;
+
+        gameTimer = new Timer(1000, e -> {
+
+            if (secondsLeft <= 0) {
+
+                if(currentRound > 3) {
+                    gameTimer.stop();
+                    gameEnded = true;
+
+                    String topPlayer = getTopPlayer();
+                    for (Controller controller : players.values()) {
+                        controller.endGameUpdate(topPlayer, playerScores.get(topPlayer));
+                    }
+
+                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();
+                }else {
+                    secondsLeft = 30;
+                    currentRound++;
+
+                    for (Controller controller : players.values()) {
+                        sendRandomLetters(controller);
+                        controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
+                    }
+
+                }
+
+
+            } else {
+                secondsLeft--;
+                for (Controller controller : players.values()) {
+                    controller.setGameTime(secondsLeft);
+                }
+            }
+
+
+        });
+
+        gameTimer.start();
     }
 
     public synchronized App.Response addWord(String word, String userId) {
@@ -109,5 +153,23 @@ public class GameLobby  {
 
         client.receiveLetter(letters.toArray(new String[0]));
     }
+
+    private String getTopPlayer() {
+        String topPlayer = null;
+        int maxScore = Integer.MIN_VALUE;
+
+        for (Map.Entry<String, Integer> entry : playerScores.entrySet()) {
+            String playerId = entry.getKey();
+            int score = entry.getValue();
+
+            if (score > maxScore) {
+                maxScore = score;
+                topPlayer = playerId;
+            }
+        }
+
+        return topPlayer;
+    }
+
 
 }

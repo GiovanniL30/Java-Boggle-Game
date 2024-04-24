@@ -136,7 +136,7 @@ public class Database {
 
         openConnection();
 
-        String query = "UPDATE lobby SET topPlayerID = ?, lobbyStatus = ?";
+        String query = "UPDATE lobby SET topPlayerID = ?, lobbyStatus = 'Finished' WHERE lobbyID = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);

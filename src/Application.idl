@@ -25,7 +25,8 @@ module App {
 
     enum ClientActions {
         NEW_MESSAGE,
-        START_GAME
+        START_GAME,
+        NEW_GAME_ROUND
     };
 
 
@@ -35,12 +36,13 @@ module App {
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
         void sendUpdates(in ClientActions clientActions);
-         void updatePlayerListView();
+        void updatePlayerListView();
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);
         void updatePlayerScore(in string id, in long newScore);
         void receiveLetter(in Letters letters);
+        void endGameUpdate(in string winner, in long score);
    };
 
     typedef sequence<Lobby> LobbyList;

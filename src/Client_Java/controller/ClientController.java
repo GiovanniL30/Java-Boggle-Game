@@ -77,6 +77,22 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    @Override
+    public void endGameUpdate(String winner, int score) {
+
+    }
+
+    public void submitWord(String word) {
+        Response response = applicationServer.submitWord(word, loggedInUser.userID, gameLobby);
+
+        if(response.isSuccess) {
+            mainFrame.getGameStartedLobby().addNewWordBlock(word, response.payload.extract_long());
+        }else {
+            mainFrame.getGameStartedLobby().getFieldInput().enableError("Word is not a valid word");
+        }
+
+        mainFrame.getGameStartedLobby().getFieldInput().clearText();
+    }
     public void logIn(String userName, String password) {
 
         try {

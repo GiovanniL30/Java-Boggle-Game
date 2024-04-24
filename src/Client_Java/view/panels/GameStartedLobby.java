@@ -21,6 +21,8 @@ public class GameStartedLobby extends JPanel {
     private JPanel randomLettersPanel = new JPanel();
     private JPanel header = new JPanel();
 
+    private JPanel inputPanelAndEnteredWordsPanel = new JPanel();
+
     private ClientController clientController;
     private String gameLobby;
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();
@@ -41,6 +43,22 @@ public class GameStartedLobby extends JPanel {
         playerListPanel.setBackground(Color.white);
         playerListPanel.setSize(new Dimension(300, 50));
        updatePlayerList();
+    }
+
+    private void initInputPanelAndEnteredWordsPanel() {
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridy = 0;
+
+        inputPanelAndEnteredWordsPanel.setBackground(Color.white);
+        inputPanelAndEnteredWordsPanel.setLayout(new GridBagLayout());
+
+
+
+    }
+
+    public void addNewWordBlock(String word, int score) {
+
     }
 
     public void updatePlayerList() {
@@ -72,7 +90,8 @@ public class GameStartedLobby extends JPanel {
        player.ifPresent(playerNameBlock -> playerNameBlock.updateScore(score));
     }
 
-
-
+    public FieldInput getFieldInput() {
+        return fieldInput;
+    }
 }
 
