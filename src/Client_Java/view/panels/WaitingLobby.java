@@ -56,7 +56,7 @@ public class WaitingLobby extends JPanel {
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for(User player: players) {
                     gridBagConstraints.gridy++;
-                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0), gridBagConstraints);
+                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 20), gridBagConstraints);
                     playerListPanel.revalidate();
                     playerListPanel.repaint();
                 }

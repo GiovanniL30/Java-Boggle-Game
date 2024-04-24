@@ -5,6 +5,7 @@ import Client_Java.utilities.ClientViews;
 import Client_Java.view.MainFrame;
 import Client_Java.view.panels.*;
 import Server_Java.GameLobby;
+import Server_Java.dataBase.Database;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
@@ -30,6 +31,7 @@ public class ClientController extends ControllerPOA {
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
         if (clientActions.equals(ClientActions.START_GAME)) {
+            new Thread(() -> applicationServer.startGame(gameLobby)).start();
             changeFrame(ClientViews.GAME_LOBBY);
         }
     }
@@ -57,6 +59,11 @@ public class ClientController extends ControllerPOA {
     @Override
     public void setRound(int round) {
 
+    }
+
+    @Override
+    public void updatePlayerScore(String id, int newScore) {
+        mainFrame.getGameStartedLobby().updatePlayerScores(id, newScore);
     }
 
     @Override

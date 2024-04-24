@@ -113,6 +113,10 @@ public class ApplicationServant extends ApplicationServerPOA {
         return lobbyServant.submitWord(word, playerId, lobbyId);
     }
 
+    @Override
+    public void startGame(String lobbyId) {
+        Database.startGame(lobbyId);
+    }
 
 
 }

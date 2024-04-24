@@ -148,6 +148,23 @@ public class Database {
         }
     }
 
+    public static synchronized void startGame(String lobbyId) {
+        openConnection();
+
+        if(isLobbyStarted(lobbyId)) return; // don't need to set started again
+
+        String query  = "UPDATE lobby SET lobbyStatus='Started' WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
     public static synchronized boolean isLobbyStarted(String lobbyId) {
         openConnection();
 

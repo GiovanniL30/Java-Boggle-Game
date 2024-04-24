@@ -15,7 +15,7 @@ import java.util.Random;
 public class GameLobby  {
 
     private final HashMap<String, Controller> players = new HashMap<>(); // player id -> controller
-    private final HashMap<String, HashMap<String, Integer>> playerScores = new HashMap<>(); //player id -> word, score
+    private final HashMap<String, Integer> playerScores = new HashMap<>(); //player id -> word, score
     private Timer waitingTimer;
     private Timer gameTimer;
     private int secondsLeft;
@@ -71,13 +71,10 @@ public class GameLobby  {
 
         int score = computeScore(word);
 
-        if (playerScores.containsKey(userId)) {
-            playerScores.get(userId).put(word, score);
-        } else {
-            HashMap<String, Integer> scoreTablePlayer = new HashMap<>();
-            scoreTablePlayer.put(word, score);
-            playerScores.put(userId, scoreTablePlayer);
-        }
+        int newScore = playerScores.get(userId) + score;
+        playerScores.put(userId, newScore);
+
+        new Thread(() -> players.forEach( (playerID, playerController) -> playerController.updatePlayerScore(userId, newScore))).start(); //update score view
 
         any.insert_long(score);
         return new App.Response(any, true);

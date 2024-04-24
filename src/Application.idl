@@ -39,6 +39,7 @@ module App {
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);
+        void updatePlayerScore(in string id, in long newScore);
         void receiveLetter(in Letters letters);
    };
 
@@ -56,6 +57,7 @@ module App {
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);
         Response submitWord(in string word, in string playerId, in string lobbyId);
+        void startGame(in string lobbyId);
     };
 
     interface LobbyServer {
