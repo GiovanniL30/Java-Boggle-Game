@@ -69,7 +69,7 @@ public class ApplicationServant extends ApplicationServerPOA {
             for(Controller controller : controllerHashMap.values()) {
 
                 if(!controller.equals(clientController)) {
-                    controller.updateWaitingLobbyView(user);
+                    controller.updatePlayerListView();
                 }
 
             }
@@ -90,7 +90,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
         if(response.isSuccess) {
             for(Controller controller : controllerHashMap.values()) {
-                controller.updateWaitingLobbyView(user);
+                controller.updatePlayerListView();
             }
 
         }

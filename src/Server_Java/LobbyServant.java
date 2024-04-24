@@ -44,6 +44,12 @@ public class LobbyServant extends LobbyServerPOA {
         if (Database.removePlayer(user.userID, lobbyId)) {
             lobbies.get(lobbyId).removePlayer(user.userID);
             any.insert_string("Success");
+
+            if(lobbies.get(lobbyId).playerCount() == 0) { //delete the lobby here if there are no players already
+                lobbies.remove(lobbyId);
+                System.gc();
+            }
+
             return new Response(any, true);
         } else {
             any.insert_string("Failed");

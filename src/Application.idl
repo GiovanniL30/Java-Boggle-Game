@@ -35,7 +35,7 @@ module App {
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
         void sendUpdates(in ClientActions clientActions);
-        void updateWaitingLobbyView(in User user);
+         void updatePlayerListView();
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);

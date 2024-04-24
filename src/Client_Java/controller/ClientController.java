@@ -20,6 +20,7 @@ public class ClientController extends ControllerPOA {
     private MainFrame mainFrame;
     private User loggedInUser;
     private String gameLobby = "";
+    private boolean gameStarted = false;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -32,6 +33,7 @@ public class ClientController extends ControllerPOA {
     public void receiveUpdates(App.ClientActions clientActions) {
         if (clientActions.equals(ClientActions.START_GAME)) {
             new Thread(() -> applicationServer.startGame(gameLobby)).start();
+            gameStarted = true;
             changeFrame(ClientViews.GAME_LOBBY);
         }
     }
@@ -42,8 +44,12 @@ public class ClientController extends ControllerPOA {
     }
 
     @Override
-    public void updateWaitingLobbyView(User user) {
-        mainFrame.getWaitingLobby().updatePlayerList();
+    public void updatePlayerListView() {
+        if(gameStarted) {
+            mainFrame.getGameStartedLobby().updatePlayerList();
+        }else {
+            mainFrame.getWaitingLobby().updatePlayerList();
+        }
     }
 
     @Override
@@ -70,7 +76,6 @@ public class ClientController extends ControllerPOA {
     public void receiveLetter(String[] letters) {
 
     }
-
 
     public void logIn(String userName, String password) {
 
@@ -165,6 +170,7 @@ public class ClientController extends ControllerPOA {
 
         if(response.isSuccess) {
             gameLobby = "";
+            gameStarted = false;
             changeFrame(ClientViews.HOME_PAGE);
         }
 

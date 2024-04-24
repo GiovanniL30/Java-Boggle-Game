@@ -80,6 +80,10 @@ public class GameLobby  {
         return new App.Response(any, true);
     }
 
+    public int playerCount(){
+        return players.size();
+    }
+
     private int computeScore(String word) {
         return word.length();
     }

@@ -40,7 +40,10 @@ public class GameStartedLobby extends JPanel {
         playerListPanel.setLayout(new GridBagLayout());
         playerListPanel.setBackground(Color.white);
         playerListPanel.setSize(new Dimension(300, 50));
+       updatePlayerList();
+    }
 
+    public void updatePlayerList() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.fill = 2;
@@ -49,6 +52,7 @@ public class GameStartedLobby extends JPanel {
             @Override
             protected Object doInBackground() {
                 playerListPanel.removeAll();
+                playerNameBlocks = new LinkedList<>();
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for(User player: players) {
                     gridBagConstraints.gridy++;
