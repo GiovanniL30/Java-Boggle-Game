@@ -1,4 +1,6 @@
 package Client_Java.view.panels;
 
-public class GameStartedLobby {
+import javax.swing.*;
+
+public class GameStartedLobby extends JPanel {
 }

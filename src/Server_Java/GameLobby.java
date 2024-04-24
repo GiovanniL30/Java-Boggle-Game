@@ -2,14 +2,12 @@ package Server_Java;
 
 import App.ClientActions;
 import App.Controller;
-import App.GameLobbyData;
-import App.GameLobbyPOA;
 import shared.referenceClasses.Response;
 
 import java.util.HashMap;
 
 
-public class GameLobby extends GameLobbyPOA {
+public class GameLobby  {
 
     private final HashMap<String, Controller> players = new HashMap<>();
     private final HashMap<String, HashMap<String, Integer>> playerScores = new HashMap<>();
@@ -79,19 +77,4 @@ public class GameLobby extends GameLobbyPOA {
         return 0;
     }
 
-
-    @Override
-    public GameLobbyData gameData() {
-        return new GameLobbyData(60, 60);
-    }
-
-    @Override
-    public void gameData(GameLobbyData newGameData) {
-
-    }
-
-    @Override
-    public String getId() {
-        return lobbyId;
-    }
 }

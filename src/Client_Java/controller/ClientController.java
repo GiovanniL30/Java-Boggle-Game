@@ -3,10 +3,8 @@ package Client_Java.controller;
 import App.*;
 import Client_Java.utilities.ClientViews;
 import Client_Java.view.MainFrame;
-import Client_Java.view.panels.HomePage;
-import Client_Java.view.panels.Login;
-import Client_Java.view.panels.Signup;
-import Client_Java.view.panels.WaitingLobby;
+import Client_Java.view.panels.*;
+import Server_Java.GameLobby;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
@@ -32,7 +30,7 @@ public class ClientController extends ControllerPOA {
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
         if (clientActions.equals(ClientActions.START_GAME)) {
-
+            changeFrame(ClientViews.GAME_LOBBY);
         }
     }
 
@@ -110,7 +108,7 @@ public class ClientController extends ControllerPOA {
             Response response = applicationServer.createLobby(loggedInUser, ControllerHelper.narrow(rootPOA.servant_to_reference(this)));
             if (response.isSuccess) {
                 gameLobby = response.payload.extract_string();
-                changeFrame(ClientViews.GAME_LOBBY);
+                changeFrame(ClientViews.WAIT_LOBBY);
             } else {
                 new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
             }
@@ -182,6 +180,12 @@ public class ClientController extends ControllerPOA {
                         break;
                     }
                     case GAME_LOBBY: {
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setGameStartedLobby(new GameStartedLobby());
+                        mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
+                        break;
+                    }
+                    case WAIT_LOBBY: {
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);

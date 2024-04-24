@@ -18,13 +18,6 @@ module App {
         User topPlayer;
     };
 
-    struct word{
-        long wordId;
-        string wordName;
-    };
-
-
-
     struct Response {
         any payload;
         boolean isSuccess;

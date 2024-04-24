@@ -4,5 +4,6 @@ public enum ClientViews {
     LOGIN,
     SIGN_UP,
     HOME_PAGE,
-    GAME_LOBBY
+    GAME_LOBBY,
+    WAIT_LOBBY
 }
