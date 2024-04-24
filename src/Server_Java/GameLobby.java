@@ -26,22 +26,29 @@ public class GameLobby extends GameLobbyPOA {
 
     public void addPlayer(String userId, Controller clientController) {
         players.put(userId, clientController);
-        if (waitingTimer == null) {
+
+        if (waitingTimer == null || gameStarted || !waitingTimer.isRunning()) {
             secondsLeft = 60;
+
+            waitingTimer = new javax.swing.Timer(1000, e -> {
+
+                if (secondsLeft <= 0) {
+                    waitingTimer.stop();
+                    gameStarted = true;
+                    for (Controller controller : players.values()) {
+                        controller.receiveUpdates(ClientActions.START_GAME);
+                    }
+                } else {
+                    secondsLeft--;
+                    for (Controller controller : players.values()) {
+                        controller.setWaitingTime(secondsLeft);
+                    }
+                }
+            });
+            waitingTimer.start();
         }
 
-        waitingTimer = new javax.swing.Timer(1000, e -> {
-            secondsLeft--;
-            for(Controller controller : players.values()) {
-                controller.setWaitingTime(secondsLeft);
-                if (secondsLeft <= 0) {
-                    ((javax.swing.Timer) e.getSource()).stop();
-                    controller.receiveUpdates(ClientActions.START_GAME);
-                }
-            }
 
-        });
-        waitingTimer.start();
     }
 
     public void removePlayer(String userId) {
