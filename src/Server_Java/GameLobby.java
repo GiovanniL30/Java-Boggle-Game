@@ -1,11 +1,17 @@
 package Server_Java;
 
+import App.ApplicationServer;
+import App.ApplicationServerHelper;
 import App.ClientActions;
 import App.Controller;
 import Server_Java.dataBase.Database;
 import com.sun.media.sound.SF2Region;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
+
 import javax.swing.Timer;
 
 import java.util.HashMap;
@@ -16,8 +22,8 @@ import java.util.Random;
 
 public class GameLobby  {
 
-    private final HashMap<String, Controller> players = new HashMap<>(); // player id -> controller
-    private final HashMap<String, Integer> playerScores = new HashMap<>(); //player id -> word, score
+    private HashMap<String, Controller> players = new HashMap<>(); // player id -> controller
+    private HashMap<String, Integer> playerScores = new HashMap<>(); //player id -> word, score
     private Timer waitingTimer;
     private Timer gameTimer;
     private int secondsLeft;
@@ -32,18 +38,33 @@ public class GameLobby  {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 60;
+        secondsLeft = 10;
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
                 waitingTimer.stop();
-                gameStarted = true;
-                startRound();
-                for (Controller controller : players.values()) {
+
+                if(players.size() == 1) {
+                    Database.deleteLobby(lobbyId);
+                    for(Controller controller : players.values()){
+                        controller.receiveUpdates(ClientActions.NO_PLAYER_LOBBY);
+                    }
+
+                    players = null;
+                    playerScores = null ;
+                    waitingTimer = null;
+
+                }else {
+
+                    gameStarted = true;
+                    startRound();
                     String[] letters = generateRandomLetters();
-                    controller.receiveLetter(letters);
-                    controller.receiveUpdates(ClientActions.START_GAME);
+                    for (Controller controller : players.values()) {
+                        controller.receiveLetter(letters);
+                        controller.receiveUpdates(ClientActions.START_GAME);
+                    }
                 }
+
             } else {
                 secondsLeft--;
                 for (Controller controller : players.values()) {
@@ -88,9 +109,8 @@ public class GameLobby  {
                     secondsLeft = 5;
                     currentRound++;
 
-
+                    String[] letters = generateRandomLetters();
                     for (Controller controller : players.values()) {
-                        String[] letters = generateRandomLetters();
                         controller.receiveLetter(letters);
                         controller.setRound(currentRound);
                         controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);

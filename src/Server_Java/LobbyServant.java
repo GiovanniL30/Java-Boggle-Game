@@ -39,10 +39,10 @@ public class LobbyServant extends LobbyServerPOA {
     }
 
     @Override
-    public Response leaveLobby(User user, String lobbyId) {
+    public Response leaveLobby(String user, String lobbyId) {
         Any any = ORB.init().create_any();
-        if (Database.removePlayer(user.userID, lobbyId)) {
-            lobbies.get(lobbyId).removePlayer(user.userID);
+        if (Database.removePlayer(user, lobbyId)) {
+            lobbies.get(lobbyId).removePlayer(user);
             any.insert_string("Success");
 
             if(lobbies.get(lobbyId).playerCount() == 0) { //delete the lobby here if there are no players already

@@ -121,7 +121,7 @@ public class Database {
         }
 
 
-        String query = "DELETE FROM lobby WHERE AND lobbyStatus = 'Waiting' lobbyID = ?";
+        String query = "DELETE FROM lobby WHERE lobbyStatus = 'Waiting' AND lobbyID = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);

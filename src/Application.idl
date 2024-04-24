@@ -26,7 +26,8 @@ module App {
     enum ClientActions {
         NEW_MESSAGE,
         START_GAME,
-        NEW_GAME_ROUND
+        NEW_GAME_ROUND,
+        NO_PLAYER_LOBBY
     };
 
 
@@ -55,7 +56,7 @@ module App {
         Response createAccount(in User user);
         Response createLobby(in User creator, in Controller clientController);
         Response joinLobby(in User user, in string lobbyId, in Controller clientController);
-        Response leaveLobby(in User user, in string lobbyId);
+        Response leaveLobby(in string user, in string lobbyId);
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);
         Response submitWord(in string word, in string playerId, in string lobbyId);
@@ -65,7 +66,7 @@ module App {
     interface LobbyServer {
        Response createLobby(in User creator, in Controller clientController);
        boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
-       Response leaveLobby(in User user, in string lobbyId);
+       Response leaveLobby(in string user, in string lobbyId);
        LobbyList getLobbies();
        Response submitWord(in string word, in string playerId, in string lobbyId);
     };

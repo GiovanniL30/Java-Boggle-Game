@@ -85,7 +85,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
 
     @Override
-    public Response leaveLobby(User user, String lobbyId) {
+    public Response leaveLobby(String user, String lobbyId) {
         Response response = lobbyServant.leaveLobby(user, lobbyId);
 
         if(response.isSuccess) {

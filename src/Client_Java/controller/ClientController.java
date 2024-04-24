@@ -36,6 +36,9 @@ public class ClientController extends ControllerPOA {
             new Thread(() -> applicationServer.startGame(gameLobby)).start();
             gameStarted = true;
             changeFrame(ClientViews.GAME_LOBBY);
+        } else if (clientActions.equals(ClientActions.NO_PLAYER_LOBBY)) {
+            new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "The game won't start there are no players :(")).start();
+            changeFrame(ClientViews.HOME_PAGE);
         }
     }
 
@@ -183,7 +186,7 @@ public class ClientController extends ControllerPOA {
         return applicationServer.getPlayers(lobbyId);
     }
     public void leaveLobby(String lobbyId) {
-        Response response =  applicationServer.leaveLobby(loggedInUser, lobbyId);
+        Response response =  applicationServer.leaveLobby(loggedInUser.userID, lobbyId);
 
         if(response.isSuccess) {
             gameLobby = "";
