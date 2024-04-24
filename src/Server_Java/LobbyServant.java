@@ -4,15 +4,12 @@ import App.*;
 import Server_Java.dataBase.Database;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAHelper;
 
 import java.util.HashMap;
 
 public class LobbyServant extends LobbyServerPOA {
 
-    private HashMap<String, GameLobby> lobbies = new HashMap<>();
+    private final HashMap<String, GameLobby> lobbies = new HashMap<>();
 
 
     @Override
@@ -20,11 +17,11 @@ public class LobbyServant extends LobbyServerPOA {
         shared.referenceClasses.Response<String> dataBaseResponse = Database.createNewLobby(creator.userID);
         Any responseData = ORB.init().create_any();
 
-        if(dataBaseResponse.isSuccess()) {
+        if (dataBaseResponse.isSuccess()) {
             responseData.insert_string(dataBaseResponse.getData());
             GameLobby gameLobby = new GameLobby(dataBaseResponse.getData());
             gameLobby.addPlayer(creator.userID, clientController);
-            lobbies.put(dataBaseResponse.getData(),gameLobby);
+            lobbies.put(dataBaseResponse.getData(), gameLobby);
             return new Response(responseData, true);
         }
 
@@ -34,7 +31,7 @@ public class LobbyServant extends LobbyServerPOA {
 
     @Override
     public boolean joinLobby(User user, String lobbyId, Controller clientController) {
-        if(Database.addPlayer(user.userID, lobbyId)) {
+        if (Database.addPlayer(user.userID, lobbyId)) {
             lobbies.get(lobbyId).addPlayer(user.userID, clientController);
             return true;
         }
@@ -44,11 +41,11 @@ public class LobbyServant extends LobbyServerPOA {
     @Override
     public Response leaveLobby(User user, String lobbyId) {
         Any any = ORB.init().create_any();
-        if(Database.removePlayer(user.userID, lobbyId)) {
+        if (Database.removePlayer(user.userID, lobbyId)) {
             lobbies.get(lobbyId).removePlayer(user.userID);
             any.insert_string("Success");
             return new Response(any, true);
-        }else {
+        } else {
             any.insert_string("Failed");
             return new Response(any, false);
         }
@@ -57,5 +54,10 @@ public class LobbyServant extends LobbyServerPOA {
     @Override
     public Lobby[] getLobbies() {
         return new Lobby[0];
+    }
+
+    @Override
+    public Response submitWord(String word, String playerId, String lobbyId) {
+        return lobbies.get(lobbyId).addWord(word, playerId);
     }
 }

@@ -10,8 +10,6 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-import java.util.Properties;
-
 public class Server {
 
     public static void main(String[] args) {
@@ -32,11 +30,10 @@ public class Server {
             NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
             String name = "Application";
 
-            NameComponent path[] = ncRef.to_name(name);
+            NameComponent[] path = ncRef.to_name(name);
             ncRef.rebind(path, href);
             System.out.println("Application Server is running ...");
             orb.run();
-
 
 
         } catch (Exception e) {

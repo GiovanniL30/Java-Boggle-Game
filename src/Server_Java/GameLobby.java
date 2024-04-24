@@ -2,6 +2,8 @@ package Server_Java;
 
 import App.ClientActions;
 import App.Controller;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
 import shared.referenceClasses.Response;
 
 import java.util.HashMap;
@@ -53,10 +55,12 @@ public class GameLobby  {
         players.remove(userId);
     }
 
-    public Response<Integer> addWord(String word, String userId) {
+    public synchronized App.Response addWord(String word, String userId) {
 
+        Any any = ORB.init().create_any();
         if (enteredWords.containsKey(word.toLowerCase())) {
-            return new Response<>(0, false);
+            any.insert_long(0);
+            return new App.Response(any, false);
         }
 
         int score = computeScore(word);
@@ -70,7 +74,8 @@ public class GameLobby  {
             playerScores.put(userId, scoreTablePlayer);
         }
 
-        return new Response<>(score, true);
+        any.insert_long(score);
+        return new App.Response(any, false);
     }
 
     private int computeScore(String word) {

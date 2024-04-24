@@ -108,4 +108,11 @@ public class ApplicationServant extends ApplicationServerPOA {
         return Database.lobbyPlayers(lobbyId);
     }
 
+    @Override
+    public Response submitWord(String word, String playerId, String lobbyId) {
+        return lobbyServant.submitWord(word, playerId, lobbyId);
+    }
+
+
+
 }

@@ -51,13 +51,15 @@ module App {
         Response leaveLobby(in User user, in string lobbyId);
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);
+        Response submitWord(in string word, in string playerId, in string lobbyId);
     };
 
     interface LobbyServer {
             Response createLobby(in User creator, in Controller clientController);
-             boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
+            boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
             Response leaveLobby(in User user, in string lobbyId);
             LobbyList getLobbies();
+            Response submitWord(in string word, in string playerId, in string lobbyId);
     };
 
 };

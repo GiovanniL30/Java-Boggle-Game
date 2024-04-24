@@ -181,7 +181,7 @@ public class ClientController extends ControllerPOA {
                     }
                     case GAME_LOBBY: {
                         mainFrame.getContentPane().remove(1);
-                        mainFrame.setGameStartedLobby(new GameStartedLobby());
+                        mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
                         break;
                     }
