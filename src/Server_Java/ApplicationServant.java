@@ -51,21 +51,51 @@ public class ApplicationServant extends ApplicationServerPOA {
     }
 
     @Override
-    public boolean joinLobby(User user, String lobbyId, Controller clientController) {
-        for(Controller controller : controllerHashMap.values()) {
+    public Response joinLobby(User user, String lobbyId, Controller clientController) {
 
-            if(!controller.equals(clientController)) {
-                controller.updateWaitingLobbyView(user);
+        Any any = ORB.init().create_any();
+
+        if(!Database.lobbyExist(lobbyId)) {
+            any.insert_string("Lobby not found");
+            return new Response(any, false);
+        }
+
+        if(Database.isLobbyStarted(lobbyId)) {
+            any.insert_string("Lobby already started, (CANNOT JOIN)");
+            return new Response(any, false);
+        }
+
+        if(lobbyServant.joinLobby(user, lobbyId, clientController)) {
+            for(Controller controller : controllerHashMap.values()) {
+
+                if(!controller.equals(clientController)) {
+                    controller.updateWaitingLobbyView(user);
+                }
+
             }
 
+            any.insert_string("SUCCESS");
+            return new Response(any, true);
         }
-        return lobbyServant.joinLobby(user, lobbyId, clientController);
+
+
+        any.insert_string("Having error joining the lobby");
+        return new Response(any, false);
     }
 
 
     @Override
     public Response leaveLobby(User user, String lobbyId) {
-        return lobbyServant.leaveLobby(user, lobbyId);
+        Response response = lobbyServant.leaveLobby(user, lobbyId);
+
+        if(response.isSuccess) {
+            for(Controller controller : controllerHashMap.values()) {
+                controller.updateWaitingLobbyView(user);
+            }
+
+        }
+
+        return response;
     }
 
     @Override

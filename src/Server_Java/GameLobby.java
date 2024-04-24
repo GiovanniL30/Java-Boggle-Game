@@ -32,11 +32,14 @@ public class GameLobby extends GameLobbyPOA {
 
         waitingTimer = new javax.swing.Timer(1000, e -> {
             secondsLeft--;
-            clientController.setWaitingTime(secondsLeft);
-            if (secondsLeft <= 0) {
-                ((javax.swing.Timer) e.getSource()).stop();
-                clientController.receiveUpdates(ClientActions.NEW_MESSAGE);
+            for(Controller controller : players.values()) {
+                controller.setWaitingTime(secondsLeft);
+                if (secondsLeft <= 0) {
+                    ((javax.swing.Timer) e.getSource()).stop();
+                    controller.receiveUpdates(ClientActions.START_GAME);
+                }
             }
+
         });
         waitingTimer.start();
     }

@@ -31,7 +31,8 @@ module App {
     };
 
     enum ClientActions {
-        NEW_MESSAGE
+        NEW_MESSAGE,
+        START_GAME
     };
 
 
@@ -53,7 +54,7 @@ module App {
         void logout(in string userID);
         Response createAccount(in User user);
         Response createLobby(in User creator, in Controller clientController);
-        boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
+        Response joinLobby(in User user, in string lobbyId, in Controller clientController);
         Response leaveLobby(in User user, in string lobbyId);
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);

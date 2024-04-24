@@ -2,7 +2,9 @@ package Client_Java.view.panels;
 
 import App.User;
 import Client_Java.controller.ClientController;
+import Client_Java.utilities.ColorFactory;
 import Client_Java.utilities.FontFactory;
+import Client_Java.view.components.FilledButton;
 import Client_Java.view.components.PlayerNameBlock;
 
 import javax.swing.*;
@@ -15,6 +17,7 @@ public class WaitingLobby extends JPanel {
     private JPanel waitingList = new JPanel();
     private String gameLobby;
     private JLabel waitingTime = new JLabel("GAME WILL START IN: ");
+    private FilledButton leaveLobby = new FilledButton("Leave Lobby", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.white);
 
     public WaitingLobby(ClientController clientController, String gameLobby) {
         this.clientController = clientController;
@@ -26,6 +29,9 @@ public class WaitingLobby extends JPanel {
 
         add(waitingList, BorderLayout.NORTH);
         add(playerListPanel, BorderLayout.CENTER);
+        add(leaveLobby, BorderLayout.SOUTH);
+
+        leaveLobby.addActionListener(e -> clientController.leaveLobby(gameLobby));
     }
 
     private void playerList() {

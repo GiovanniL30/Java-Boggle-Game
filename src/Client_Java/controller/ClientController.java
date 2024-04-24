@@ -20,7 +20,7 @@ public class ClientController extends ControllerPOA {
     private final ORB orb;
     private MainFrame mainFrame;
     private User loggedInUser;
-    private String gameLobby;
+    private String gameLobby = "";
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -31,8 +31,9 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveUpdates(App.ClientActions clientActions) {
-        JOptionPane.showMessageDialog(mainFrame, "Hello Updated");
-        JOptionPane.showMessageDialog(mainFrame, "Game will start");
+        if (clientActions.equals(ClientActions.START_GAME)) {
+
+        }
     }
 
     @Override
@@ -67,6 +68,9 @@ public class ClientController extends ControllerPOA {
                 loggedInUser = user;
 
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                    if(!gameLobby.isEmpty()) {
+                        leaveLobby(gameLobby);
+                    }
                     applicationServer.logout(loggedInUser.userID);
                 }));
 
@@ -124,11 +128,12 @@ public class ClientController extends ControllerPOA {
             POA rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootPOA.the_POAManager().activate();
 
-            if (applicationServer.joinLobby(loggedInUser, lobbyId, ControllerHelper.narrow(rootPOA.servant_to_reference(this)))) {
+            Response response = applicationServer.joinLobby(loggedInUser, lobbyId, ControllerHelper.narrow(rootPOA.servant_to_reference(this)));
+            if (response.isSuccess) {
                 gameLobby = lobbyId;
                 changeFrame(ClientViews.GAME_LOBBY);
             } else {
-                JOptionPane.showMessageDialog(mainFrame, "Not available lobby id");
+                JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string());
             }
 
         } catch (Exception e) {
@@ -139,6 +144,16 @@ public class ClientController extends ControllerPOA {
 
     public User[] lobbyPlayer(String lobbyId) {
         return applicationServer.getPlayers(lobbyId);
+    }
+    public void leaveLobby(String lobbyId) {
+        Response response =  applicationServer.leaveLobby(loggedInUser, lobbyId);
+
+        if(response.isSuccess) {
+            gameLobby = "";
+            changeFrame(ClientViews.HOME_PAGE);
+        }
+
+        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
     }
 
 

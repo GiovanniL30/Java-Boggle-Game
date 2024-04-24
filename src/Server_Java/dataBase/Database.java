@@ -83,7 +83,7 @@ public class Database {
             preparedStatement.setString(2, playerId);
             return preparedStatement.executeUpdate() >  0;
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e.getMessage() + "Line 86");
         }
 
         return false;
@@ -127,15 +127,64 @@ public class Database {
         }
     }
 
+    public static synchronized boolean isLobbyStarted(String lobbyId) {
+        openConnection();
+
+        String query = "SELECT lobbyStatus FROM lobby WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return !resultSet.getString(1).equals("Waiting");
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return true;
+    }
+
+    public static synchronized boolean lobbyExist(String lobbyId) {
+        openConnection();
+
+        String query = "SELECT count(*) FROM lobby WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
+
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
 
-        String query = "DELETE FROM lobbyplayer WHERE playerID = ? AND lobbyID = ?";
+        String query = "DELETE FROM lobbyplayers WHERE playerID = ? AND lobbyID = ?";
+
         try {
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, playerId);
             preparedStatement.setString(2, lobbyId);
-            return preparedStatement.executeUpdate() > 0;
+
+            if(preparedStatement.executeUpdate() > 0) {
+                if(lobbyPlayers(lobbyId).length == 0) { //delete the lobby if there are no players already
+                    deleteLobby(lobbyId);
+                }
+                return true;
+            }else  return false;
+
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -145,7 +194,6 @@ public class Database {
     public static synchronized Response<String> createAccount(User user) {
 
         openConnection();
-
 
         try {
             PreparedStatement checkUserName = connection.prepareStatement("SELECT count(*) FROM users WHERE username = ?");
