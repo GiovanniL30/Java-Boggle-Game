@@ -32,15 +32,14 @@ public class GameStartedLobby extends JPanel {
         this.clientController = clientController;
         this.gameLobby = gameLobby;
         initPlayerListPanel();
-        initInputPanelAndEnteredWordsPanel();
+        initRandomLettersPanel();
         setLayout(new BorderLayout());
         setBackground(Color.white);
 
         add(gameTime, BorderLayout.NORTH);
         add(round, BorderLayout.SOUTH);
-
+        add(randomLettersPanel, BorderLayout.EAST);
         add(playerListPanel, BorderLayout.CENTER);
-        add(inputPanelAndEnteredWordsPanel, BorderLayout.CENTER);
     }
 
     private void initPlayerListPanel() {
@@ -50,31 +49,23 @@ public class GameStartedLobby extends JPanel {
        updatePlayerList();
     }
 
+    private void initRandomLettersPanel(){
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        randomLettersPanel.setLayout(new GridBagLayout());
+        randomLettersPanel.setBackground(Color.white);
+        randomLettersPanel.setSize(new Dimension(100, 80));
+    }
     private void initInputPanelAndEnteredWordsPanel() {
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridy = 0;
+
         inputPanelAndEnteredWordsPanel.setBackground(Color.white);
         inputPanelAndEnteredWordsPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(5, 5, 10, 5);
 
-        JTextField inputField = new JTextField();
-        inputField.setPreferredSize(new Dimension(350, 50));
-        inputField.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        inputPanelAndEnteredWordsPanel.add(inputField, constraints);
 
-        constraints.gridy++;
-
-        JPanel enteredWordsPanel = new JPanel();
-        enteredWordsPanel.setLayout(new BoxLayout(enteredWordsPanel, BoxLayout.Y_AXIS));
-        enteredWordsPanel.setBackground(Color.white);
-
-        constraints.gridx =0;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        inputPanelAndEnteredWordsPanel.add(enteredWordsPanel, constraints);
     }
 
     public void addNewWordBlock(String word, int score) {
