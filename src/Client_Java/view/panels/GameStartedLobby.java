@@ -32,12 +32,13 @@ public class GameStartedLobby extends JPanel {
         this.clientController = clientController;
         this.gameLobby = gameLobby;
         initPlayerListPanel();
+        initRandomLettersPanel();
         setLayout(new BorderLayout());
         setBackground(Color.white);
 
         add(gameTime, BorderLayout.NORTH);
         add(round, BorderLayout.SOUTH);
-
+        add(randomLettersPanel, BorderLayout.EAST);
         add(playerListPanel, BorderLayout.CENTER);
     }
 
@@ -48,6 +49,13 @@ public class GameStartedLobby extends JPanel {
        updatePlayerList();
     }
 
+    private void initRandomLettersPanel(){
+        GridBagConstraints constraints = new GridBagConstraints();
+
+        randomLettersPanel.setLayout(new GridBagLayout());
+        randomLettersPanel.setBackground(Color.white);
+        randomLettersPanel.setSize(new Dimension(100, 80));
+    }
     private void initInputPanelAndEnteredWordsPanel() {
 
         GridBagConstraints constraints = new GridBagConstraints();
