@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: boggled
 -- ------------------------------------------------------
@@ -158,9 +158,8 @@ CREATE TABLE `users` (
   `lastName` varchar(30) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `loggedIn` varchar(10) NOT NULL,
+  `isLoggedIn` tinyint NOT NULL,
   `status` varchar(20) NOT NULL,
-  `isAdmin` varchar(10) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -172,7 +171,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('uID','Alfred','Ngaosi','albert123','qwerty','No','Offline','No'),('uID1','Giovanni','Leo','vanni123','abcdef','No','Offline','Yes');
+INSERT INTO `users` VALUES ('uID','Alfred','Ngaosi','albert123','qwerty',0,'Offline'),('uID1','Giovanni','Leo','vanni123','abcdef',0,'Online');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,4 +210,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-19 21:58:26
+-- Dump completed on 2024-04-25 10:25:16
