@@ -75,14 +75,13 @@ public class GameStartedLobby extends JPanel {
 
         constraints.gridy++;
 
-        JPanel enteredWordsPanel = new JPanel();
-        enteredWordsPanel.setLayout(new BoxLayout(enteredWordsPanel, BoxLayout.Y_AXIS));
-        enteredWordsPanel.setBackground(Color.white);
+        wordEnteredPanel.setLayout(new BoxLayout(wordEnteredPanel, BoxLayout.Y_AXIS));
+        wordEnteredPanel.setBackground(Color.white);
 
         constraints.gridx =0;
         constraints.weightx = 1;
         constraints.fill = GridBagConstraints.HORIZONTAL;
-        inputPanelAndEnteredWordsPanel.add(enteredWordsPanel, constraints);
+        inputPanelAndEnteredWordsPanel.add(wordEnteredPanel, constraints);
     }
 
     public void addNewWordBlock(String word, int score) {
