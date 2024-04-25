@@ -6,6 +6,7 @@ import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.PlayerNameBlock;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -37,8 +38,28 @@ public class GameStartedLobby extends JPanel {
         setLayout(new BorderLayout());
         setBackground(Color.white);
 
-        add(gameTime, BorderLayout.NORTH);
-        add(round, BorderLayout.SOUTH);
+
+        JPanel topPanel = new JPanel();
+        topPanel.setBorder(new EmptyBorder(80, 0, 0, 0));
+        topPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 55, 0));
+        topPanel.setBackground(Color.white);
+
+        JPanel playerScorePanel = new JPanel();
+        playerScorePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 325, 0));
+        playerScorePanel.setBackground(Color.white);
+        JLabel playerScore = new JLabel("Your Score: ");
+        playerScorePanel.add(playerScore);
+
+        topPanel.add(playerScorePanel);
+        topPanel.add(round);
+        topPanel.add(gameTime);
+
+//        add(gameTime, BorderLayout.NORTH);
+//        add(round, BorderLayout.SOUTH);
+
+        add(topPanel, BorderLayout.NORTH);
+
+
         add(randomLettersPanel, BorderLayout.EAST);
         add(playerListPanel, BorderLayout.CENTER);
         add(inputPanelAndEnteredWordsPanel, BorderLayout.CENTER);
@@ -48,7 +69,7 @@ public class GameStartedLobby extends JPanel {
         playerListPanel.setLayout(new GridBagLayout());
         playerListPanel.setBackground(Color.white);
         playerListPanel.setSize(new Dimension(300, 50));
-       updatePlayerList();
+        updatePlayerList();
     }
 
     private void initRandomLettersPanel(){
@@ -77,6 +98,8 @@ public class GameStartedLobby extends JPanel {
 
         wordEnteredPanel.setLayout(new BoxLayout(wordEnteredPanel, BoxLayout.Y_AXIS));
         wordEnteredPanel.setBackground(Color.white);
+        JLabel wordEnteredLabel = new JLabel(getFieldInput().getInput());
+        wordEnteredPanel.add(wordEnteredLabel);
 
         constraints.gridx =0;
         constraints.weightx = 1;
@@ -85,7 +108,17 @@ public class GameStartedLobby extends JPanel {
     }
 
     public void addNewWordBlock(String word, int score) {
-
+//        JLabel wordEnteredLabel = new JLabel(word);
+//        JLabel scoreLabel = new JLabel("Your Score: " +score);
+//
+//        JPanel wordBlock = new JPanel();
+//        wordBlock.setLayout(new BoxLayout(wordBlock, BoxLayout.X_AXIS));
+//        wordBlock.add(scoreLabel);
+//        wordBlock.add(wordEnteredLabel);
+//
+//        wordEnteredPanel.add(wordBlock);
+//        revalidate();
+//        repaint();
     }
 
     public void updatePlayerList() {
