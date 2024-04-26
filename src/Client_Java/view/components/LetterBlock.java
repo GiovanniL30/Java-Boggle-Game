@@ -13,6 +13,7 @@ public class LetterBlock extends JPanel {
     public LetterBlock(String letter){
         this.letter = letter;
         setLayout(new FlowLayout(FlowLayout.CENTER));
+        setSize(new Dimension(20,20));
 
         label = new JLabel(letter);
         label.setFont(FontFactory.newPoppinsBold(20));
