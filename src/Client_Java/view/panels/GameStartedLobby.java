@@ -3,6 +3,7 @@ package Client_Java.view.panels;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.view.components.FieldInput;
+import Client_Java.view.components.LetterBlock;
 import Client_Java.view.components.PlayerNameBlock;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Random;
 
 public class GameStartedLobby extends JPanel {
 
@@ -20,9 +22,13 @@ public class GameStartedLobby extends JPanel {
     private JPanel wordEnteredPanel = new JPanel();
     private JPanel playerListPanel = new JPanel();
     private JPanel randomLettersPanel = new JPanel();
+    private JPanel rightPanel = new JPanel();
+
     private JPanel header = new JPanel();
 
     private JPanel inputPanelAndEnteredWordsPanel = new JPanel();
+    private JPanel roundTimePanel = new JPanel();
+
 
     private ClientController clientController;
     private String gameLobby;
@@ -34,7 +40,7 @@ public class GameStartedLobby extends JPanel {
         this.gameLobby = gameLobby;
         initPlayerListPanel();
         initInputPanelAndEnteredWordsPanel();
-        initRandomLettersPanel();
+        initRightPanel();
         setLayout(new BorderLayout());
         setBackground(Color.white);
 
@@ -51,17 +57,59 @@ public class GameStartedLobby extends JPanel {
         updatePlayerList();
     }
 
-    private void initRandomLettersPanel(){
-        GridBagConstraints constraints = new GridBagConstraints();
+    private void initRightPanel(){
+        rightPanel.setLayout(new BorderLayout());
+        rightPanel.setBackground(Color.white);
+        rightPanel.setSize(new Dimension(100, 80));
 
-        randomLettersPanel.setLayout(new GridBagLayout());
-        randomLettersPanel.setBackground(Color.white);
-        randomLettersPanel.setSize(new Dimension(100, 80));
+        initRoundTimePanel();
+        rightPanel.add(roundTimePanel);
 
-        randomLettersPanel.add(round, constraints);
-        randomLettersPanel.add(gameTime, constraints);
+        initRandomLettersPanel();
+        rightPanel.add(randomLettersPanel);
 
     }
+
+    private void initRoundTimePanel(){
+        FlowLayout layout = new FlowLayout();
+        roundTimePanel.setLayout(layout);
+        roundTimePanel.setSize(300, 20);
+
+        roundTimePanel.add(round);
+        roundTimePanel.add(gameTime);
+    }
+    private void initRandomLettersPanel(){
+        GridLayout grid = new GridLayout(0, 4);
+        randomLettersPanel.setLayout(grid);
+        randomLettersPanel.setBackground(Color.black);
+       randomLettersPanel.setSize(new Dimension(300, 200));
+
+        String[] letters = generateRandomLetters();
+        for (String letter : letters){
+            LetterBlock block = new LetterBlock(letter);
+            randomLettersPanel.add(block);
+        }
+
+    }
+
+    private String[] generateRandomLetters() {
+        Random random = new Random();
+
+        String[] vowels = {"a", "e", "i", "o", "u"};
+        String[] consonants = {"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z"};
+
+        LinkedList<String> letters = new LinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            if (i < 7) {
+                letters.add(vowels[random.nextInt(vowels.length)]);
+            } else {
+                letters.add(consonants[random.nextInt(consonants.length)]);
+            }
+        }
+
+        return letters.toArray(new String[0]);
+    }
+
     private void initInputPanelAndEnteredWordsPanel() {
 
         inputPanelAndEnteredWordsPanel.setLayout(new GridBagLayout());
