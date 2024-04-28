@@ -2,14 +2,13 @@ package Client_Java.view.panels;
 
 import App.User;
 import Client_Java.controller.ClientController;
+import Client_Java.utilities.FontFactory;
 import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.LetterBlock;
 import Client_Java.view.components.PlayerNameBlock;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Random;
@@ -25,8 +24,11 @@ public class GameStartedLobby extends JPanel {
     private JPanel rightPanel = new JPanel();
 
     private JPanel header = new JPanel();
+    private JPanel topPanel = new JPanel();
 
-    private JPanel inputPanelAndEnteredWordsPanel = new JPanel();
+    private JPanel inputPanel = new JPanel();
+
+    private JPanel middlePanel = new JPanel();
     private JPanel roundTimePanel = new JPanel();
 
 
@@ -38,40 +40,51 @@ public class GameStartedLobby extends JPanel {
     public GameStartedLobby(ClientController clientController, String gameLobby) {
         this.clientController = clientController;
         this.gameLobby = gameLobby;
-        initPlayerListPanel();
-        initInputPanelAndEnteredWordsPanel();
-        initRightPanel();
+
         setLayout(new BorderLayout());
         setBackground(Color.white);
 
-        add(header, BorderLayout.NORTH);
-        add(randomLettersPanel, BorderLayout.EAST);
+        initTopPanel();
+        add(topPanel, BorderLayout.NORTH);
+
+        initPlayerListPanel();
         add(playerListPanel, BorderLayout.WEST);
-        add(inputPanelAndEnteredWordsPanel, BorderLayout.CENTER);
+
+        initMiddlePanel();
+        add(middlePanel, BorderLayout.CENTER);
+
+        initRightPanel();
+        add(rightPanel, BorderLayout.EAST);
+    }
+
+    private void initTopPanel(){
+        topPanel.setLayout(new GridLayout(2,1));
+        topPanel.add(header);
+        header.setBackground(Color.BLUE);
+
+        initRoundTimePanel();
+        roundTimePanel.setBackground(Color.CYAN);
+        topPanel.add(roundTimePanel);
     }
 
     private void initPlayerListPanel() {
         playerListPanel.setLayout(new GridBagLayout());
         playerListPanel.setBackground(Color.white);
-        playerListPanel.setSize(new Dimension(100, 50));
+        playerListPanel.setPreferredSize(new Dimension(300, 50));
         updatePlayerList();
     }
 
     private void initRightPanel(){
         rightPanel.setLayout(new BorderLayout());
         rightPanel.setBackground(Color.white);
-        rightPanel.setSize(new Dimension(100, 80));
-
-        initRoundTimePanel();
-        rightPanel.add(roundTimePanel);
-
+        rightPanel.setPreferredSize(new Dimension(250, 80));
         initRandomLettersPanel();
         rightPanel.add(randomLettersPanel);
 
     }
 
     private void initRoundTimePanel(){
-        FlowLayout layout = new FlowLayout();
+        FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         roundTimePanel.setLayout(layout);
         roundTimePanel.setSize(300, 20);
 
@@ -110,11 +123,22 @@ public class GameStartedLobby extends JPanel {
         return letters.toArray(new String[0]);
     }
 
-    private void initInputPanelAndEnteredWordsPanel() {
+    private void initMiddlePanel() {
+        middlePanel.setLayout(new GridLayout(2,1));
+        middlePanel.setPreferredSize(new Dimension(650, 100));
+        middlePanel.setBackground(Color.white);
 
-        inputPanelAndEnteredWordsPanel.setLayout(new GridBagLayout());
-        inputPanelAndEnteredWordsPanel.setSize(new Dimension(100, 80));
-        inputPanelAndEnteredWordsPanel.setBackground(Color.white);
+        initInputPanel();
+
+        wordEnteredPanel.setLayout(new BoxLayout(wordEnteredPanel, BoxLayout.Y_AXIS));
+        wordEnteredPanel.setBackground(Color.lightGray);
+
+        middlePanel.add(inputPanel);
+        middlePanel.add(wordEnteredPanel);
+    }
+
+    private void initInputPanel(){
+        inputPanel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -122,23 +146,17 @@ public class GameStartedLobby extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.insets = new Insets(5, 5, 10, 5);
 
-        JLabel inputLabel = new JLabel("Your Score: ");
-        inputLabel.setPreferredSize(new Dimension(350, 50));
-        inputPanelAndEnteredWordsPanel.add(inputLabel, constraints);
+        JLabel inputLabel = new JLabel("Your Score:             ");
+        inputLabel.setFont(FontFactory.newPoppinsBold(25));
+        inputLabel.setPreferredSize(new Dimension(300, 50));
+        inputPanel.add(inputLabel, constraints);
 
         constraints.gridy++;
 
         JTextField inputField = new JTextField();
         inputField.setPreferredSize(new Dimension(350, 50));
         inputField.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        inputPanelAndEnteredWordsPanel.add(inputField, constraints);
-
-        constraints.gridy++;
-
-        wordEnteredPanel.setLayout(new BoxLayout(wordEnteredPanel, BoxLayout.Y_AXIS));
-        wordEnteredPanel.setBackground(Color.lightGray);
-
-        inputPanelAndEnteredWordsPanel.add(wordEnteredPanel, constraints);
+        inputPanel.add(inputField, constraints);
     }
 
     public void addNewWordBlock(String word, int score) {
