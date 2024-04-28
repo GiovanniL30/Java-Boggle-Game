@@ -60,10 +60,9 @@ public class GameStartedLobby extends JPanel {
     private void initTopPanel(){
         topPanel.setLayout(new GridLayout(2,1));
         topPanel.add(header);
-        header.setBackground(Color.BLUE);
 
         initRoundTimePanel();
-        roundTimePanel.setBackground(Color.CYAN);
+        roundTimePanel.setBackground(Color.white);
         topPanel.add(roundTimePanel);
     }
 
@@ -94,7 +93,7 @@ public class GameStartedLobby extends JPanel {
     private void initRandomLettersPanel(){
         GridLayout grid = new GridLayout(0, 4);
         randomLettersPanel.setLayout(grid);
-        randomLettersPanel.setBackground(Color.black);
+        randomLettersPanel.setBackground(Color.white);
        randomLettersPanel.setSize(new Dimension(300, 200));
 
         String[] letters = generateRandomLetters();
