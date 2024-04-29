@@ -21,8 +21,6 @@ public class GameStartedLobby extends JPanel {
     private JPanel wordEnteredPanel = new JPanel();
     private JPanel playerListPanel = new JPanel();
     private JPanel randomLettersPanel = new JPanel();
-    private JPanel rightPanel = new JPanel();
-
     private JPanel header = new JPanel();
     private JPanel topPanel = new JPanel();
 
@@ -53,8 +51,8 @@ public class GameStartedLobby extends JPanel {
         initMiddlePanel();
         add(middlePanel, BorderLayout.CENTER);
 
-        initRightPanel();
-        add(rightPanel, BorderLayout.EAST);
+        initRandomLettersPanel();
+        add(randomLettersPanel, BorderLayout.EAST);
     }
 
     private void initTopPanel(){
@@ -73,19 +71,13 @@ public class GameStartedLobby extends JPanel {
         updatePlayerList();
     }
 
-    private void initRightPanel(){
-        rightPanel.setLayout(new BorderLayout());
-        rightPanel.setBackground(Color.white);
-        rightPanel.setPreferredSize(new Dimension(250, 80));
-        initRandomLettersPanel();
-        rightPanel.add(randomLettersPanel);
-
-    }
-
     private void initRoundTimePanel(){
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         roundTimePanel.setLayout(layout);
         roundTimePanel.setSize(300, 20);
+
+        round.setFont(FontFactory.newPoppinsBold(17));
+        gameTime.setFont(FontFactory.newPoppinsBold(17));
 
         roundTimePanel.add(round);
         roundTimePanel.add(gameTime);
@@ -93,8 +85,16 @@ public class GameStartedLobby extends JPanel {
     private void initRandomLettersPanel(){
         GridLayout grid = new GridLayout(0, 4);
         randomLettersPanel.setLayout(grid);
-        randomLettersPanel.setBackground(Color.white);
-        randomLettersPanel.setSize(new Dimension(300, 200));
+        randomLettersPanel.setBackground(Color.black);
+        randomLettersPanel.setPreferredSize(new Dimension(250, 100));
+
+        String [] letters = generateRandomLetters();
+        for (String string : letters){
+            LetterBlock letter = new LetterBlock(string);
+
+            letter.setSize(5, 5);
+            randomLettersPanel.add(letter);
+        }
     }
 
     private String[] generateRandomLetters() {
@@ -131,6 +131,7 @@ public class GameStartedLobby extends JPanel {
 
     private void initInputPanel(){
         inputPanel.setLayout(new GridBagLayout());
+        inputPanel.setBackground(Color.white);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
