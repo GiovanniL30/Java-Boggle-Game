@@ -6,41 +6,53 @@ import Client_Java.utilities.FontFactory;
 import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.LetterBlock;
 import Client_Java.view.components.PlayerNameBlock;
+import Client_Java.view.components.WordBlock;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.LinkedList;
 import java.util.Optional;
-import java.util.Random;
 
 public class GameStartedLobby extends JPanel {
 
-    private JLabel gameTime = new JLabel("Time remaining: ");
-    private JLabel round = new JLabel("Round: ");
-    private FieldInput fieldInput = new FieldInput("", new Dimension(200, 50), 20, 4, false);
-    private JPanel wordEnteredPanel = new JPanel();
-    private JPanel playerListPanel = new JPanel();
-    private JPanel randomLettersPanel = new JPanel();
-    private JPanel header = new JPanel();
-    private JPanel topPanel = new JPanel();
+    private final JLabel gameTime = new JLabel("Time remaining: ");
+    private final JLabel round = new JLabel("Round: ");
+    private final JLabel scoreLabel = new JLabel("Your score: ");
+    private final FieldInput fieldInput = new FieldInput("", new Dimension(400, 70), 20, 4, false);
+    private final JPanel wordEnteredPanel = new JPanel();
+    private final JPanel playerListPanel = new JPanel();
+    private final JPanel randomLettersPanel = new JPanel();
 
-    private JPanel inputPanel = new JPanel();
+    private final JPanel topPanel = new JPanel();
 
-    private JPanel middlePanel = new JPanel();
-    private JPanel roundTimePanel = new JPanel();
+    private final JPanel inputPanel = new JPanel();
+
+    private final JPanel middlePanel = new JPanel();
+    private final JPanel roundTimePanel = new JPanel();
 
 
-    private ClientController clientController;
-    private String gameLobby;
+    private final ClientController clientController;
+    private final String gameLobby;
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();
+    private LinkedList<LetterBlock> unUsedLetterBlocks = new LinkedList<>();
+    private LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
+    private int currentScore = 0;
+
+    private String[] randomLetters;
 
 
-    public GameStartedLobby(ClientController clientController, String gameLobby) {
+
+
+    public GameStartedLobby(ClientController clientController, String gameLobby, String[] randomLetters) {
         this.clientController = clientController;
         this.gameLobby = gameLobby;
+        this.randomLetters = randomLetters;
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(20, 20));
         setBackground(Color.white);
+
 
         initTopPanel();
         add(topPanel, BorderLayout.NORTH);
@@ -51,30 +63,94 @@ public class GameStartedLobby extends JPanel {
         initMiddlePanel();
         add(middlePanel, BorderLayout.CENTER);
 
+
         initRandomLettersPanel();
         add(randomLettersPanel, BorderLayout.EAST);
+
+        fieldInput.getTextField().addActionListener(e -> {
+            clientController.submitWord(fieldInput.getTextField().getText());
+        });
+        fieldInput.getTextField().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+//                if(e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
+//                    return;
+//                }
+//
+//                if(e.getKeyCode() == 8) {
+//
+//                    String input = fieldInput.getTextField().getText();
+//
+//                    if(input.isEmpty()) return;
+//
+//                    Optional<LetterBlock> f  = usedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(input.length() == 1 ? input : input.substring(input.length() - 1))).findFirst();
+//
+//                    if(f.isPresent()) {
+//                        fieldInput.removeError();
+//                        f.get().setUnUsed();
+//                        usedLetterBlocks.remove(f.get());
+//                        unUsedLetterBlocks.add(f.get());
+//                    }
+//
+//                }
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+//                if(isLetterFound((e.getKeyChar() + "").toUpperCase())) {
+//                    Optional<LetterBlock> f  = unUsedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(e.getKeyChar()+"")).findFirst();
+//
+//                    if(f.isPresent()) {
+//                        f.get().setUsed();
+//                        usedLetterBlocks.add(f.get());
+//                        unUsedLetterBlocks.remove(f.get());
+//                    }
+//
+//                }else {
+//                        String input = fieldInput.getTextField().getText();
+//                        if(input.isEmpty()) return;
+//                        fieldInput.getTextField().setText(input.substring(0, input.length() - 1));
+//                        fieldInput.enableError("Letter \""+ input.substring(input.length() - 1) + "\" is not available");
+//                }
+
+            }
+        });
+
+
     }
 
-    private void initTopPanel(){
-        topPanel.setLayout(new GridLayout(2,1));
-        topPanel.add(header);
+    private void initTopPanel() {
+        scoreLabel.setFont(FontFactory.newPoppinsBold(20));
+        topPanel.setLayout(new BorderLayout());
+        topPanel.setBackground(Color.white);
 
         initRoundTimePanel();
         roundTimePanel.setBackground(Color.white);
-        topPanel.add(roundTimePanel);
+        topPanel.add(roundTimePanel, BorderLayout.EAST);
+        topPanel.add(scoreLabel, BorderLayout.WEST);
+
     }
 
     private void initPlayerListPanel() {
         playerListPanel.setLayout(new GridBagLayout());
         playerListPanel.setBackground(Color.white);
-        playerListPanel.setPreferredSize(new Dimension(300, 50));
+        playerListPanel.setPreferredSize(new Dimension(200, 50));
         updatePlayerList();
     }
 
-    private void initRoundTimePanel(){
+    private void initRoundTimePanel() {
         FlowLayout layout = new FlowLayout(FlowLayout.RIGHT);
         roundTimePanel.setLayout(layout);
         roundTimePanel.setSize(300, 20);
+        roundTimePanel.setBackground(Color.white);
 
         round.setFont(FontFactory.newPoppinsBold(17));
         gameTime.setFont(FontFactory.newPoppinsBold(17));
@@ -82,93 +158,72 @@ public class GameStartedLobby extends JPanel {
         roundTimePanel.add(round);
         roundTimePanel.add(gameTime);
     }
-    private void initRandomLettersPanel(){
+
+    private void initRandomLettersPanel() {
+
+        randomLettersPanel.removeAll();
+        unUsedLetterBlocks = new LinkedList<>();
         GridLayout grid = new GridLayout(0, 4);
         randomLettersPanel.setLayout(grid);
         randomLettersPanel.setBackground(Color.black);
-        randomLettersPanel.setPreferredSize(new Dimension(250, 100));
+        randomLettersPanel.setPreferredSize(new Dimension(400, 100));
+        randomLettersPanel.setBackground(Color.white);
 
-        String [] letters = generateRandomLetters();
-        for (String string : letters){
+        for (String string : randomLetters) {
             LetterBlock letter = new LetterBlock(string);
-
-            letter.setSize(5, 5);
+            unUsedLetterBlocks.add(letter);
             randomLettersPanel.add(letter);
         }
+        randomLettersPanel.revalidate();
+        randomLettersPanel.repaint();
     }
 
-    private String[] generateRandomLetters() {
-        Random random = new Random();
-
-        String[] vowels = {"a", "e", "i", "o", "u"};
-        String[] consonants = {"b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "q", "r", "s", "t", "v", "w", "x", "y", "z"};
-
-        LinkedList<String> letters = new LinkedList<>();
-        for (int i = 0; i < 20; i++) {
-            if (i < 7) {
-                letters.add(vowels[random.nextInt(vowels.length)]);
-            } else {
-                letters.add(consonants[random.nextInt(consonants.length)]);
-            }
-        }
-
-        return letters.toArray(new String[0]);
-    }
 
     private void initMiddlePanel() {
-        middlePanel.setLayout(new GridLayout(2,1));
-        middlePanel.setPreferredSize(new Dimension(650, 100));
+        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+        middlePanel.setPreferredSize(new Dimension(600, 100));
         middlePanel.setBackground(Color.white);
 
-        initInputPanel();
+        fieldInput.setFont(FontFactory.newPoppinsBold(20));
+        middlePanel.add(fieldInput);
 
         wordEnteredPanel.setLayout(new BoxLayout(wordEnteredPanel, BoxLayout.Y_AXIS));
-        wordEnteredPanel.setBackground(Color.lightGray);
 
-        middlePanel.add(inputPanel);
-        middlePanel.add(wordEnteredPanel);
+        JScrollPane scrollPane = new JScrollPane(wordEnteredPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(600, 700));
+        middlePanel.add(scrollPane);
+
+
     }
 
-    private void initInputPanel(){
-        inputPanel.setLayout(new GridBagLayout());
-        inputPanel.setBackground(Color.white);
-
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(5, 5, 10, 5);
-
-        JLabel inputLabel = new JLabel("Your Score:             ");
-        inputLabel.setFont(FontFactory.newPoppinsBold(25));
-        inputLabel.setPreferredSize(new Dimension(300, 50));
-        inputPanel.add(inputLabel, constraints);
-
-        constraints.gridy++;
-
-        JTextField inputField = new JTextField();
-        inputField.setPreferredSize(new Dimension(350, 50));
-        inputField.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-        inputPanel.add(inputField, constraints);
-    }
 
     public void addNewWordBlock(String word, int score) {
+
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+                wordEnteredPanel.add(new WordBlock(word, score), 0);
+                return null;
+            }
+        }.execute();
+
     }
 
     public void updatePlayerList() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.weightx = 2.0;
         gridBagConstraints.fill = 2;
-        gridBagConstraints.insets = new Insets(10, 10, 10 ,10);
+        gridBagConstraints.insets = new Insets(10, 10, 10, 10);
         new SwingWorker<Object, Object>() {
             @Override
             protected Object doInBackground() {
                 playerListPanel.removeAll();
                 playerNameBlocks = new LinkedList<>();
                 User[] players = clientController.lobbyPlayer(gameLobby);
-                for(User player: players) {
+                for (User player : players) {
                     gridBagConstraints.gridy++;
-                    PlayerNameBlock playerNameBlock =  new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14);
+                    PlayerNameBlock playerNameBlock = new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14);
                     playerNameBlocks.add(playerNameBlock);
                     playerListPanel.add(playerNameBlock, gridBagConstraints);
                     playerListPanel.revalidate();
@@ -180,15 +235,23 @@ public class GameStartedLobby extends JPanel {
     }
 
     public void updatePlayerScores(String id, int score) {
-       Optional<PlayerNameBlock> player =  playerNameBlocks.stream().filter(playerNameBlock -> playerNameBlock.getPlayerId().equals(id)).findFirst();
-       player.ifPresent(playerNameBlock -> playerNameBlock.updateScore(score));
+        Optional<PlayerNameBlock> player = playerNameBlocks.stream().filter(playerNameBlock -> playerNameBlock.getPlayerId().equals(id)).findFirst();
+        if(id.equals(clientController.getLoggedInUser().userID)) {
+            scoreLabel.setText("Your score: " + score);
+        }
+        player.ifPresent(playerNameBlock -> playerNameBlock.updateScore(score));
     }
 
-    public void getRandomLetters(String [] letters){
-        for (String letter : letters){
-            LetterBlock letterBlock = new LetterBlock(letter);
-            randomLettersPanel.add(letterBlock);
-        }
+    public void setRandomLettersPanel(String[] letters) {
+        this.randomLetters = letters;
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+                initRandomLettersPanel();
+                return null;
+            }
+        }.execute();
+
     }
 
     public FieldInput getFieldInput() {
@@ -196,7 +259,7 @@ public class GameStartedLobby extends JPanel {
     }
 
     public void setTime(int time) {
-        gameTime.setText("Time Remaining: (" + time+"s)");
+        gameTime.setText("Time Remaining: (" + time + "s)");
         gameTime.revalidate();
         gameTime.repaint();
     }
@@ -206,5 +269,15 @@ public class GameStartedLobby extends JPanel {
         round.revalidate();
         round.repaint();
     }
+
+    private boolean isLetterFound(String letter) {
+        for (LetterBlock s : unUsedLetterBlocks) {
+            if (s.getLetter().equalsIgnoreCase(letter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
