@@ -79,6 +79,7 @@ public class ClientController extends ControllerPOA {
     @Override
     public void receiveLetter(String[] letters) {
         System.out.println(Arrays.toString(letters));
+        mainFrame.getGameStartedLobby().getRandomLetters(letters);
     }
 
     @Override

@@ -94,14 +94,7 @@ public class GameStartedLobby extends JPanel {
         GridLayout grid = new GridLayout(0, 4);
         randomLettersPanel.setLayout(grid);
         randomLettersPanel.setBackground(Color.white);
-       randomLettersPanel.setSize(new Dimension(300, 200));
-
-        String[] letters = generateRandomLetters();
-        for (String letter : letters){
-            LetterBlock block = new LetterBlock(letter);
-            randomLettersPanel.add(block);
-        }
-
+        randomLettersPanel.setSize(new Dimension(300, 200));
     }
 
     private String[] generateRandomLetters() {
@@ -188,6 +181,13 @@ public class GameStartedLobby extends JPanel {
     public void updatePlayerScores(String id, int score) {
        Optional<PlayerNameBlock> player =  playerNameBlocks.stream().filter(playerNameBlock -> playerNameBlock.getPlayerId().equals(id)).findFirst();
        player.ifPresent(playerNameBlock -> playerNameBlock.updateScore(score));
+    }
+
+    public void getRandomLetters(String [] letters){
+        for (String letter : letters){
+            LetterBlock letterBlock = new LetterBlock(letter);
+            randomLettersPanel.add(letterBlock);
+        }
     }
 
     public FieldInput getFieldInput() {
