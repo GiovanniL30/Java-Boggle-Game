@@ -10,14 +10,14 @@ public class LetterBlock extends JPanel {
     private String letter;
     private JLabel label;
 
-    public LetterBlock(String letter){
+    public LetterBlock(String letter) {
         this.letter = letter;
-        setLayout(new FlowLayout(FlowLayout.CENTER));
-        setSize(new Dimension(20,20));
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         label = new JLabel(letter);
         label.setFont(FontFactory.newPoppinsBold(20));
-        label.setBorder(new EmptyBorder(110, 10, 10, 10));
+        label.setBorder(new EmptyBorder(10, 25, 10, 10));
         add(label);
     }
 }
