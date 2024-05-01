@@ -22,6 +22,7 @@ public class ClientController extends ControllerPOA {
     private User loggedInUser;
     private String gameLobby = "";
     private boolean gameStarted = false;
+    private String[] randomLetters = null;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -78,7 +79,12 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveLetter(String[] letters) {
-        System.out.println(Arrays.toString(letters));
+          randomLetters = letters;
+
+
+        if(mainFrame.getGameStartedLobby() != null) {
+            mainFrame.getGameStartedLobby().setRandomLettersPanel(letters);
+        }
     }
 
     @Override
@@ -87,12 +93,23 @@ public class ClientController extends ControllerPOA {
     }
 
     public void submitWord(String word) {
+
+        if(mainFrame.getGameStartedLobby() == null) {
+            System.out.println("null");
+            return;
+        }
         Response response = applicationServer.submitWord(word, loggedInUser.userID, gameLobby);
 
         if(response.isSuccess) {
             mainFrame.getGameStartedLobby().addNewWordBlock(word, response.payload.extract_long());
+            mainFrame.getGameStartedLobby().getFieldInput().removeError();
         }else {
-            mainFrame.getGameStartedLobby().getFieldInput().enableError("Word is not a valid word");
+            if(response.payload.extract_long() == 0) {
+                mainFrame.getGameStartedLobby().getFieldInput().enableError("Word is not a valid word");
+            }else {
+                mainFrame.getGameStartedLobby().getFieldInput().enableError("You have already entered this word");
+            }
+
         }
 
         mainFrame.getGameStartedLobby().getFieldInput().clearText();
@@ -224,7 +241,7 @@ public class ClientController extends ControllerPOA {
                     }
                     case GAME_LOBBY: {
                         mainFrame.getContentPane().remove(1);
-                        mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby));
+                        mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby, randomLetters));
                         mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
                         break;
                     }

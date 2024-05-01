@@ -15,6 +15,7 @@ public class WordBlock extends JPanel {
         this.name = name;
         this.score = score;
         setLayout(new FlowLayout(FlowLayout.CENTER));
+        setBackground(Color.white);
 
         label = new JLabel(name + " (" + score + ")");
         label.setFont(FontFactory.newPoppinsBold(20));

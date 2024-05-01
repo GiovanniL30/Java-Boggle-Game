@@ -24,6 +24,7 @@ public class GameLobby  {
 
     private HashMap<String, Controller> players = new HashMap<>(); // player id -> controller
     private HashMap<String, Integer> playerScores = new HashMap<>(); //player id -> word, score
+    private HashMap<String, LinkedList<String>> playerEnteredWords = new HashMap<>(); //player id -> word list entered valid
     private Timer waitingTimer;
     private Timer gameTimer;
     private int secondsLeft;
@@ -38,23 +39,23 @@ public class GameLobby  {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 10;
+        secondsLeft = 2;
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
                 waitingTimer.stop();
 
-                if(players.size() == 1) {
-                    Database.deleteLobby(lobbyId);
-                    for(Controller controller : players.values()){
-                        controller.receiveUpdates(ClientActions.NO_PLAYER_LOBBY);
-                    }
+//                if(players.size() == 1) {
+//                    Database.deleteLobby(lobbyId);
+//                    for(Controller controller : players.values()){
+//                        controller.receiveUpdates(ClientActions.NO_PLAYER_LOBBY);
+//                    }
+//
+//                    players = null;
+//                    playerScores = null ;
+//                    waitingTimer = null;
 
-                    players = null;
-                    playerScores = null ;
-                    waitingTimer = null;
-
-                }else {
+               // }else {
 
                     gameStarted = true;
                     startRound();
@@ -63,7 +64,7 @@ public class GameLobby  {
                         controller.receiveLetter(letters);
                         controller.receiveUpdates(ClientActions.START_GAME);
                     }
-                }
+               // }
 
             } else {
                 secondsLeft--;
@@ -79,6 +80,7 @@ public class GameLobby  {
         if(gameStarted) return;
         players.put(userId, clientController);
         playerScores.put(userId, 0);
+        playerEnteredWords.put(userId, new LinkedList<>());
     }
 
     public void removePlayer(String userId) {
@@ -142,6 +144,11 @@ public class GameLobby  {
             return new App.Response(any, false);
         }
 
+        if(playerEnteredWords.get(userId).stream().anyMatch(s -> s.equalsIgnoreCase(word))) {
+            any.insert_long(1);
+            return new App.Response(any, false);
+        }
+
         int score = computeScore(word);
 
         int newScore = playerScores.get(userId) + score;
@@ -149,6 +156,7 @@ public class GameLobby  {
 
         new Thread(() -> players.forEach( (playerID, playerController) -> playerController.updatePlayerScore(userId, newScore))).start(); //update score view
 
+        playerEnteredWords.get(userId).add(word);
         any.insert_long(score);
         return new App.Response(any, true);
     }
