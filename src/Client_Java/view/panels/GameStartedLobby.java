@@ -37,12 +37,11 @@ public class GameStartedLobby extends JPanel {
     private final String gameLobby;
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();
     private LinkedList<LetterBlock> unUsedLetterBlocks = new LinkedList<>();
-    private LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
-    private int currentScore = 0;
+    private final LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
+    private final int currentScore = 0;
 
     private String[] randomLetters;
-
-
+    private int typeCode = 0;
 
 
     public GameStartedLobby(ClientController clientController, String gameLobby, String[] randomLetters) {
@@ -73,31 +72,34 @@ public class GameStartedLobby extends JPanel {
         fieldInput.getTextField().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if(e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
+
+
+                if (e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
                     return;
                 }
 
-                if(e.getKeyCode() < 65 || e.getKeyCode() > 90) {
-                    if(e.getKeyCode() != 8) e.consume();
+
+                if (typeCode < 65 || typeCode > 90) {
+                    if (typeCode != 8) e.consume();
                 }
 
-                if(e.getKeyCode() == 8) {
+                if (typeCode == 8) {
 
                     String input = fieldInput.getTextField().getText();
 
-                    if(input.isEmpty()) {
+                    if (input.isEmpty()) {
 
-                        usedLetterBlocks.forEach(l ->  {
+                        usedLetterBlocks.forEach(l -> {
                             l.setUnUsed();
                             fieldInput.removeError();
                             unUsedLetterBlocks.add(l);
                         });
 
-                    }else {
+                    } else {
 
-                        Optional<LetterBlock> f  = usedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(input.length() == 1 ? input : input.substring(input.length() - 1))).findFirst();
+                        Optional<LetterBlock> f = usedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(input.length() == 1 ? input : input.substring(input.length() - 1))).findFirst();
 
-                        if(f.isPresent()) {
+                        if (f.isPresent()) {
                             fieldInput.removeError();
                             f.get().setUnUsed();
                             usedLetterBlocks.remove(f.get());
@@ -109,37 +111,34 @@ public class GameStartedLobby extends JPanel {
 
                 }
 
-                if(isLetterFound((e.getKeyChar() + "").toUpperCase())) {
-                    Optional<LetterBlock> f  = unUsedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(e.getKeyChar()+"")).findFirst();
+                if (isLetterFound((e.getKeyChar() + "").toUpperCase())) {
+                    Optional<LetterBlock> f = unUsedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(e.getKeyChar() + "")).findFirst();
 
-                    if(f.isPresent()) {
+                    if (f.isPresent()) {
                         f.get().setUsed();
                         usedLetterBlocks.add(f.get());
                         unUsedLetterBlocks.remove(f.get());
                     }
 
-                }else {
+                } else {
 
-                    if(e.getKeyCode() != 8) {
+                    if (typeCode != 8) {
                         e.consume();
                         fieldInput.enableError("Letter \"" + (e.getKeyChar() + "").toUpperCase() + "\" is not available");
-
                     }
+
                 }
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-
-
-
-
+                typeCode = e.getKeyCode();
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
 
-
+                typeCode = e.getKeyCode();
 
             }
         });
@@ -256,7 +255,7 @@ public class GameStartedLobby extends JPanel {
 
     public void updatePlayerScores(String id, int score) {
         Optional<PlayerNameBlock> player = playerNameBlocks.stream().filter(playerNameBlock -> playerNameBlock.getPlayerId().equals(id)).findFirst();
-        if(id.equals(clientController.getLoggedInUser().userID)) {
+        if (id.equals(clientController.getLoggedInUser().userID)) {
             scoreLabel.setText("Your score: " + score);
         }
         player.ifPresent(playerNameBlock -> playerNameBlock.updateScore(score));
