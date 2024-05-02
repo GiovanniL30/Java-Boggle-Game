@@ -68,6 +68,12 @@ public class GameStartedLobby extends JPanel {
 
         fieldInput.getTextField().addActionListener(e -> {
             clientController.submitWord(fieldInput.getTextField().getText());
+
+            usedLetterBlocks.forEach(f -> {
+                f.setUnUsed();
+                unUsedLetterBlocks.add(f);
+                fieldInput.removeError();
+            });
         });
         fieldInput.getTextField().addKeyListener(new KeyListener() {
             @Override
