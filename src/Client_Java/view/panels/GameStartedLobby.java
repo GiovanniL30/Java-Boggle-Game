@@ -73,53 +73,73 @@ public class GameStartedLobby extends JPanel {
         fieldInput.getTextField().addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
+                if(e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
+                    return;
+                }
 
+                if(e.getExtendedKeyCode() < 65 || e.getExtendedKeyCode() > 90) {
+                    if(e.getExtendedKeyCode() != 8) e.consume();
+                }
+
+                if(e.getExtendedKeyCode() == 8) {
+
+                    String input = fieldInput.getTextField().getText();
+
+                    if(input.isEmpty()) {
+
+                        usedLetterBlocks.forEach(l ->  {
+                            l.setUnUsed();
+                            fieldInput.removeError();
+                            unUsedLetterBlocks.add(l);
+                        });
+
+                    }else {
+
+                        Optional<LetterBlock> f  = usedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(input.length() == 1 ? input : input.substring(input.length() - 1))).findFirst();
+
+                        if(f.isPresent()) {
+                            fieldInput.removeError();
+                            f.get().setUnUsed();
+                            usedLetterBlocks.remove(f.get());
+                            unUsedLetterBlocks.add(f.get());
+                        }
+
+                    }
+
+
+                }
+
+                if(isLetterFound((e.getKeyChar() + "").toUpperCase())) {
+                    Optional<LetterBlock> f  = unUsedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(e.getKeyChar()+"")).findFirst();
+
+                    if(f.isPresent()) {
+                        f.get().setUsed();
+                        usedLetterBlocks.add(f.get());
+                        unUsedLetterBlocks.remove(f.get());
+                    }
+
+                }else {
+
+                    if(e.getExtendedKeyCode() != 8) {
+                        e.consume();
+                        fieldInput.enableError("Letter \"" + (e.getKeyChar() + "").toUpperCase() + "\" is not available");
+
+                    }
+                }
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
 
-//                if(e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
-//                    return;
-//                }
-//
-//                if(e.getKeyCode() == 8) {
-//
-//                    String input = fieldInput.getTextField().getText();
-//
-//                    if(input.isEmpty()) return;
-//
-//                    Optional<LetterBlock> f  = usedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(input.length() == 1 ? input : input.substring(input.length() - 1))).findFirst();
-//
-//                    if(f.isPresent()) {
-//                        fieldInput.removeError();
-//                        f.get().setUnUsed();
-//                        usedLetterBlocks.remove(f.get());
-//                        unUsedLetterBlocks.add(f.get());
-//                    }
-//
-//                }
+
+
 
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
 
-//                if(isLetterFound((e.getKeyChar() + "").toUpperCase())) {
-//                    Optional<LetterBlock> f  = unUsedLetterBlocks.stream().filter(s -> s.getLetter().equalsIgnoreCase(e.getKeyChar()+"")).findFirst();
-//
-//                    if(f.isPresent()) {
-//                        f.get().setUsed();
-//                        usedLetterBlocks.add(f.get());
-//                        unUsedLetterBlocks.remove(f.get());
-//                    }
-//
-//                }else {
-//                        String input = fieldInput.getTextField().getText();
-//                        if(input.isEmpty()) return;
-//                        fieldInput.getTextField().setText(input.substring(0, input.length() - 1));
-//                        fieldInput.enableError("Letter \""+ input.substring(input.length() - 1) + "\" is not available");
-//                }
+
 
             }
         });
