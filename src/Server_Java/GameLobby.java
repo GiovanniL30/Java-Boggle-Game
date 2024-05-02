@@ -14,10 +14,7 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import javax.swing.Timer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 public class GameLobby  {
@@ -100,8 +97,9 @@ public class GameLobby  {
 
                     gameEnded = true;
                     String topPlayer = getTopPlayer();
+
                     for (Controller controller : players.values()) {
-                        controller.endGameUpdate(topPlayer, playerScores.get(topPlayer));
+                        controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer));
                     }
 
                     new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();

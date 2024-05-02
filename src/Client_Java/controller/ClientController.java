@@ -81,16 +81,35 @@ public class ClientController extends ControllerPOA {
     public void receiveLetter(String[] letters) {
           randomLetters = letters;
 
-
         if(mainFrame.getGameStartedLobby() != null) {
             mainFrame.getGameStartedLobby().setRandomLettersPanel(letters);
         }
     }
 
     @Override
-    public void endGameUpdate(String winner, int score) {
-        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Winner ID:  " + winner + " Score: " + score)).start();
+    public void endGameUpdate(User winner, int score) {
+
+        randomLetters = null;
+        gameLobby = "";
+        gameStarted = false;
+
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+                mainFrame.getContentPane().remove(1);
+                mainFrame.getContentPane().add(new GameSummary(winner, score, ClientController.this));
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                mainFrame.getContentPane().revalidate();
+                mainFrame.getContentPane().repaint();
+            }
+        }.execute();
+
     }
+
 
     public void submitWord(String word) {
 
@@ -211,7 +230,6 @@ public class ClientController extends ControllerPOA {
             changeFrame(ClientViews.HOME_PAGE);
         }
 
-        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
     }
 
 
@@ -237,6 +255,7 @@ public class ClientController extends ControllerPOA {
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
+                        mainFrame.getHeader().setUserName(loggedInUser.userName);
                         break;
                     }
                     case GAME_LOBBY: {

@@ -20,12 +20,14 @@ public class MainFrame extends JFrame {
     private Signup signup;
     private WaitingLobby waitingLobby;
     private GameStartedLobby gameStartedLobby;
+    private Header header;
 
 
     public MainFrame(ClientController clientController) {
         init();
         login = new Login(clientController);
-        getContentPane().add(new Header(), BorderLayout.NORTH);
+        header = new Header();
+        getContentPane().add(header, BorderLayout.NORTH);
         getContentPane().add(login, BorderLayout.CENTER);
     }
 
@@ -88,6 +90,10 @@ public class MainFrame extends JFrame {
 
     public void setWaitingLobby(WaitingLobby waitingLobby) {
         this.waitingLobby = waitingLobby;
+    }
+
+    public Header getHeader() {
+        return header;
     }
 
     public GameStartedLobby getGameStartedLobby() {

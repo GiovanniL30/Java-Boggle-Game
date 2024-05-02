@@ -72,7 +72,7 @@ public class Database {
         String query = "INSERT INTO lobby (lobbyID, lobbyStatus, dateTimeCreated, topPlayerID) VALUES (?, ?, ?, ?)";
 
         try {
-            String lobbyID = UtilityMethods.generateRandomID();
+            String lobbyID = UtilityMethods.generateRandomID().substring(0, 5);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyID);
             preparedStatement.setString(2, "Waiting");
@@ -104,7 +104,7 @@ public class Database {
             preparedStatement.setString(2, playerId);
             return preparedStatement.executeUpdate() >  0;
         } catch (SQLException e) {
-            System.err.println(e.getMessage() + "Line 86");
+            System.err.println(e.getMessage());
         }
 
         return false;
@@ -315,9 +315,31 @@ public class Database {
             System.err.println(e.getMessage());
         }
     }
+    public static User getUser(String id) {
+
+        openConnection();
+
+        String query = "SELECT * FROM users WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                return  getUser(resultSet);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return new User();
+    }
 
     private static User getUser(ResultSet resultSet) throws SQLException {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6) == 1, resultSet.getString(7));
     }
+
 
 }

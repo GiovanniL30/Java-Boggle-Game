@@ -43,7 +43,7 @@ module App {
         void setRound(in long round);
         void updatePlayerScore(in string id, in long newScore);
         void receiveLetter(in Letters letters);
-        void endGameUpdate(in string winner, in long score);
+        void endGameUpdate(in User winner, in long score);
    };
 
     typedef sequence<Lobby> LobbyList;

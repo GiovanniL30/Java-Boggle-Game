@@ -3,12 +3,10 @@ package Client_Java.view.panels;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.FontFactory;
-import Client_Java.view.components.FieldInput;
-import Client_Java.view.components.LetterBlock;
-import Client_Java.view.components.PlayerNameBlock;
-import Client_Java.view.components.WordBlock;
+import Client_Java.view.components.*;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -27,7 +25,6 @@ public class GameStartedLobby extends JPanel {
 
     private final JPanel topPanel = new JPanel();
 
-    private final JPanel inputPanel = new JPanel();
 
     private final JPanel middlePanel = new JPanel();
     private final JPanel roundTimePanel = new JPanel();
@@ -37,8 +34,7 @@ public class GameStartedLobby extends JPanel {
     private final String gameLobby;
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();
     private LinkedList<LetterBlock> unUsedLetterBlocks = new LinkedList<>();
-    private final LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
-    private final int currentScore = 0;
+    private LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
 
     private String[] randomLetters;
     private int typeCode = 0;
@@ -49,9 +45,9 @@ public class GameStartedLobby extends JPanel {
         this.gameLobby = gameLobby;
         this.randomLetters = randomLetters;
 
+
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.white);
-
 
         initTopPanel();
         add(topPanel, BorderLayout.NORTH);
@@ -71,7 +67,7 @@ public class GameStartedLobby extends JPanel {
 
             usedLetterBlocks.forEach(f -> {
                 f.setUnUsed();
-                unUsedLetterBlocks.add(f);
+                unUsedLetterBlocks.addLast(f);
                 fieldInput.removeError();
             });
         });
@@ -99,7 +95,7 @@ public class GameStartedLobby extends JPanel {
                         usedLetterBlocks.forEach(l -> {
                             l.setUnUsed();
                             fieldInput.removeError();
-                            unUsedLetterBlocks.add(l);
+                            unUsedLetterBlocks.addLast(l);
                         });
 
                     } else {
@@ -110,7 +106,7 @@ public class GameStartedLobby extends JPanel {
                             fieldInput.removeError();
                             f.get().setUnUsed();
                             usedLetterBlocks.remove(f.get());
-                            unUsedLetterBlocks.add(f.get());
+                            unUsedLetterBlocks.addLast(f.get());
                         }
 
                     }
@@ -123,7 +119,7 @@ public class GameStartedLobby extends JPanel {
 
                     if (f.isPresent()) {
                         f.get().setUsed();
-                        usedLetterBlocks.add(f.get());
+                        usedLetterBlocks.addLast(f.get());
                         unUsedLetterBlocks.remove(f.get());
                     }
 
@@ -189,6 +185,7 @@ public class GameStartedLobby extends JPanel {
 
         randomLettersPanel.removeAll();
         unUsedLetterBlocks = new LinkedList<>();
+        usedLetterBlocks = new LinkedList<>();
         GridLayout grid = new GridLayout(0, 4);
         randomLettersPanel.setLayout(grid);
         randomLettersPanel.setBackground(Color.black);
@@ -219,8 +216,6 @@ public class GameStartedLobby extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setPreferredSize(new Dimension(600, 700));
         middlePanel.add(scrollPane);
-
-
     }
 
 
@@ -274,6 +269,7 @@ public class GameStartedLobby extends JPanel {
             @Override
             protected Object doInBackground() {
                 initRandomLettersPanel();
+                fieldInput.getTextField().setText("");
                 return null;
             }
         }.execute();
@@ -303,6 +299,11 @@ public class GameStartedLobby extends JPanel {
             }
         }
         return false;
+    }
+
+    private void idleTime(){
+
+
     }
 
 }
