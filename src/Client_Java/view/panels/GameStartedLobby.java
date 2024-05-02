@@ -79,6 +79,7 @@ public class GameStartedLobby extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
 
+                if(typeCode == 10) return;
 
                 if (e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
                     return;
