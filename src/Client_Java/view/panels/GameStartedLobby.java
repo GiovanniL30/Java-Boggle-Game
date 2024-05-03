@@ -77,11 +77,11 @@ public class GameStartedLobby extends JPanel {
                     return;
                 }
 
-                if(e.getExtendedKeyCode() < 65 || e.getExtendedKeyCode() > 90) {
-                    if(e.getExtendedKeyCode() != 8) e.consume();
+                if(e.getKeyCode() < 65 || e.getKeyCode() > 90) {
+                    if(e.getKeyCode() != 8) e.consume();
                 }
 
-                if(e.getExtendedKeyCode() == 8) {
+                if(e.getKeyCode() == 8) {
 
                     String input = fieldInput.getTextField().getText();
 
@@ -120,7 +120,7 @@ public class GameStartedLobby extends JPanel {
 
                 }else {
 
-                    if(e.getExtendedKeyCode() != 8) {
+                    if(e.getKeyCode() != 8) {
                         e.consume();
                         fieldInput.enableError("Letter \"" + (e.getKeyChar() + "").toUpperCase() + "\" is not available");
 
