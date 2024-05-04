@@ -121,17 +121,18 @@ public class ClientController extends ControllerPOA {
 
         if(response.isSuccess) {
             mainFrame.getGameStartedLobby().addNewWordBlock(word, response.payload.extract_long());
-            mainFrame.getGameStartedLobby().getFieldInput().removeError();
+            mainFrame.getGameStartedLobby().removeError();
         }else {
+
             if(response.payload.extract_long() == 0) {
-                mainFrame.getGameStartedLobby().getFieldInput().enableError("Word is not a valid word");
+                mainFrame.getGameStartedLobby().setError("Word is not a valid word");
             }else {
-                mainFrame.getGameStartedLobby().getFieldInput().enableError("You have already entered this word");
+                mainFrame.getGameStartedLobby().setError("You have already entered this word");
             }
 
         }
 
-        mainFrame.getGameStartedLobby().getFieldInput().clearText();
+        mainFrame.getGameStartedLobby().clearText();
     }
     public void logIn(String userName, String password) {
 

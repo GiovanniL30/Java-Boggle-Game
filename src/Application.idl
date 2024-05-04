@@ -6,8 +6,6 @@ module App {
         string lastName;
         string userName;
         string password;
-        boolean isLoggedIn;
-        string status;
     };
 
     struct Lobby {

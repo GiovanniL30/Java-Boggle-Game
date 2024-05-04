@@ -84,7 +84,7 @@ public class Signup extends JPanel {
             }
 
 
-            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, false, "Offline");
+            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p);
            clientControllerObserver.createAccount(newUser);
         });
     }

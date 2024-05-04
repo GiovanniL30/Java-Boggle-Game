@@ -36,7 +36,7 @@ public class GameLobby  {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 2;
+        secondsLeft = Database.getWaitingTime();
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
@@ -87,7 +87,7 @@ public class GameLobby  {
 
     public void startRound() {
 
-        secondsLeft = 5;
+        secondsLeft = Database.getGameTime() / 3;
 
         gameTimer = new Timer(1000, e -> {
 
@@ -102,11 +102,11 @@ public class GameLobby  {
                         controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer));
                     }
 
-                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();
+                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
 
                     gameTimer.stop();
                 }else {
-                    secondsLeft = 5;
+                    secondsLeft = Database.getGameTime() / 3;
                     currentRound++;
 
                     String[] letters = generateRandomLetters();

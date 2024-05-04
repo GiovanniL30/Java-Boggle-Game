@@ -276,8 +276,16 @@ public class GameStartedLobby extends JPanel {
 
     }
 
-    public FieldInput getFieldInput() {
-        return fieldInput;
+    public void setError(String error) {
+         fieldInput.enableError(error);
+    }
+
+    public void removeError() {
+        fieldInput.removeError();
+    }
+
+    public void clearText() {
+        fieldInput.clearText();
     }
 
     public void setTime(int time) {
