@@ -1,11 +1,13 @@
 package Server_Java.dataBase;
 
 import App.Lobby;
+import App.PlayerScore;
 import App.User;
 import Client_Java.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Database {
@@ -21,6 +23,22 @@ public class Database {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public static synchronized PlayerScore[] getPlayerScores() {
+        openConnection();
+
+        String query = "";
+
+        //do the actual logic
+        return new PlayerScore[]{};
+
+    }
+
+    public static synchronized void addPlayerScores(HashMap<String, Integer> playerScores) {
+
+
+        //add player scores to the database
     }
 
     public static synchronized User[] lobbyPlayers(String lobbyId) {

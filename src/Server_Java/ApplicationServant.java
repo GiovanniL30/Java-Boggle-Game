@@ -122,5 +122,10 @@ public class ApplicationServant extends ApplicationServerPOA {
         Database.startGame(lobbyId);
     }
 
+    @Override
+    public PlayerScore[] getPlayerScore() {
+        return Database.getPlayerScores();
+    }
+
 
 }

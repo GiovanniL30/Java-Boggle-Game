@@ -21,6 +21,11 @@ module App {
         boolean isSuccess;
     };
 
+    struct PlayerScore {
+        User user;
+        long score;
+    };
+
     enum ClientActions {
         NEW_MESSAGE,
         START_GAME,
@@ -39,6 +44,8 @@ module App {
     exception LobbyException {
         string errorMessage;
     };
+
+
 
 
     typedef sequence<string> Letters;
@@ -60,6 +67,7 @@ module App {
 
     typedef sequence<Lobby> LobbyList;
     typedef sequence<User> Players;
+    typedef sequence<PlayerScore> PlayerScores;
 
 
     interface ApplicationServer {
@@ -73,6 +81,7 @@ module App {
         Players getPlayers(in string lobbyId);
         Response submitWord(in string word, in string playerId, in string lobbyId);
         void startGame(in string lobbyId);
+        PlayerScores getPlayerScore();
     };
 
     interface LobbyServer {
