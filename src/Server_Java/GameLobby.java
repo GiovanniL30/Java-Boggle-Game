@@ -24,12 +24,14 @@ public class GameLobby  {
     private HashMap<String, LinkedList<String>> playerEnteredWords = new HashMap<>(); //player id -> word list entered valid
     private Timer waitingTimer;
     private Timer gameTimer;
+    private Timer idleTime;
     private int secondsLeft;
     private boolean gameStarted = false;
     private boolean gameEnded = false;
     private final String lobbyId;
     private int currentRound = 1;
     private LinkedList<String> words;
+    private int idleTimerSeconds = 5;
 
 
     public GameLobby(String lobbyId) {
@@ -108,13 +110,19 @@ public class GameLobby  {
                 }else {
                     secondsLeft = Database.getGameTime() / 3;
                     currentRound++;
+                    gameTimer.stop();
 
-                    String[] letters = generateRandomLetters();
-                    for (Controller controller : players.values()) {
-                        controller.receiveLetter(letters);
-                        controller.setRound(currentRound);
-                        controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
-                    }
+                    startIdleTime(() -> {
+                        String[] letters = generateRandomLetters();
+                        for (Controller controller : players.values()) {
+                            controller.stopIdleTime();
+                            controller.receiveLetter(letters);
+                            controller.setRound(currentRound);
+                            controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
+                        }
+                        gameTimer.restart();
+                    });
+
 
                 }
 
@@ -131,6 +139,32 @@ public class GameLobby  {
         });
 
         gameTimer.start();
+    }
+
+    private void startIdleTime(Runnable callback) {
+
+        for(Controller controller : players.values()) {
+           controller.startIdleTime();
+        }
+
+        idleTime = new Timer(1000, e -> {
+
+            idleTimerSeconds--;
+
+            for(Controller controller : players.values()) {
+                controller.setIdleTimeLeft("Starting " + currentRound + " in: " + idleTimerSeconds+"s");
+            }
+
+            if(idleTimerSeconds <= 0) {
+                idleTime.stop();
+                idleTimerSeconds = 5;
+                callback.run();
+            }
+
+        });
+
+        idleTime.start();
+
     }
 
     public synchronized App.Response addWord(String word, String userId) {

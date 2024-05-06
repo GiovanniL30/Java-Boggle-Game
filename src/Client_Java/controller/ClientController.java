@@ -3,6 +3,7 @@ package Client_Java.controller;
 import App.*;
 import Client_Java.utilities.ClientViews;
 import Client_Java.view.MainFrame;
+import Client_Java.view.components.IdleTimePopup;
 import Client_Java.view.panels.*;
 import Server_Java.GameLobby;
 import Server_Java.dataBase.Database;
@@ -23,6 +24,7 @@ public class ClientController extends ControllerPOA {
     private String gameLobby = "";
     private boolean gameStarted = false;
     private String[] randomLetters = null;
+    private IdleTimePopup idleTimePopup;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -110,6 +112,24 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    @Override
+    public void stopIdleTime() {
+        idleTimePopup.setVisible(false);
+    }
+
+    @Override
+    public void startIdleTime() {
+        new Thread(() -> {
+            idleTimePopup.setVisible(true);
+        }).start();
+
+    }
+
+    @Override
+    public void setIdleTimeLeft(String message) {
+        idleTimePopup.updateText(message);
+    }
+
 
     public void submitWord(String word) {
 
@@ -146,7 +166,11 @@ public class ClientController extends ControllerPOA {
 
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     if(!gameLobby.isEmpty()) {
-                        leaveLobby(gameLobby);
+                        try {
+                            leaveLobby(gameLobby);
+                        } catch (LobbyException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     applicationServer.logout(loggedInUser.userID);
                 }));
@@ -162,7 +186,7 @@ public class ClientController extends ControllerPOA {
 
     }
 
-    public void createAccount(User user) {
+    public void createAccount(User user) throws CreateException {
 
 
         Response response = applicationServer.createAccount(user);
@@ -222,7 +246,7 @@ public class ClientController extends ControllerPOA {
     public User[] lobbyPlayer(String lobbyId) {
         return applicationServer.getPlayers(lobbyId);
     }
-    public void leaveLobby(String lobbyId) {
+    public void leaveLobby(String lobbyId) throws LobbyException {
         Response response =  applicationServer.leaveLobby(loggedInUser.userID, lobbyId);
 
         if(response.isSuccess) {
@@ -290,6 +314,7 @@ public class ClientController extends ControllerPOA {
 
     public void setMainFrame(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+        idleTimePopup = new IdleTimePopup(this.mainFrame);
     }
 
     public User getLoggedInUser() {

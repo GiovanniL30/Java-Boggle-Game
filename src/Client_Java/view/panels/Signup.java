@@ -1,5 +1,6 @@
 package Client_Java.view.panels;
 
+import App.CreateException;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
@@ -85,7 +86,11 @@ public class Signup extends JPanel {
 
 
             User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p);
-           clientControllerObserver.createAccount(newUser);
+            try {
+                clientControllerObserver.createAccount(newUser);
+            } catch (CreateException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

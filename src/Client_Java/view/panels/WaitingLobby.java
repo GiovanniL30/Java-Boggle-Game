@@ -1,5 +1,6 @@
 package Client_Java.view.panels;
 
+import App.LobbyException;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ColorFactory;
@@ -33,7 +34,13 @@ public class WaitingLobby extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(leaveLobby, BorderLayout.SOUTH);
 
-        leaveLobby.addActionListener(e -> clientController.leaveLobby(gameLobby));
+        leaveLobby.addActionListener(e -> {
+            try {
+                clientController.leaveLobby(gameLobby);
+            } catch (LobbyException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     private void playerList() {

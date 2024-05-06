@@ -28,6 +28,17 @@ module App {
         NO_PLAYER_LOBBY
     };
 
+    exception LogInException {
+        string errorMessage;
+    };
+
+    exception CreateException {
+        string errorMessage;
+    };
+
+    exception LobbyException {
+        string errorMessage;
+    };
 
 
     typedef sequence<string> Letters;
@@ -42,6 +53,9 @@ module App {
         void updatePlayerScore(in string id, in long newScore);
         void receiveLetter(in Letters letters);
         void endGameUpdate(in User winner, in long score);
+        void stopIdleTime();
+        void startIdleTime();
+        void setIdleTimeLeft(in string message);
    };
 
     typedef sequence<Lobby> LobbyList;
@@ -49,12 +63,12 @@ module App {
 
 
     interface ApplicationServer {
-        User login(in string userName, in string password, in Controller controller);
+        User login(in string userName, in string password, in Controller controller) raises(LogInException);
         void logout(in string userID);
-        Response createAccount(in User user);
-        Response createLobby(in User creator, in Controller clientController);
-        Response joinLobby(in User user, in string lobbyId, in Controller clientController);
-        Response leaveLobby(in string user, in string lobbyId);
+        Response createAccount(in User user) raises(CreateException);
+        Response createLobby(in User creator, in Controller clientController) raises(LobbyException);
+        Response joinLobby(in User user, in string lobbyId, in Controller clientController) raises(LobbyException);
+        Response leaveLobby(in string user, in string lobbyId) raises(LobbyException);
         LobbyList getLobbies();
         Players getPlayers(in string lobbyId);
         Response submitWord(in string word, in string playerId, in string lobbyId);
@@ -62,9 +76,9 @@ module App {
     };
 
     interface LobbyServer {
-       Response createLobby(in User creator, in Controller clientController);
-       boolean joinLobby(in User user, in string lobbyId, in Controller clientController);
-       Response leaveLobby(in string user, in string lobbyId);
+       Response createLobby(in User creator, in Controller clientController) raises(LobbyException);
+       boolean joinLobby(in User user, in string lobbyId, in Controller clientController) raises(LobbyException);
+       Response leaveLobby(in string user, in string lobbyId) raises(LobbyException);
        LobbyList getLobbies();
        Response submitWord(in string word, in string playerId, in string lobbyId);
     };
