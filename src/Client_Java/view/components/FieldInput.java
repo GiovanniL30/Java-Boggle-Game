@@ -125,6 +125,8 @@ public class FieldInput extends JPanel {
     public void enableError(String message) {
         errorMessage.setText(message);
         errorMessage.setVisible(true);
+        revalidate();
+        repaint();
     } // end of enableError method
 
     /**
@@ -132,6 +134,8 @@ public class FieldInput extends JPanel {
      */
     public void removeError() {
         errorMessage.setVisible(false);
+        revalidate();
+        repaint();
     } // end of removeError method
 
     public void clearText() {

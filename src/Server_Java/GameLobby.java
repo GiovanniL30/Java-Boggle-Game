@@ -14,10 +14,7 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import javax.swing.Timer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 public class GameLobby  {
@@ -27,19 +24,21 @@ public class GameLobby  {
     private HashMap<String, LinkedList<String>> playerEnteredWords = new HashMap<>(); //player id -> word list entered valid
     private Timer waitingTimer;
     private Timer gameTimer;
+    private Timer idleTime;
     private int secondsLeft;
     private boolean gameStarted = false;
     private boolean gameEnded = false;
     private final String lobbyId;
     private int currentRound = 1;
     private LinkedList<String> words;
+    private int idleTimerSeconds = 5;
 
 
     public GameLobby(String lobbyId) {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 2;
+        secondsLeft = Database.getWaitingTime();
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
@@ -90,7 +89,7 @@ public class GameLobby  {
 
     public void startRound() {
 
-        secondsLeft = 5;
+        secondsLeft = Database.getGameTime() / 3;
 
         gameTimer = new Timer(1000, e -> {
 
@@ -100,23 +99,30 @@ public class GameLobby  {
 
                     gameEnded = true;
                     String topPlayer = getTopPlayer();
+
                     for (Controller controller : players.values()) {
-                        controller.endGameUpdate(topPlayer, playerScores.get(topPlayer));
+                        controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer));
                     }
 
-                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();
+                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
 
                     gameTimer.stop();
                 }else {
-                    secondsLeft = 5;
+                    secondsLeft = Database.getGameTime() / 3;
                     currentRound++;
+                    gameTimer.stop();
 
-                    String[] letters = generateRandomLetters();
-                    for (Controller controller : players.values()) {
-                        controller.receiveLetter(letters);
-                        controller.setRound(currentRound);
-                        controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
-                    }
+                    startIdleTime(() -> {
+                        String[] letters = generateRandomLetters();
+                        for (Controller controller : players.values()) {
+                            controller.stopIdleTime();
+                            controller.receiveLetter(letters);
+                            controller.setRound(currentRound);
+                            controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
+                        }
+                        gameTimer.restart();
+                    });
+
 
                 }
 
@@ -133,6 +139,32 @@ public class GameLobby  {
         });
 
         gameTimer.start();
+    }
+
+    private void startIdleTime(Runnable callback) {
+
+        for(Controller controller : players.values()) {
+           controller.startIdleTime();
+        }
+
+        idleTime = new Timer(1000, e -> {
+
+            idleTimerSeconds--;
+
+            for(Controller controller : players.values()) {
+                controller.setIdleTimeLeft("Starting " + currentRound + " in: " + idleTimerSeconds+"s");
+            }
+
+            if(idleTimerSeconds <= 0) {
+                idleTime.stop();
+                idleTimerSeconds = 5;
+                callback.run();
+            }
+
+        });
+
+        idleTime.start();
+
     }
 
     public synchronized App.Response addWord(String word, String userId) {

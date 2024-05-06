@@ -1,11 +1,13 @@
 package Server_Java.dataBase;
 
 import App.Lobby;
+import App.PlayerScore;
 import App.User;
 import Client_Java.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Database {
@@ -17,10 +19,26 @@ public class Database {
         if (connection != null) return;
         try {
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public static synchronized PlayerScore[] getPlayerScores() {
+        openConnection();
+
+        String query = "";
+
+        //do the actual logic
+        return new PlayerScore[]{};
+
+    }
+
+    public static synchronized void addPlayerScores(HashMap<String, Integer> playerScores) {
+
+
+        //add player scores to the database
     }
 
     public static synchronized User[] lobbyPlayers(String lobbyId) {
@@ -72,7 +90,7 @@ public class Database {
         String query = "INSERT INTO lobby (lobbyID, lobbyStatus, dateTimeCreated, topPlayerID) VALUES (?, ?, ?, ?)";
 
         try {
-            String lobbyID = UtilityMethods.generateRandomID();
+            String lobbyID = UtilityMethods.generateRandomID().substring(0, 5);
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyID);
             preparedStatement.setString(2, "Waiting");
@@ -104,7 +122,7 @@ public class Database {
             preparedStatement.setString(2, playerId);
             return preparedStatement.executeUpdate() >  0;
         } catch (SQLException e) {
-            System.err.println(e.getMessage() + "Line 86");
+            System.err.println(e.getMessage());
         }
 
         return false;
@@ -133,16 +151,17 @@ public class Database {
 
     }
 
-    public static synchronized void finishedGame(String topPlayerId, String lobbyId) {
+    public static synchronized void finishedGame(String topPlayerId, String lobbyId, int score) {
 
         openConnection();
 
-        String query = "UPDATE lobby SET topPlayerID = ?, lobbyStatus = 'Finished' WHERE lobbyID = ?";
+        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ?,  lobbyStatus = 'Finished' WHERE lobbyID = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, topPlayerId);
-            preparedStatement.setString(2, lobbyId);
+            preparedStatement.setInt(2, score);
+            preparedStatement.setString(3, lobbyId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -204,6 +223,50 @@ public class Database {
         }
 
         return false;
+    }
+
+    public static synchronized int getGameTime() {
+
+        openConnection();
+
+        String query = "SELECT time.length FROM time INNER JOIN gamesettings ON gamesettings.gameTime = time.timeID";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+
+            if (resultSet.next()) {
+              return resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return 0;
+    }
+
+    public static synchronized int getWaitingTime() {
+
+        openConnection();
+
+        String query = "SELECT time.length FROM time INNER JOIN gamesettings ON gamesettings.waitingTime = time.timeID";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return 0;
     }
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
@@ -278,23 +341,7 @@ public class Database {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                User user = getUser(resultSet);
-
-                if (user.isLoggedIn) {
-                    return new Response<>(new User("Your account is already logged in on another machine", "", "", "", "", false, ""), false);
-                } else {
-                    PreparedStatement updateOnlineStatus = connection.prepareStatement("UPDATE users SET status ='Online', isLoggedIn = '1' WHERE userID = ?");
-                    System.out.println(user.userID);
-                    updateOnlineStatus.setString(1, user.userID);
-
-                    if (updateOnlineStatus.executeUpdate() > 0) {
-                        return new Response<>(getUser(resultSet), true);
-                    } else {
-                        return new Response<>(new User("Having an error logging you in", "", "", "", "", false, ""), false);
-                    }
-
-                }
-
+                return new Response<>(getUser(resultSet), true) ;
             }
 
             resultSet.close();
@@ -302,22 +349,34 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", false, ""), false);
+        return new Response<>(new User("Invalid Login Credentials", "", "", "", ""), false);
     }
 
-    public static void logout(String userId) {
+    public static User getUser(String id) {
+
         openConnection();
+
+        String query = "SELECT * FROM users WHERE userID = ?";
+
         try {
-            PreparedStatement updateOnlineStatus = connection.prepareStatement("UPDATE users SET status ='Offline', isLoggedIn = '0' WHERE userID = ?");
-            updateOnlineStatus.setString(1, userId);
-            updateOnlineStatus.execute();
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                return  getUser(resultSet);
+            }
+
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+
+        return new User();
     }
 
     private static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6) == 1, resultSet.getString(7));
+        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
     }
+
 
 }

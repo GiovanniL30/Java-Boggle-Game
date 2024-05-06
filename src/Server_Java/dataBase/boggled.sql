@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.31, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: boggled
 -- ------------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE `gamesettings` (
 
 LOCK TABLES `gamesettings` WRITE;
 /*!40000 ALTER TABLE `gamesettings` DISABLE KEYS */;
-INSERT INTO `gamesettings` VALUES (1,9);
+INSERT INTO `gamesettings` VALUES (1,4);
 /*!40000 ALTER TABLE `gamesettings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,6 +54,7 @@ CREATE TABLE `lobby` (
   `lobbyStatus` varchar(10) NOT NULL,
   `dateTimeCreated` datetime NOT NULL,
   `topPlayerID` varchar(20) DEFAULT NULL,
+  `topPlayerScore` int DEFAULT NULL,
   PRIMARY KEY (`lobbyID`),
   KEY `topPlayerID_idx` (`topPlayerID`),
   CONSTRAINT `topPlayerID` FOREIGN KEY (`topPlayerID`) REFERENCES `users` (`userID`) ON DELETE SET NULL ON UPDATE SET NULL
@@ -96,32 +97,6 @@ LOCK TABLES `lobbyplayers` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `scores`
---
-
-DROP TABLE IF EXISTS `scores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `scores` (
-  `scoresID` varchar(20) NOT NULL,
-  `score` int NOT NULL,
-  `playerID` varchar(20) NOT NULL,
-  PRIMARY KEY (`scoresID`),
-  KEY `playerID_idx` (`playerID`),
-  CONSTRAINT `playerID` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `scores`
---
-
-LOCK TABLES `scores` WRITE;
-/*!40000 ALTER TABLE `scores` DISABLE KEYS */;
-/*!40000 ALTER TABLE `scores` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `time`
 --
 
@@ -158,8 +133,6 @@ CREATE TABLE `users` (
   `lastName` varchar(30) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `isLoggedIn` tinyint NOT NULL,
-  `status` varchar(20) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -171,7 +144,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('uID','Alfred','Ngaosi','albert123','qwerty',0,'Offline'),('uID1','Giovanni','Leo','vanni123','abcdef',0,'Online');
+INSERT INTO `users` VALUES ('1','1','1','1','1'),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc'),('uID','Alfred','Ngaosi','albert123','qwerty'),('uID1','Giovanni','Leo','vanni123','abcdef');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,4 +183,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-25 10:25:16
+-- Dump completed on 2024-05-04 21:27:47

@@ -10,6 +10,7 @@ public class FilledButton extends Button {
 
         setForeground(textColor);
         setBackground(fillColor);
+
     }
 
 }

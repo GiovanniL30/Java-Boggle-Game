@@ -19,9 +19,9 @@ public class MainApplication {
         try {
             Properties props = new Properties();
             props.put("org.omg.CORBA.ORBInitialPort", "1099");
-            props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+            props.put("org.omg.CORBA.ORBInitialHost", "192.168.25.135");
 
-            ORB orb = ORB.init(args, null);
+            ORB orb = ORB.init(args, props);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));

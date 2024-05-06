@@ -8,6 +8,7 @@ import Client_Java.utilities.UtilityMethods;
 import Client_Java.view.components.Button;
 import Client_Java.view.components.FieldInput;
 import Client_Java.view.components.FilledButton;
+import Client_Java.view.components.Picture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,13 +43,18 @@ public class Login extends JPanel {
 
         buttonPanel.add(loginButton);
 
+        Picture picture = new Picture("src/shared/images/welcome.png", 600, 100);
+
         JPanel fieldInputs = fieldInputs();
 
 
         constraints.gridy = 1;
-        add(fieldInputs, constraints);
+        add(picture, constraints);
 
         constraints.gridy = 2;
+        add(fieldInputs, constraints);
+
+        constraints.gridy = 3;
 
         add(buttonPanel, constraints);
         signUpButton.addActionListener( e -> controller.changeFrame(ClientViews.SIGN_UP));
