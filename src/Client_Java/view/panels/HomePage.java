@@ -23,13 +23,14 @@ public class HomePage extends JPanel {
 
     public HomePage(ClientController clientController) {
         this.clientController = clientController;
-        setBackground(Color.WHITE);
+        setBackground(ColorFactory.beige());
         setLayout(new BorderLayout());
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridy = 0;
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(ColorFactory.beige());
+        lobbyId.setBackground(ColorFactory.beige());
         centerPanel.add(lobbyId, constraints);
         constraints.insets = new Insets(0, 0, 20, 0);
         constraints.gridy = 1;

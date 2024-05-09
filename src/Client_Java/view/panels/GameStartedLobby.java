@@ -270,7 +270,7 @@ public class GameStartedLobby extends JPanel {
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for (User player : players) {
                     gridBagConstraints.gridy++;
-                    PlayerNameBlock playerNameBlock = new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14);
+                    PlayerNameBlock playerNameBlock = new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14, true);
                     playerNameBlocks.add(playerNameBlock);
                     playerListPanel.add(playerNameBlock, gridBagConstraints);
                     playerListPanel.revalidate();
