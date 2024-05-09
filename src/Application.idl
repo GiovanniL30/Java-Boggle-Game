@@ -63,6 +63,7 @@ module App {
         void stopIdleTime();
         void startIdleTime();
         void setIdleTimeLeft(in string message);
+        void removeWord(in string word);
    };
 
     typedef sequence<Lobby> LobbyList;

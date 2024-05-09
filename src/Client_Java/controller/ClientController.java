@@ -130,6 +130,11 @@ public class ClientController extends ControllerPOA {
         idleTimePopup.updateText(message);
     }
 
+    @Override
+    public void removeWord(String word) {
+        mainFrame.getGameStartedLobby().removeWord(word);
+    }
+
 
     public void submitWord(String word) {
 
