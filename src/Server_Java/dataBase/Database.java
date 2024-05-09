@@ -7,8 +7,10 @@ import Client_Java.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Database {
 
@@ -225,11 +227,11 @@ public class Database {
         return false;
     }
 
-    public static synchronized LinkedList<Integer> getTime(){
+    public static synchronized List<Integer> getTime(){
 
         openConnection();
 
-        LinkedList<Integer> time = new LinkedList<>();
+        List<Integer> time = new ArrayList<>();
         String query = "SELECT length FROM time";
 
         try {
