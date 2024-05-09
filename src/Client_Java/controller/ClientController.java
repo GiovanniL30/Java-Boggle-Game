@@ -265,18 +265,21 @@ public class ClientController extends ControllerPOA {
 
                 switch (clientViews) {
                     case LOGIN: {
+                        mainFrame.getHeader().setVisible(false);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setLogin(new Login(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
                         break;
                     }
                     case SIGN_UP: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setSignup(new Signup(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getSignup(), 1);
                         break;
                     }
                     case HOME_PAGE: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
@@ -284,12 +287,14 @@ public class ClientController extends ControllerPOA {
                         break;
                     }
                     case GAME_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby, randomLetters));
                         mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
                         break;
                     }
                     case WAIT_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);

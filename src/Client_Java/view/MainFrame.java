@@ -1,6 +1,7 @@
 package Client_Java.view;
 
 import Client_Java.controller.ClientController;
+import Client_Java.utilities.ColorFactory;
 import Client_Java.view.components.Header;
 import Client_Java.view.panels.*;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -29,6 +30,7 @@ public class MainFrame extends JFrame {
         header = new Header();
         getContentPane().add(header, BorderLayout.NORTH);
         getContentPane().add(login, BorderLayout.CENTER);
+        header.setVisible(false);
     }
 
     private void init() {
@@ -53,7 +55,7 @@ public class MainFrame extends JFrame {
         BorderLayout borderLayout = new BorderLayout();
 
         mainLayout.setBorder(new EmptyBorder(25, 50 ,25, 50));
-        mainLayout.setBackground(Color.white);
+        mainLayout.setBackground(ColorFactory.beige());
         setContentPane(mainLayout);
 
         getContentPane().setLayout(borderLayout);
