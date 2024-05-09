@@ -225,6 +225,28 @@ public class Database {
         return false;
     }
 
+    public static synchronized LinkedList<Integer> getTime(){
+
+        openConnection();
+
+        LinkedList<Integer> time = new LinkedList<>();
+        String query = "SELECT length FROM time";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                time.add(resultSet.getInt(2));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return time;
+
+    }
+
     public static synchronized int getGameTime() {
 
         openConnection();
@@ -267,6 +289,36 @@ public class Database {
         }
 
         return 0;
+    }
+
+    public static synchronized void updateGameTime(int length) {
+
+        openConnection();
+
+        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, length);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static synchronized void updateWaitingTime(int length) {
+
+        openConnection();
+
+        String query = "UPDATE gamesettings SET waitingTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, length);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
