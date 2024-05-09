@@ -241,7 +241,7 @@ public class GameStartedLobby extends JPanel {
 
     private void repopulateWordBlock() {
 
-        new SwingWorker<>() {
+        new SwingWorker<Object, Object>() {
             @Override
             protected Object doInBackground() {
 
