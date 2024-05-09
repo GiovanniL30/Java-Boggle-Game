@@ -22,4 +22,8 @@ public class WordBlock extends JPanel {
         label.setBorder(new EmptyBorder(10, 0, 10, 0));
         add(label);
     }
+
+    public String getWord() {
+        return name;
+    }
 }
