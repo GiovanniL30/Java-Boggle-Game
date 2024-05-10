@@ -99,6 +99,7 @@ public class GameLobby  {
                     }
 
                     new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
+                    new Thread(() -> Database.updatePlayerScores(playerScores)).start();
 
                     gameTimer.stop();
                 }else {
@@ -171,7 +172,7 @@ public class GameLobby  {
         }
 
         if(playerEnteredWords.get(userId).stream().anyMatch(s -> s.equalsIgnoreCase(word))) {
-            any.insert_long(1); //player already entered the word
+            any.insert_long(1); // player already entered the word
             return new App.Response(any, false);
         }
 

@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
     private Signup signup;
     private WaitingLobby waitingLobby;
     private GameStartedLobby gameStartedLobby;
+    private LeaderBoards leaderBoards;
     private Header header;
 
 
@@ -104,5 +105,13 @@ public class MainFrame extends JFrame {
 
     public void setGameStartedLobby(GameStartedLobby gameStartedLobby) {
         this.gameStartedLobby = gameStartedLobby;
+    }
+
+    public LeaderBoards getLeaderBoards() {
+        return leaderBoards;
+    }
+
+    public void setLeaderBoards(LeaderBoards leaderBoards) {
+        this.leaderBoards = leaderBoards;
     }
 }

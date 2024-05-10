@@ -25,7 +25,7 @@ public class ApplicationServant extends ApplicationServerPOA {
        if(response.isSuccess()) {
 
            if(controllerHashMap.containsKey(user.userID)) {
-               return new User("You are already logged in on another machine", "", "", "", "");
+               return new User("You are already logged in on another machine", "", "", "", "", 0);
            }
 
            controllerHashMap.put(user.userID, controller);
@@ -123,9 +123,10 @@ public class ApplicationServant extends ApplicationServerPOA {
     }
 
     @Override
-    public PlayerScore[] getPlayerScore() {
-        return Database.getPlayerScores();
+    public User[] getAllUsers() {
+        return Database.getPlayers();
     }
+
 
 
 }

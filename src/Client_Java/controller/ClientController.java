@@ -248,6 +248,10 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    public User[] getLeaderBoards() {
+        return applicationServer.getAllUsers();
+    }
+
     public User[] lobbyPlayer(String lobbyId) {
         return applicationServer.getPlayers(lobbyId);
     }
@@ -303,6 +307,13 @@ public class ClientController extends ControllerPOA {
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);
+                        break;
+                    }
+                    case LEADER_BOARDS: {
+                        mainFrame.getHeader().setVisible(true);
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setLeaderBoards(new LeaderBoards(ClientController.this));
+                        mainFrame.getContentPane().add(mainFrame.getLeaderBoards(), 1);
                         break;
                     }
                     default: {

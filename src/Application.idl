@@ -6,6 +6,7 @@ module App {
         string lastName;
         string userName;
         string password;
+        long score;
     };
 
     struct Lobby {
@@ -21,10 +22,7 @@ module App {
         boolean isSuccess;
     };
 
-    struct PlayerScore {
-        User user;
-        long score;
-    };
+
 
     enum ClientActions {
         NEW_MESSAGE,
@@ -68,7 +66,6 @@ module App {
 
     typedef sequence<Lobby> LobbyList;
     typedef sequence<User> Players;
-    typedef sequence<PlayerScore> PlayerScores;
 
 
     interface ApplicationServer {
@@ -82,7 +79,7 @@ module App {
         Players getPlayers(in string lobbyId);
         Response submitWord(in string word, in string playerId, in string lobbyId);
         void startGame(in string lobbyId);
-        PlayerScores getPlayerScore();
+        Players getAllUsers();
     };
 
     interface LobbyServer {

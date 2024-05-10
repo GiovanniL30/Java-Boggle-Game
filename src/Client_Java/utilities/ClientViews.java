@@ -6,5 +6,6 @@ public enum ClientViews {
     HOME_PAGE,
     GAME_LOBBY,
     WAIT_LOBBY,
+    LEADER_BOARDS
 
 }
