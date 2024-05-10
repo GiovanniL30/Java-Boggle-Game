@@ -1,60 +1,54 @@
 package Server_Java;
 
-import App.ApplicationServer;
-import App.ApplicationServerHelper;
 import App.ClientActions;
 import App.Controller;
 import Server_Java.dataBase.Database;
-import com.sun.media.sound.SF2Region;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
 
 import javax.swing.Timer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 public class GameLobby  {
 
     private HashMap<String, Controller> players = new HashMap<>(); // player id -> controller
     private HashMap<String, Integer> playerScores = new HashMap<>(); //player id -> word, score
+    private HashMap<String, LinkedList<String>> playerEnteredWords = new HashMap<>(); //player id -> word list entered valid
     private Timer waitingTimer;
     private Timer gameTimer;
+    private Timer idleTime;
     private int secondsLeft;
     private boolean gameStarted = false;
     private boolean gameEnded = false;
     private final String lobbyId;
     private int currentRound = 1;
     private LinkedList<String> words;
+    private int idleTimerSeconds = 5;
 
 
     public GameLobby(String lobbyId) {
         this.lobbyId = lobbyId;
         words = Database.getWords();
 
-        secondsLeft = 10;
+        secondsLeft = Database.getWaitingTime();
         waitingTimer = new Timer(1000, e -> {
 
             if (secondsLeft <= 0) {
                 waitingTimer.stop();
 
-                if(players.size() == 1) {
-                    Database.deleteLobby(lobbyId);
-                    for(Controller controller : players.values()){
-                        controller.receiveUpdates(ClientActions.NO_PLAYER_LOBBY);
-                    }
+//                if(players.size() == 1) {
+//                    Database.deleteLobby(lobbyId);
+//                    for(Controller controller : players.values()){
+//                        controller.receiveUpdates(ClientActions.NO_PLAYER_LOBBY);
+//                    }
+//
+//                    players = null;
+//                    playerScores = null ;
+//                    waitingTimer = null;
 
-                    players = null;
-                    playerScores = null ;
-                    waitingTimer = null;
-
-                }else {
+               // }else {
 
                     gameStarted = true;
                     startRound();
@@ -63,7 +57,7 @@ public class GameLobby  {
                         controller.receiveLetter(letters);
                         controller.receiveUpdates(ClientActions.START_GAME);
                     }
-                }
+               // }
 
             } else {
                 secondsLeft--;
@@ -79,6 +73,7 @@ public class GameLobby  {
         if(gameStarted) return;
         players.put(userId, clientController);
         playerScores.put(userId, 0);
+        playerEnteredWords.put(userId, new LinkedList<>());
     }
 
     public void removePlayer(String userId) {
@@ -88,7 +83,7 @@ public class GameLobby  {
 
     public void startRound() {
 
-        secondsLeft = 5;
+        secondsLeft = Database.getGameTime() / 3;
 
         gameTimer = new Timer(1000, e -> {
 
@@ -98,23 +93,31 @@ public class GameLobby  {
 
                     gameEnded = true;
                     String topPlayer = getTopPlayer();
+
                     for (Controller controller : players.values()) {
-                        controller.endGameUpdate(topPlayer, playerScores.get(topPlayer));
+                        controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer));
                     }
 
-                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId)).start();
+                    new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
+                    new Thread(() -> Database.updatePlayerScores(playerScores)).start();
 
                     gameTimer.stop();
                 }else {
-                    secondsLeft = 5;
+                    secondsLeft = Database.getGameTime() / 3;
                     currentRound++;
+                    gameTimer.stop();
 
-                    String[] letters = generateRandomLetters();
-                    for (Controller controller : players.values()) {
-                        controller.receiveLetter(letters);
-                        controller.setRound(currentRound);
-                        controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
-                    }
+                    startIdleTime(() -> {
+                        String[] letters = generateRandomLetters();
+                        for (Controller controller : players.values()) {
+                            controller.stopIdleTime();
+                            controller.receiveLetter(letters);
+                            controller.setRound(currentRound);
+                            controller.receiveUpdates(ClientActions.NEW_GAME_ROUND);
+                        }
+                        gameTimer.restart();
+                    });
+
 
                 }
 
@@ -133,12 +136,60 @@ public class GameLobby  {
         gameTimer.start();
     }
 
+    private void startIdleTime(Runnable callback) {
+
+        for(Controller controller : players.values()) {
+           controller.startIdleTime();
+        }
+
+        idleTime = new Timer(1000, e -> {
+
+            idleTimerSeconds--;
+
+            for(Controller controller : players.values()) {
+                controller.setIdleTimeLeft("Starting " + currentRound + " in: " + idleTimerSeconds+"s");
+            }
+
+            if(idleTimerSeconds <= 0) {
+                idleTime.stop();
+                idleTimerSeconds = 5;
+                callback.run();
+            }
+
+        });
+
+        idleTime.start();
+
+    }
+
     public synchronized App.Response addWord(String word, String userId) {
 
         Any any = ORB.init().create_any();
 
         if(!isWordPresent(word)) {
-            any.insert_long(0);
+            any.insert_long(0); //word is not present
+            return new App.Response(any, false);
+        }
+
+        if(playerEnteredWords.get(userId).stream().anyMatch(s -> s.equalsIgnoreCase(word))) {
+            any.insert_long(1); // player already entered the word
+            return new App.Response(any, false);
+        }
+
+        String matchingWordPlayer = checkUniqueWord(word);
+
+        if(matchingWordPlayer != null) {
+
+            players.forEach((playerID, controller) -> {
+
+                if(matchingWordPlayer.equalsIgnoreCase(playerID)) {
+                    controller.removeWord(word);
+                    controller.updatePlayerScore(playerID, playerScores.get(matchingWordPlayer));
+                }
+
+            });
+
+            any.insert_long(2); //word is already entered by other user
             return new App.Response(any, false);
         }
 
@@ -149,6 +200,7 @@ public class GameLobby  {
 
         new Thread(() -> players.forEach( (playerID, playerController) -> playerController.updatePlayerScore(userId, newScore))).start(); //update score view
 
+        playerEnteredWords.get(userId).add(word);
         any.insert_long(score);
         return new App.Response(any, true);
     }
@@ -199,6 +251,25 @@ public class GameLobby  {
 
         System.out.println(topPlayer);
         return topPlayer;
+    }
+
+    private String checkUniqueWord(String word) {
+
+
+        for(Map.Entry<String, LinkedList<String>> player : playerEnteredWords.entrySet()) {
+
+            Optional<String> notUniqueWord = player.getValue().stream().filter(w -> w.equalsIgnoreCase(word)).findFirst();
+
+            if(notUniqueWord.isPresent()) {
+                player.getValue().remove(word);
+                int newScore = playerScores.get(player.getKey()) - computeScore(word);
+                playerScores.put(player.getKey(), newScore);
+                return player.getKey();
+            }
+
+        }
+
+        return null;
     }
 
 

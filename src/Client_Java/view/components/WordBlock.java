@@ -15,10 +15,15 @@ public class WordBlock extends JPanel {
         this.name = name;
         this.score = score;
         setLayout(new FlowLayout(FlowLayout.CENTER));
+        setBackground(Color.white);
 
         label = new JLabel(name + " (" + score + ")");
         label.setFont(FontFactory.newPoppinsBold(20));
         label.setBorder(new EmptyBorder(10, 0, 10, 0));
         add(label);
+    }
+
+    public String getWord() {
+        return name;
     }
 }

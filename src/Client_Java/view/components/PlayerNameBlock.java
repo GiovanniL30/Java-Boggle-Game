@@ -1,5 +1,6 @@
 package Client_Java.view.components;
 
+import Client_Java.utilities.ColorFactory;
 import Client_Java.utilities.FontFactory;
 
 import javax.swing.*;
@@ -12,16 +13,24 @@ public class PlayerNameBlock extends JPanel {
     private JLabel label;
     private String playerId;
 
-    public PlayerNameBlock(String name, int score, String playerId, int fontSize) {
+    public PlayerNameBlock(String name, int score, String playerId, int fontSize, boolean needScore) {
         this.playerId = playerId;
         this.name = name;
         this.score = score;
         setLayout(new FlowLayout(FlowLayout.CENTER));
+        setBackground(new Color(255,246, 238));
 
-        label = new JLabel(name + " (" + score + ")");
-        label.setFont(FontFactory.newPoppinsBold(fontSize));
-        label.setBorder(new EmptyBorder(10, 0, 10, 0));
-        add(label);
+        if (needScore){
+            label = new JLabel(name + " (" + score + ")");
+            label.setFont(FontFactory.newPoppinsBold(fontSize));
+            label.setBorder(new EmptyBorder(10, 0, 10, 0));
+            add(label);
+        } else {
+            label = new JLabel(name);
+            label.setFont(FontFactory.newPoppinsBold(fontSize));
+            label.setBorder(new EmptyBorder(10, 0, 10, 0));
+            add(label);
+        }
     }
 
     public void updateScore(int score) {

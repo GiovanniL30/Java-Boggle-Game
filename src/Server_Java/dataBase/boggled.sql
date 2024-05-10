@@ -38,7 +38,7 @@ CREATE TABLE `gamesettings` (
 
 LOCK TABLES `gamesettings` WRITE;
 /*!40000 ALTER TABLE `gamesettings` DISABLE KEYS */;
-INSERT INTO `gamesettings` VALUES (1,9);
+INSERT INTO `gamesettings` VALUES (1,4);
 /*!40000 ALTER TABLE `gamesettings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,6 +54,7 @@ CREATE TABLE `lobby` (
   `lobbyStatus` varchar(10) NOT NULL,
   `dateTimeCreated` datetime NOT NULL,
   `topPlayerID` varchar(20) DEFAULT NULL,
+  `topPlayerScore` int DEFAULT NULL,
   PRIMARY KEY (`lobbyID`),
   KEY `topPlayerID_idx` (`topPlayerID`),
   CONSTRAINT `topPlayerID` FOREIGN KEY (`topPlayerID`) REFERENCES `users` (`userID`) ON DELETE SET NULL ON UPDATE SET NULL
@@ -66,6 +67,7 @@ CREATE TABLE `lobby` (
 
 LOCK TABLES `lobby` WRITE;
 /*!40000 ALTER TABLE `lobby` DISABLE KEYS */;
+INSERT INTO `lobby` VALUES ('035ea','Finished','2024-05-10 19:08:37','1',79),('e99e1','Finished','2024-05-10 19:06:31','1',59),('f5409','Finished','2024-05-10 19:11:16','1',8);
 /*!40000 ALTER TABLE `lobby` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,33 +94,8 @@ CREATE TABLE `lobbyplayers` (
 
 LOCK TABLES `lobbyplayers` WRITE;
 /*!40000 ALTER TABLE `lobbyplayers` DISABLE KEYS */;
+INSERT INTO `lobbyplayers` VALUES ('035ea','1'),('e99e1','1'),('f5409','1');
 /*!40000 ALTER TABLE `lobbyplayers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `scores`
---
-
-DROP TABLE IF EXISTS `scores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `scores` (
-  `scoresID` varchar(20) NOT NULL,
-  `score` int NOT NULL,
-  `playerID` varchar(20) NOT NULL,
-  PRIMARY KEY (`scoresID`),
-  KEY `playerID_idx` (`playerID`),
-  CONSTRAINT `playerID` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `scores`
---
-
-LOCK TABLES `scores` WRITE;
-/*!40000 ALTER TABLE `scores` DISABLE KEYS */;
-/*!40000 ALTER TABLE `scores` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -158,9 +135,7 @@ CREATE TABLE `users` (
   `lastName` varchar(30) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `loggedIn` varchar(10) NOT NULL,
-  `status` varchar(20) NOT NULL,
-  `isAdmin` varchar(10) NOT NULL,
+  `totalScore` int NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -172,7 +147,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('uID','Alfred','Ngaosi','albert123','qwerty','No','Offline','No'),('uID1','Giovanni','Leo','vanni123','abcdef','No','Offline','Yes');
+INSERT INTO `users` VALUES ('1','1','1','1','1',87),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc',880),('uID','Alfred','Ngaosi','albert123','qwerty',99),('uID1','Giovanni','Leo','vanni123','abcdef',8);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-19 21:58:26
+-- Dump completed on 2024-05-10 20:34:41

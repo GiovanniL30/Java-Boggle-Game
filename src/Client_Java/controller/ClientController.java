@@ -3,6 +3,7 @@ package Client_Java.controller;
 import App.*;
 import Client_Java.utilities.ClientViews;
 import Client_Java.view.MainFrame;
+import Client_Java.view.components.IdleTimePopup;
 import Client_Java.view.panels.*;
 import Server_Java.GameLobby;
 import Server_Java.dataBase.Database;
@@ -22,6 +23,8 @@ public class ClientController extends ControllerPOA {
     private User loggedInUser;
     private String gameLobby = "";
     private boolean gameStarted = false;
+    private String[] randomLetters = null;
+    private IdleTimePopup idleTimePopup;
 
 
     public ClientController(ApplicationServer applicationServer, ORB orb) {
@@ -78,24 +81,83 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void receiveLetter(String[] letters) {
-        System.out.println(Arrays.toString(letters));
+          randomLetters = letters;
+
+        if(mainFrame.getGameStartedLobby() != null) {
+            mainFrame.getGameStartedLobby().setRandomLettersPanel(letters);
+        }
     }
 
     @Override
-    public void endGameUpdate(String winner, int score) {
-        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Winner ID:  " + winner + " Score: " + score)).start();
+    public void endGameUpdate(User winner, int score) {
+
+        randomLetters = null;
+        gameLobby = "";
+        gameStarted = false;
+
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+                mainFrame.getContentPane().remove(1);
+                mainFrame.getContentPane().add(new GameSummary(winner, score, ClientController.this));
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                mainFrame.getContentPane().revalidate();
+                mainFrame.getContentPane().repaint();
+            }
+        }.execute();
+
     }
 
+    @Override
+    public void stopIdleTime() {
+        idleTimePopup.setVisible(false);
+    }
+
+    @Override
+    public void startIdleTime() {
+        new Thread(() -> {
+            idleTimePopup.setVisible(true);
+        }).start();
+
+    }
+
+    @Override
+    public void setIdleTimeLeft(String message) {
+        idleTimePopup.updateText(message);
+    }
+
+    @Override
+    public void removeWord(String word) {
+        mainFrame.getGameStartedLobby().removeWord(word);
+    }
+
+
     public void submitWord(String word) {
+
+        if(mainFrame.getGameStartedLobby() == null) {
+            System.out.println("null");
+            return;
+        }
         Response response = applicationServer.submitWord(word, loggedInUser.userID, gameLobby);
 
         if(response.isSuccess) {
             mainFrame.getGameStartedLobby().addNewWordBlock(word, response.payload.extract_long());
+            mainFrame.getGameStartedLobby().removeError();
         }else {
-            mainFrame.getGameStartedLobby().getFieldInput().enableError("Word is not a valid word");
+
+            if(response.payload.extract_long() == 0) {
+                mainFrame.getGameStartedLobby().setError("Word is not a valid word");
+            }else {
+                mainFrame.getGameStartedLobby().setError("You have already entered this word");
+            }
+
         }
 
-        mainFrame.getGameStartedLobby().getFieldInput().clearText();
+        mainFrame.getGameStartedLobby().clearText();
     }
     public void logIn(String userName, String password) {
 
@@ -109,7 +171,11 @@ public class ClientController extends ControllerPOA {
 
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     if(!gameLobby.isEmpty()) {
-                        leaveLobby(gameLobby);
+                        try {
+                            leaveLobby(gameLobby);
+                        } catch (LobbyException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     applicationServer.logout(loggedInUser.userID);
                 }));
@@ -125,7 +191,7 @@ public class ClientController extends ControllerPOA {
 
     }
 
-    public void createAccount(User user) {
+    public void createAccount(User user) throws CreateException {
 
 
         Response response = applicationServer.createAccount(user);
@@ -182,10 +248,14 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    public User[] getLeaderBoards() {
+        return applicationServer.getAllUsers();
+    }
+
     public User[] lobbyPlayer(String lobbyId) {
         return applicationServer.getPlayers(lobbyId);
     }
-    public void leaveLobby(String lobbyId) {
+    public void leaveLobby(String lobbyId) throws LobbyException {
         Response response =  applicationServer.leaveLobby(loggedInUser.userID, lobbyId);
 
         if(response.isSuccess) {
@@ -194,7 +264,6 @@ public class ClientController extends ControllerPOA {
             changeFrame(ClientViews.HOME_PAGE);
         }
 
-        new Thread(() -> JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string())).start();
     }
 
 
@@ -205,33 +274,46 @@ public class ClientController extends ControllerPOA {
 
                 switch (clientViews) {
                     case LOGIN: {
+                        mainFrame.getHeader().setVisible(false);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setLogin(new Login(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
                         break;
                     }
                     case SIGN_UP: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setSignup(new Signup(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getSignup(), 1);
                         break;
                     }
                     case HOME_PAGE: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
+                        mainFrame.getHeader().setUserName(loggedInUser.userName);
                         break;
                     }
                     case GAME_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
-                        mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby));
+                        mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby, randomLetters));
                         mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
                         break;
                     }
                     case WAIT_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);
+                        break;
+                    }
+                    case LEADER_BOARDS: {
+                        mainFrame.getHeader().setVisible(true);
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setLeaderBoards(new LeaderBoards(ClientController.this));
+                        mainFrame.getContentPane().add(mainFrame.getLeaderBoards(), 1);
                         break;
                     }
                     default: {
@@ -253,6 +335,7 @@ public class ClientController extends ControllerPOA {
 
     public void setMainFrame(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+        idleTimePopup = new IdleTimePopup(this.mainFrame);
     }
 
     public User getLoggedInUser() {

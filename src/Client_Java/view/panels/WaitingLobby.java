@@ -1,5 +1,6 @@
 package Client_Java.view.panels;
 
+import App.LobbyException;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ColorFactory;
@@ -25,7 +26,7 @@ public class WaitingLobby extends JPanel {
         playerList();
         waitingPanel();
         setLayout(new BorderLayout());
-        setBackground(Color.white);
+        setBackground(ColorFactory.beige());
 
 
         add(waitingList, BorderLayout.NORTH);
@@ -33,12 +34,18 @@ public class WaitingLobby extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(leaveLobby, BorderLayout.SOUTH);
 
-        leaveLobby.addActionListener(e -> clientController.leaveLobby(gameLobby));
+        leaveLobby.addActionListener(e -> {
+            try {
+                clientController.leaveLobby(gameLobby);
+            } catch (LobbyException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     private void playerList() {
         playerListPanel.setLayout(new GridBagLayout());
-        playerListPanel.setBackground(Color.white);
+        playerListPanel.setBackground(ColorFactory.beige());
 
 
         updatePlayerList();
@@ -56,7 +63,7 @@ public class WaitingLobby extends JPanel {
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for(User player: players) {
                     gridBagConstraints.gridy++;
-                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 20), gridBagConstraints);
+                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 20, false), gridBagConstraints);
                     playerListPanel.revalidate();
                     playerListPanel.repaint();
                 }
@@ -73,14 +80,19 @@ public class WaitingLobby extends JPanel {
         label.setFont(FontFactory.newPoppinsBold(30));
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        JLabel lobbyID = new JLabel("Lobby ID: " + gameLobby);
+        lobbyID.setFont(FontFactory.newPoppinsBold(19));
+        lobbyID.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         waitingTime.setAlignmentX(Component.CENTER_ALIGNMENT);
         waitingTime.setFont(FontFactory.newPoppinsDefault(17));
 
-        waitingList.setBackground(Color.WHITE);
+        waitingList.setBackground(ColorFactory.beige());
 
         waitingList.add(Box.createVerticalStrut(100));
         waitingList.add(label);
         waitingList.add(waitingTime);
+        waitingList.add(lobbyID);
         waitingList.add(Box.createVerticalStrut(100));
     }
 

@@ -23,6 +23,11 @@ public class ApplicationServant extends ApplicationServerPOA {
         User user = response.getData();
 
        if(response.isSuccess()) {
+
+           if(controllerHashMap.containsKey(user.userID)) {
+               return new User("You are already logged in on another machine", "", "", "", "", 0);
+           }
+
            controllerHashMap.put(user.userID, controller);
            System.out.println("A new user Logged in total users online: " + controllerHashMap.size() );
        }
@@ -32,7 +37,6 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public void logout(String userID) {
-        Database.logout(userID);
         controllerHashMap.remove(userID);
         System.out.println("A user logged out total users online: " + controllerHashMap.size() );
     }
@@ -117,6 +121,12 @@ public class ApplicationServant extends ApplicationServerPOA {
     public void startGame(String lobbyId) {
         Database.startGame(lobbyId);
     }
+
+    @Override
+    public User[] getAllUsers() {
+        return Database.getPlayers();
+    }
+
 
 
 }
