@@ -349,7 +349,7 @@ public class Database {
 
         openConnection();
 
-        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE length = ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, length);
@@ -479,6 +479,8 @@ public class Database {
 
         return new User();
     }
+
+
 
     private static User getUser(ResultSet resultSet) throws SQLException {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));

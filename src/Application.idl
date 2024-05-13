@@ -50,11 +50,9 @@ module App {
 
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
-        void sendUpdates(in ClientActions clientActions);
+
         void updatePlayerListView();
-        void getTime(in long time);
-        void updateGameTime(in long time);
-        void updateWaitingTime(in long time);
+
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);
@@ -83,6 +81,13 @@ module App {
         Response submitWord(in string word, in string playerId, in string lobbyId);
         void startGame(in string lobbyId);
         Players getAllUsers();
+
+           void getTime(in long time);
+                void updateGameTime(in long time);
+                void updateWaitingTime(in long time);
+                Response banUser(in string userId);
+                Response unBanUser(in string userId);
+                Response deleteUserAccount(in string userId);
     };
 
     interface LobbyServer {

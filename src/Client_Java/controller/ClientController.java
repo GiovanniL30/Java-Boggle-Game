@@ -45,10 +45,6 @@ public class ClientController extends ControllerPOA {
         }
     }
 
-    @Override
-    public void sendUpdates(App.ClientActions clientActions) {
-
-    }
 
     @Override
     public void updatePlayerListView() {
@@ -59,20 +55,6 @@ public class ClientController extends ControllerPOA {
         }
     }
 
-    @Override
-    public void getTime(int time) {
-
-    }
-
-    @Override
-    public void updateGameTime(int time) {
-
-    }
-
-    @Override
-    public void updateWaitingTime(int time) {
-
-    }
 
     @Override
     public void setWaitingTime(int time) {

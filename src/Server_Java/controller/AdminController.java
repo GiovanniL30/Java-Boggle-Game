@@ -1,13 +1,10 @@
 package Server_Java.controller;
 
-import App.ApplicationServer;
-import App.ClientActions;
-import App.ControllerPOA;
-import App.User;
+import App.*;
 import Server_Java.view.AdminMainFrame;
 import org.omg.CORBA.ORB;
 
-public class AdminController extends ControllerPOA {
+public class AdminController {
     private final ApplicationServer applicationServer;
     private final ORB orb;
     private AdminMainFrame adminMainFrame;
@@ -18,84 +15,39 @@ public class AdminController extends ControllerPOA {
 
     }
 
-    @Override
-    public void receiveUpdates(ClientActions clientActions) {
 
-    }
-
-    @Override
-    public void sendUpdates(ClientActions clientActions) {
-
-    }
-
-    @Override
-    public void updatePlayerListView() {
-
-    }
-
-    @Override
     public void getTime(int time) {
-
+        applicationServer.getTime(time);
     }
 
-    @Override
+
     public void updateGameTime(int time) {
-
+        applicationServer.updateGameTime(time);
     }
 
-    @Override
+
     public void updateWaitingTime(int time) {
-
+        applicationServer.updateWaitingTime(time);
     }
 
-    @Override
-    public void setWaitingTime(int time) {
 
+    public void banUser(String userId) {
+        Response response = applicationServer.banUser(userId);
+
+        // handle the response
     }
 
-    @Override
-    public void setGameTime(int time) {
 
+    public void unBanUser(String userId) {
+        Response response = applicationServer.unBanUser(userId);
+
+        // handle the response
     }
 
-    @Override
-    public void setRound(int round) {
+    public void deleteUserAccount(String userId) {
+        Response response = applicationServer.deleteUserAccount(userId);
 
-    }
-
-    @Override
-    public void updatePlayerScore(String id, int newScore) {
-
-    }
-
-    @Override
-    public void receiveLetter(String[] letters) {
-
-    }
-
-    @Override
-    public void endGameUpdate(User winner, int score) {
-
-    }
-
-    @Override
-    public void stopIdleTime() {
-
-    }
-
-    @Override
-    public void startIdleTime() {
-
-    }
-
-    @Override
-    public void setIdleTimeLeft(String message) {
-
-    }
-
-    @Override
-    public void removeWord(String word) {
-
+        //handle the response
     }
 
     public void setAdminMainFrame(AdminMainFrame adminMainFrame) {
