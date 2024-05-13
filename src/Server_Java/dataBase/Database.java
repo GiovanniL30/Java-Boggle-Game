@@ -2,7 +2,7 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
-import Client_Java.utilities.UtilityMethods;
+import shared.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
@@ -174,7 +174,9 @@ public class Database {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
             preparedStatement.setString(2, playerId);
-            return preparedStatement.executeUpdate() >  0;
+            boolean res = preparedStatement.executeUpdate() >  0;
+            updateIsPlaying(playerId, res);
+            return res;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -205,21 +207,56 @@ public class Database {
 
     }
 
-    public static synchronized void finishedGame(String topPlayerId, String lobbyId, int score) {
+    public static synchronized void updateIsPlaying(String playerId, boolean p) {
+
+        int i = p ? 1 : 0;
 
         openConnection();
-
-        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ?,  lobbyStatus = 'Finished' WHERE lobbyID = ?";
+        String query = "UPDATE users SET isPlaying = ? WHERE (userID = ?)";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, topPlayerId);
-            preparedStatement.setInt(2, score);
-            preparedStatement.setString(3, lobbyId);
+            preparedStatement.setInt(1, i);
+            preparedStatement.setString(2, playerId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+
+    }
+
+    public static synchronized void finishedGame(String lobbyId) {
+
+        openConnection();
+
+        String query = "UPDATE lobby SET  lobbyStatus = 'Finished' WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public static synchronized boolean isAccountBanned(String userId) {
+
+        openConnection();
+        String query = "SELECT isBanned FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+               return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
     }
 
     public static synchronized void startGame(String lobbyId) {
@@ -349,7 +386,7 @@ public class Database {
 
         openConnection();
 
-        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE length = ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, length);
@@ -390,6 +427,8 @@ public class Database {
                 if(lobbyPlayers(lobbyId).length == 0) { //delete the lobby if there are no players already
                     deleteLobby(lobbyId);
                 }
+
+                updateIsPlaying(playerId, false);
                 return true;
             }else  return false;
 
@@ -438,6 +477,7 @@ public class Database {
     public static Response<User> logIn(String userName, String password) {
         openConnection();
 
+
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try {
@@ -447,7 +487,13 @@ public class Database {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return new Response<>(getUser(resultSet), true) ;
+                User user = getUser(resultSet);
+
+                if(isAccountBanned(user.userID)) {
+                    return new Response<>(new User("Your account is banned", "", "", "", "", 0), false);
+                }
+
+                return new Response<>(user, true) ;
             }
 
             resultSet.close();
@@ -479,6 +525,8 @@ public class Database {
 
         return new User();
     }
+
+
 
     private static User getUser(ResultSet resultSet) throws SQLException {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));

@@ -127,6 +127,35 @@ public class ApplicationServant extends ApplicationServerPOA {
         return Database.getPlayers();
     }
 
+    @Override
+    public void getTime(int time) {
+
+    }
+
+    @Override
+    public void updateGameTime(int time) {
+
+    }
+
+    @Override
+    public void updateWaitingTime(int time) {
+
+    }
+
+    @Override
+    public Response banUser(String userId) {
+        return null;
+    }
+
+    @Override
+    public Response unBanUser(String userId) {
+        return null;
+    }
+
+    @Override
+    public Response deleteUserAccount(String userId) {
+        return null;
+    }
 
 
 }
