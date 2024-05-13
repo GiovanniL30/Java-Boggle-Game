@@ -112,26 +112,47 @@ public class ClientController extends ControllerPOA {
     @Override
     public void stopIdleTime() {
         idleTimePopup.setVisible(false);
+        idleTimePopup.updateText("");
+
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+                mainFrame.getContentPane().remove(1);
+                mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
+                mainFrame.revalidate();
+                mainFrame.repaint();
+                return null;
+            }
+        }.execute();
     }
 
     @Override
-    public void startIdleTime() {
+    public void startIdleTime(User roundWinner, int score, int round) {
         new Thread(() -> {
-            idleTimePopup.setVisible(true);
-        }).start();
 
+            new SwingWorker<Object, Object>() {
+                @Override
+                protected Object doInBackground() {
+                    mainFrame.getHeader().setVisible(false);
+                    mainFrame.getContentPane().remove(1);
+                    mainFrame.getContentPane().add(new RoundWinner(roundWinner, score, round), 1);
+                    mainFrame.revalidate();
+                    mainFrame.repaint();
+                    return null;
+                }
+            }.execute();
+
+            idleTimePopup.setVisible(true);
+
+        }).start();
     }
+
+
 
     @Override
     public void setIdleTimeLeft(String message) {
         idleTimePopup.updateText(message);
     }
-
-    @Override
-    public void removeWord(String word) {
-        mainFrame.getGameStartedLobby().removeWord(word);
-    }
-
 
     public void submitWord(String word) {
 

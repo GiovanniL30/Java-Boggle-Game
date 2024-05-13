@@ -222,22 +222,9 @@ public class GameStartedLobby extends JPanel {
 
 
     public void addNewWordBlock(String word, int score) {
-        wordBlocks.addLast(new WordBlock(word, score));
+        wordBlocks.addFirst(new WordBlock(word, score));
         repopulateWordBlock();
     }
-
-    public void removeWord(String word) {
-
-        Optional<WordBlock> wordBlock = wordBlocks.stream().filter(w -> w.getWord().equalsIgnoreCase(word)).findFirst();
-
-        if(wordBlock.isPresent()) {
-            wordBlocks.remove(wordBlock.get());
-            repopulateWordBlock();
-        }
-
-    }
-
-
 
     private void repopulateWordBlock() {
 
@@ -254,7 +241,6 @@ public class GameStartedLobby extends JPanel {
         }.execute();
 
     }
-
 
 
     public void updatePlayerList() {
