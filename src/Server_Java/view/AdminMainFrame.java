@@ -1,9 +1,7 @@
 package Server_Java.view;
 
-import Client_Java.utilities.ColorFactory;
+import shared.utilities.ColorFactory;
 import Client_Java.view.components.Header;
-import Client_Java.view.panels.HomePage;
-import Client_Java.view.panels.Login;
 import Server_Java.controller.AdminController;
 import Server_Java.view.panels.AdminHomePage;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;

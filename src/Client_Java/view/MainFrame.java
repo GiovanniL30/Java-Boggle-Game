@@ -1,7 +1,7 @@
 package Client_Java.view;
 
 import Client_Java.controller.ClientController;
-import Client_Java.utilities.ColorFactory;
+import shared.utilities.ColorFactory;
 import Client_Java.view.components.Header;
 import Client_Java.view.panels.*;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -9,8 +9,6 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame {
     public static final int WIDTH = 1200;

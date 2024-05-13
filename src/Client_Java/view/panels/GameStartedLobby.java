@@ -2,12 +2,11 @@ package Client_Java.view.panels;
 
 import App.User;
 import Client_Java.controller.ClientController;
-import Client_Java.utilities.FontFactory;
+import shared.utilities.FontFactory;
 import Client_Java.view.components.*;
-import sun.awt.image.ImageWatched;
+import shared.viewComponents.FieldInput;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

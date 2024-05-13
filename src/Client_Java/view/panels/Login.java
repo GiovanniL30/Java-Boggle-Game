@@ -2,13 +2,13 @@ package Client_Java.view.panels;
 
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
-import Client_Java.utilities.UtilityMethods;
-import Client_Java.view.components.Button;
-import Client_Java.view.components.FieldInput;
-import Client_Java.view.components.FilledButton;
-import Client_Java.view.components.Picture;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.utilities.UtilityMethods;
+import shared.viewComponents.Button;
+import shared.viewComponents.FieldInput;
+import shared.viewComponents.FilledButton;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
 import java.awt.*;
