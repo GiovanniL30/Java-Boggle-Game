@@ -100,6 +100,7 @@ public class GameLobby  {
 
                     new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
                     new Thread(() -> Database.updatePlayerScores(playerScores)).start();
+                    new Thread(() -> players.keySet().forEach(player -> Database.removePlayer(player, lobbyId))).start();
 
                     gameTimer.stop();
                 }else {
