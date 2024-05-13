@@ -174,7 +174,9 @@ public class Database {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
             preparedStatement.setString(2, playerId);
-            return preparedStatement.executeUpdate() >  0;
+            boolean res = preparedStatement.executeUpdate() >  0;
+            updateIsPlaying(playerId, res);
+            return res;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -198,6 +200,24 @@ public class Database {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    public static synchronized void updateIsPlaying(String playerId, boolean p) {
+
+        int i = p ? 1 : 0;
+
+        openConnection();
+        String query = "UPDATE users SET isPlaying = ? WHERE (userID = ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, i);
+            preparedStatement.setString(2, playerId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -390,6 +410,8 @@ public class Database {
                 if(lobbyPlayers(lobbyId).length == 0) { //delete the lobby if there are no players already
                     deleteLobby(lobbyId);
                 }
+
+                updateIsPlaying(playerId, false);
                 return true;
             }else  return false;
 
