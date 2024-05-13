@@ -240,6 +240,25 @@ public class Database {
         }
     }
 
+    public static synchronized boolean isAccountBanned(String userId) {
+
+        openConnection();
+        String query = "SELECT isBanned FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+               return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
+
     public static synchronized void startGame(String lobbyId) {
         openConnection();
 
@@ -458,6 +477,7 @@ public class Database {
     public static Response<User> logIn(String userName, String password) {
         openConnection();
 
+
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try {
@@ -467,7 +487,13 @@ public class Database {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return new Response<>(getUser(resultSet), true) ;
+                User user = getUser(resultSet);
+
+                if(isAccountBanned(user.userID)) {
+                    return new Response<>(new User("Your account is banned", "", "", "", "", 0), false);
+                }
+
+                return new Response<>(user, true) ;
             }
 
             resultSet.close();
