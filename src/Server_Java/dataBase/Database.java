@@ -225,17 +225,15 @@ public class Database {
 
     }
 
-    public static synchronized void finishedGame(String topPlayerId, String lobbyId, int score) {
+    public static synchronized void finishedGame(String lobbyId) {
 
         openConnection();
 
-        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ?,  lobbyStatus = 'Finished' WHERE lobbyID = ?";
+        String query = "UPDATE lobby SET  lobbyStatus = 'Finished' WHERE lobbyID = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, topPlayerId);
-            preparedStatement.setInt(2, score);
-            preparedStatement.setString(3, lobbyId);
+            preparedStatement.setString(1, lobbyId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());

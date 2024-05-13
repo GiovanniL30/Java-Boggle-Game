@@ -60,9 +60,9 @@ module App {
         void receiveLetter(in Letters letters);
         void endGameUpdate(in User winner, in long score);
         void stopIdleTime();
-        void startIdleTime();
+        void startIdleTime(in User roundWinner, in long score, in long round);
         void setIdleTimeLeft(in string message);
-        void removeWord(in string word);
+
    };
 
     typedef sequence<Lobby> LobbyList;
