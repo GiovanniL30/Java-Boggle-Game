@@ -1,4 +1,4 @@
-package Client_Java.view.components;
+package shared.viewComponents;
 
 import javax.swing.*;
 import java.awt.*;

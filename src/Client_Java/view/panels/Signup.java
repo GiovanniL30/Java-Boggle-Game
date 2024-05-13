@@ -4,14 +4,14 @@ import App.CreateException;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
-import Client_Java.utilities.UtilityMethods;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.utilities.UtilityMethods;
 import Client_Java.view.MainFrame;
-import Client_Java.view.components.ClickableText;
-import Client_Java.view.components.FieldInput;
-import Client_Java.view.components.FilledButton;
-import Client_Java.view.components.Picture;
+import shared.viewComponents.ClickableText;
+import shared.viewComponents.FieldInput;
+import shared.viewComponents.FilledButton;
+import shared.viewComponents.Picture;
 
 
 

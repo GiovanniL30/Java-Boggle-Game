@@ -1,7 +1,8 @@
 package Client_Java.view.components;
 
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

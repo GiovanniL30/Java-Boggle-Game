@@ -2,7 +2,7 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
-import Client_Java.utilities.UtilityMethods;
+import shared.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;

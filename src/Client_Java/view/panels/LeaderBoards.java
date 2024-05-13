@@ -3,8 +3,8 @@ package Client_Java.view.panels;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.FontFactory;
-import Client_Java.view.components.Button;
+import shared.utilities.FontFactory;
+import shared.viewComponents.Button;
 
 import javax.swing.*;
 import java.awt.*;

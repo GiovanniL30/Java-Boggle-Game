@@ -1,7 +1,7 @@
 package Client_Java.view.panels;
 
 import App.User;
-import Client_Java.utilities.FontFactory;
+import shared.utilities.FontFactory;
 
 import javax.swing.*;
 import java.awt.*;
