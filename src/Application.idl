@@ -50,8 +50,9 @@ module App {
 
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
-        void sendUpdates(in ClientActions clientActions);
+
         void updatePlayerListView();
+
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);
@@ -59,9 +60,9 @@ module App {
         void receiveLetter(in Letters letters);
         void endGameUpdate(in User winner, in long score);
         void stopIdleTime();
-        void startIdleTime();
+        void startIdleTime(in User roundWinner, in long score, in long round);
         void setIdleTimeLeft(in string message);
-        void removeWord(in string word);
+
    };
 
     typedef sequence<Lobby> LobbyList;
@@ -80,6 +81,13 @@ module App {
         Response submitWord(in string word, in string playerId, in string lobbyId);
         void startGame(in string lobbyId);
         Players getAllUsers();
+
+           void getTime(in long time);
+                void updateGameTime(in long time);
+                void updateWaitingTime(in long time);
+                Response banUser(in string userId);
+                Response unBanUser(in string userId);
+                Response deleteUserAccount(in string userId);
     };
 
     interface LobbyServer {
