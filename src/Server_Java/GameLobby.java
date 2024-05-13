@@ -179,11 +179,6 @@ public class GameLobby  {
 
         Any any = ORB.init().create_any();
 
-        if(!validateLettersUsed(word)) {
-            any.insert_long(-1); // there is entered letter not available
-            return new App.Response(any, false);
-        }
-
         if(!isWordPresent(word)) {
             any.insert_long(0); // word is not present
             return new App.Response(any, false);
@@ -277,18 +272,6 @@ public class GameLobby  {
 
         return null;
     }
-
-    private boolean validateLettersUsed(String word) {
-
-        for(String s : currentLetters) {
-            if(!word.contains(s)) return false;
-        }
-
-        return true;
-
-    }
-
-
 
 
 }
