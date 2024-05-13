@@ -26,7 +26,7 @@ public class WaitingLobby extends JPanel {
         playerList();
         waitingPanel();
         setLayout(new BorderLayout());
-        setBackground(Color.white);
+        setBackground(ColorFactory.beige());
 
 
         add(waitingList, BorderLayout.NORTH);
@@ -45,7 +45,7 @@ public class WaitingLobby extends JPanel {
 
     private void playerList() {
         playerListPanel.setLayout(new GridBagLayout());
-        playerListPanel.setBackground(Color.white);
+        playerListPanel.setBackground(ColorFactory.beige());
 
 
         updatePlayerList();
@@ -63,7 +63,7 @@ public class WaitingLobby extends JPanel {
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for(User player: players) {
                     gridBagConstraints.gridy++;
-                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 20), gridBagConstraints);
+                    playerListPanel.add(new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 20, false), gridBagConstraints);
                     playerListPanel.revalidate();
                     playerListPanel.repaint();
                 }
@@ -87,7 +87,7 @@ public class WaitingLobby extends JPanel {
         waitingTime.setAlignmentX(Component.CENTER_ALIGNMENT);
         waitingTime.setFont(FontFactory.newPoppinsDefault(17));
 
-        waitingList.setBackground(Color.WHITE);
+        waitingList.setBackground(ColorFactory.beige());
 
         waitingList.add(Box.createVerticalStrut(100));
         waitingList.add(label);

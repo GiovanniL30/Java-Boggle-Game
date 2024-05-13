@@ -18,7 +18,7 @@ public class LetterBlock extends JPanel {
         setBackground(Color.white);
         setBorder(new LineBorder(Color.BLACK));
 
-        label = new JLabel(letter);
+        label = new JLabel(letter.toUpperCase());
         label.setFont(FontFactory.newPoppinsBold(20));
         label.setHorizontalAlignment(SwingUtilities.CENTER);
         add(label, BorderLayout.CENTER);

@@ -1,16 +1,10 @@
 package Server_Java;
 
-import App.ApplicationServer;
-import App.ApplicationServerHelper;
 import App.ClientActions;
 import App.Controller;
 import Server_Java.dataBase.Database;
-import com.sun.media.sound.SF2Region;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosNaming.NamingContextExt;
-import org.omg.CosNaming.NamingContextExtHelper;
 
 import javax.swing.Timer;
 
@@ -105,6 +99,7 @@ public class GameLobby  {
                     }
 
                     new Thread(() -> Database.finishedGame(topPlayer, lobbyId, playerScores.get(topPlayer))).start();
+                    new Thread(() -> Database.updatePlayerScores(playerScores)).start();
 
                     gameTimer.stop();
                 }else {
@@ -172,12 +167,29 @@ public class GameLobby  {
         Any any = ORB.init().create_any();
 
         if(!isWordPresent(word)) {
-            any.insert_long(0);
+            any.insert_long(0); //word is not present
             return new App.Response(any, false);
         }
 
         if(playerEnteredWords.get(userId).stream().anyMatch(s -> s.equalsIgnoreCase(word))) {
-            any.insert_long(1);
+            any.insert_long(1); // player already entered the word
+            return new App.Response(any, false);
+        }
+
+        String matchingWordPlayer = checkUniqueWord(word);
+
+        if(matchingWordPlayer != null) {
+
+            players.forEach((playerID, controller) -> {
+
+                if(matchingWordPlayer.equalsIgnoreCase(playerID)) {
+                    controller.removeWord(word);
+                    controller.updatePlayerScore(playerID, playerScores.get(matchingWordPlayer));
+                }
+
+            });
+
+            any.insert_long(2); //word is already entered by other user
             return new App.Response(any, false);
         }
 
@@ -239,6 +251,25 @@ public class GameLobby  {
 
         System.out.println(topPlayer);
         return topPlayer;
+    }
+
+    private String checkUniqueWord(String word) {
+
+
+        for(Map.Entry<String, LinkedList<String>> player : playerEnteredWords.entrySet()) {
+
+            Optional<String> notUniqueWord = player.getValue().stream().filter(w -> w.equalsIgnoreCase(word)).findFirst();
+
+            if(notUniqueWord.isPresent()) {
+                player.getValue().remove(word);
+                int newScore = playerScores.get(player.getKey()) - computeScore(word);
+                playerScores.put(player.getKey(), newScore);
+                return player.getKey();
+            }
+
+        }
+
+        return null;
     }
 
 

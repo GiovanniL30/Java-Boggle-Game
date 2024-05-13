@@ -10,16 +10,18 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
+import java.util.Properties;
+
 public class Server {
 
     public static void main(String[] args) {
 
         try {
 
-//            Properties props = new Properties();
-//            props.put("org.omg.CORBA.ORBInitialPort", "1099");
-//            props.put("org.omg.CORBA.ORBInitialHost", "localhost");
-            ORB orb = ORB.init(args, null);
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1099");
+            props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+            ORB orb = ORB.init(args, props);
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 

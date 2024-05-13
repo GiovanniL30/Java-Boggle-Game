@@ -67,6 +67,7 @@ CREATE TABLE `lobby` (
 
 LOCK TABLES `lobby` WRITE;
 /*!40000 ALTER TABLE `lobby` DISABLE KEYS */;
+INSERT INTO `lobby` VALUES ('035ea','Finished','2024-05-10 19:08:37','1',79),('e99e1','Finished','2024-05-10 19:06:31','1',59),('f5409','Finished','2024-05-10 19:11:16','1',8);
 /*!40000 ALTER TABLE `lobby` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,6 +94,7 @@ CREATE TABLE `lobbyplayers` (
 
 LOCK TABLES `lobbyplayers` WRITE;
 /*!40000 ALTER TABLE `lobbyplayers` DISABLE KEYS */;
+INSERT INTO `lobbyplayers` VALUES ('035ea','1'),('e99e1','1'),('f5409','1');
 /*!40000 ALTER TABLE `lobbyplayers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,6 +135,9 @@ CREATE TABLE `users` (
   `lastName` varchar(30) NOT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
+  `totalScore` int NOT NULL,
+  `isBanned` tinyint NOT NULL DEFAULT '0',
+  `isPlaying` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -144,7 +149,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('1','1','1','1','1'),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc'),('uID','Alfred','Ngaosi','albert123','qwerty'),('uID1','Giovanni','Leo','vanni123','abcdef');
+INSERT INTO `users` VALUES ('1','1','1','1','1',87,0,0),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc',880,0,0),('uID','Alfred','Ngaosi','albert123','qwerty',99,0,0),('uID1','Giovanni','Leo','vanni123','abcdef',8,0,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,4 +188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-04 21:27:47
+-- Dump completed on 2024-05-13 18:54:16

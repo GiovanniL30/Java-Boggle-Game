@@ -4,6 +4,7 @@ import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.FontFactory;
 import Client_Java.view.components.*;
+import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -20,6 +21,7 @@ public class GameStartedLobby extends JPanel {
     private final JLabel scoreLabel = new JLabel("Your score: ");
     private final FieldInput fieldInput = new FieldInput("", new Dimension(400, 70), 20, 4, false);
     private final JPanel wordEnteredPanel = new JPanel();
+    private final LinkedList<WordBlock> wordBlocks = new LinkedList<>();
     private final JPanel playerListPanel = new JPanel();
     private final JPanel randomLettersPanel = new JPanel();
 
@@ -220,16 +222,40 @@ public class GameStartedLobby extends JPanel {
 
 
     public void addNewWordBlock(String word, int score) {
+        wordBlocks.addLast(new WordBlock(word, score));
+        repopulateWordBlock();
+    }
+
+    public void removeWord(String word) {
+
+        Optional<WordBlock> wordBlock = wordBlocks.stream().filter(w -> w.getWord().equalsIgnoreCase(word)).findFirst();
+
+        if(wordBlock.isPresent()) {
+            wordBlocks.remove(wordBlock.get());
+            repopulateWordBlock();
+        }
+
+    }
+
+
+
+    private void repopulateWordBlock() {
 
         new SwingWorker<Object, Object>() {
             @Override
             protected Object doInBackground() {
-                wordEnteredPanel.add(new WordBlock(word, score), 0);
+
+                for(WordBlock wordBlock : wordBlocks) {
+                    wordEnteredPanel.add(wordBlock);
+                }
+
                 return null;
             }
         }.execute();
 
     }
+
+
 
     public void updatePlayerList() {
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -244,7 +270,7 @@ public class GameStartedLobby extends JPanel {
                 User[] players = clientController.lobbyPlayer(gameLobby);
                 for (User player : players) {
                     gridBagConstraints.gridy++;
-                    PlayerNameBlock playerNameBlock = new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14);
+                    PlayerNameBlock playerNameBlock = new PlayerNameBlock(clientController.getLoggedInUser().userName.equals(player.userName) ? "YOU" : player.userName, 0, player.userID, 14, true);
                     playerNameBlocks.add(playerNameBlock);
                     playerListPanel.add(playerNameBlock, gridBagConstraints);
                     playerListPanel.revalidate();

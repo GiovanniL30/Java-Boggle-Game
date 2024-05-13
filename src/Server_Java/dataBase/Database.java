@@ -1,14 +1,15 @@
 package Server_Java.dataBase;
 
 import App.Lobby;
-import App.PlayerScore;
 import App.User;
 import Client_Java.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Database {
 
@@ -19,26 +20,79 @@ public class Database {
         if (connection != null) return;
         try {
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
     }
 
-    public static synchronized PlayerScore[] getPlayerScores() {
+    public static synchronized User[] getPlayers() {
+
         openConnection();
 
-        String query = "";
+        LinkedList<User> users = new LinkedList<>();
+        String query = "SELECT * FROM users WHERE totalScore != 0 ORDER BY 6 desc";
 
-        //do the actual logic
-        return new PlayerScore[]{};
+        try {
+            Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while(resultSet.next()) {
+                users.add(getUser(resultSet));
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+
+        return users.toArray(new User[0]);
+    }
+
+
+    public static synchronized void updatePlayerScores(HashMap<String, Integer> playerScores) {
+
+        openConnection();
+
+        String query = "UPDATE users SET totalScore = ? WHERE (userID = ?)";
+
+        playerScores.forEach((playerID, playerAddedScore) -> {
+
+            int newScore = getPlayerScore(playerID) + playerAddedScore;
+
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, newScore );
+                preparedStatement.setString(2, playerID);
+                preparedStatement.executeUpdate();
+
+                preparedStatement.close();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+
+        });
 
     }
 
-    public static synchronized void addPlayerScores(HashMap<String, Integer> playerScores) {
+    private static synchronized int getPlayerScore(String playerId) {
+
+        String query  = "SELECT totalScore FROM users WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, playerId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
 
 
-        //add player scores to the database
+        return 0;
     }
 
     public static synchronized User[] lobbyPlayers(String lobbyId) {
@@ -120,7 +174,9 @@ public class Database {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
             preparedStatement.setString(2, playerId);
-            return preparedStatement.executeUpdate() >  0;
+            boolean res = preparedStatement.executeUpdate() >  0;
+            updateIsPlaying(playerId, res);
+            return res;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -144,6 +200,24 @@ public class Database {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+    }
+
+    public static synchronized void updateIsPlaying(String playerId, boolean p) {
+
+        int i = p ? 1 : 0;
+
+        openConnection();
+        String query = "UPDATE users SET isPlaying = ? WHERE (userID = ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, i);
+            preparedStatement.setString(2, playerId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -225,6 +299,28 @@ public class Database {
         return false;
     }
 
+    public static synchronized List<Integer> getTime(){
+
+        openConnection();
+
+        List<Integer> time = new ArrayList<>();
+        String query = "SELECT length FROM time";
+
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                time.add(resultSet.getInt(2));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return time;
+
+    }
+
     public static synchronized int getGameTime() {
 
         openConnection();
@@ -269,6 +365,36 @@ public class Database {
         return 0;
     }
 
+    public static synchronized void updateGameTime(int length) {
+
+        openConnection();
+
+        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE length = ?)";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, length);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static synchronized void updateWaitingTime(int length) {
+
+        openConnection();
+
+        String query = "UPDATE gamesettings SET waitingTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, length);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
 
@@ -284,6 +410,8 @@ public class Database {
                 if(lobbyPlayers(lobbyId).length == 0) { //delete the lobby if there are no players already
                     deleteLobby(lobbyId);
                 }
+
+                updateIsPlaying(playerId, false);
                 return true;
             }else  return false;
 
@@ -349,7 +477,7 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>(new User("Invalid Login Credentials", "", "", "", ""), false);
+        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", 0), false);
     }
 
     public static User getUser(String id) {
@@ -374,8 +502,10 @@ public class Database {
         return new User();
     }
 
+
+
     private static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
+        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
     }
 
 

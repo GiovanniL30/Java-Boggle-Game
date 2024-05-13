@@ -16,6 +16,7 @@ import Client_Java.view.components.Picture;
 
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 
@@ -28,7 +29,7 @@ public class Signup extends JPanel {
 
     public Signup(ClientController clientControllerObserver) {
 
-        setBackground(Color.white);
+        setBackground(ColorFactory.beige());
         setLayout(new GridBagLayout());
         setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT));
 
@@ -36,24 +37,31 @@ public class Signup extends JPanel {
         layoutConstraints.gridy = 0;
         layoutConstraints.gridx = 0;
 
+        Picture boggled = new Picture("src/shared/images/boggled.png", 800, 175);
+        boggled.setBackground(ColorFactory.beige());
+        boggled.setBorder(new EmptyBorder(0,0,20,0));
+        add(boggled, layoutConstraints);
+
+        layoutConstraints.gridy = 1;
+
         Picture heroPicture = new Picture("resources/images/sign-up-header.png", 400, 150);
-        heroPicture.setBackground(Color.white);
+        heroPicture.setBackground(ColorFactory.beige());
         add(heroPicture, layoutConstraints);
 
 
         JPanel fieldInputHolders = createFieldInputs();
-        fieldInputHolders.setBackground(Color.WHITE);
-        layoutConstraints.gridy = 1;
+        layoutConstraints.gridy = 2;
         add(fieldInputHolders, layoutConstraints);
 
         ClickableText loginButton = new ClickableText("Already have an account? Login", 400, 50, FontFactory.newPoppinsDefault(11));
         loginButton.setForeground(ColorFactory.lightGrey());
-        layoutConstraints.gridy = 2;
+        loginButton.setBackground(ColorFactory.beige());
+        layoutConstraints.gridy = 3;
         add(loginButton, layoutConstraints);
 
 
         FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(950, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
-        layoutConstraints.gridy = 3;
+        layoutConstraints.gridy = 4;
         add(createAccountButton, layoutConstraints);
 
         loginButton.addActionListener(e -> clientControllerObserver.changeFrame(ClientViews.LOGIN));
@@ -85,7 +93,7 @@ public class Signup extends JPanel {
             }
 
 
-            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p);
+            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0);
             try {
                 clientControllerObserver.createAccount(newUser);
             } catch (CreateException e) {
@@ -96,6 +104,8 @@ public class Signup extends JPanel {
 
     private JPanel createFieldInputs() {
         JPanel fieldInputHolders = new JPanel(new GridBagLayout());
+        fieldInputHolders.setBackground(ColorFactory.beige());
+
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.CENTER;
 
@@ -105,6 +115,10 @@ public class Signup extends JPanel {
         userName = new FieldInput("User Name", new Dimension(450, 50), 20, 1, false);
         password = new FieldInput("Password", new Dimension(450, 50), 20, 1, true);
 
+        firstName.setBackground(ColorFactory.beige());
+        lastName.setBackground(ColorFactory.beige());
+        userName.setBackground(ColorFactory.beige());
+        password.setBackground(ColorFactory.beige());
 
         constraints.gridy = 0;
         constraints.gridx = 0;

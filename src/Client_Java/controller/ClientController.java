@@ -45,10 +45,6 @@ public class ClientController extends ControllerPOA {
         }
     }
 
-    @Override
-    public void sendUpdates(App.ClientActions clientActions) {
-
-    }
 
     @Override
     public void updatePlayerListView() {
@@ -58,6 +54,7 @@ public class ClientController extends ControllerPOA {
             mainFrame.getWaitingLobby().updatePlayerList();
         }
     }
+
 
     @Override
     public void setWaitingTime(int time) {
@@ -128,6 +125,11 @@ public class ClientController extends ControllerPOA {
     @Override
     public void setIdleTimeLeft(String message) {
         idleTimePopup.updateText(message);
+    }
+
+    @Override
+    public void removeWord(String word) {
+        mainFrame.getGameStartedLobby().removeWord(word);
     }
 
 
@@ -243,6 +245,10 @@ public class ClientController extends ControllerPOA {
 
     }
 
+    public User[] getLeaderBoards() {
+        return applicationServer.getAllUsers();
+    }
+
     public User[] lobbyPlayer(String lobbyId) {
         return applicationServer.getPlayers(lobbyId);
     }
@@ -265,18 +271,21 @@ public class ClientController extends ControllerPOA {
 
                 switch (clientViews) {
                     case LOGIN: {
+                        mainFrame.getHeader().setVisible(false);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setLogin(new Login(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
                         break;
                     }
                     case SIGN_UP: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setSignup(new Signup(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getSignup(), 1);
                         break;
                     }
                     case HOME_PAGE: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setHomePage(new HomePage(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getHomePage(), 1);
@@ -284,15 +293,24 @@ public class ClientController extends ControllerPOA {
                         break;
                     }
                     case GAME_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setGameStartedLobby(new GameStartedLobby(ClientController.this, gameLobby, randomLetters));
                         mainFrame.getContentPane().add(mainFrame.getGameStartedLobby(), 1);
                         break;
                     }
                     case WAIT_LOBBY: {
+                        mainFrame.getHeader().setVisible(true);
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setWaitingLobby(new WaitingLobby(ClientController.this, gameLobby));
                         mainFrame.getContentPane().add(mainFrame.getWaitingLobby(), 1);
+                        break;
+                    }
+                    case LEADER_BOARDS: {
+                        mainFrame.getHeader().setVisible(true);
+                        mainFrame.getContentPane().remove(1);
+                        mainFrame.setLeaderBoards(new LeaderBoards(ClientController.this));
+                        mainFrame.getContentPane().add(mainFrame.getLeaderBoards(), 1);
                         break;
                     }
                     default: {
