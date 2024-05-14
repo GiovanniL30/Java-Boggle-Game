@@ -1,10 +1,10 @@
 package Server_Java.view;
 
+import Server_Java.view.components.AdminHeader;
 import Server_Java.view.panels.GameSettings;
 import Server_Java.view.panels.Signup;
 import Server_Java.view.panels.UsersPanel;
 import shared.utilities.ColorFactory;
-import Client_Java.view.components.Header;
 import Server_Java.controller.AdminController;
 import Server_Java.view.panels.AdminHomePage;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -18,7 +18,7 @@ public class AdminMainFrame extends JFrame {
     public static final int HEIGHT = 600;
     private JPanel mainLayout = new JPanel();
     private AdminHomePage adminHomePage;
-    private Header header;
+    private AdminHeader header;
     private Signup signUp;
     private GameSettings gameSettings;
     private UsersPanel usersPanel;
@@ -26,7 +26,7 @@ public class AdminMainFrame extends JFrame {
     public AdminMainFrame(AdminController adminController){
         init();
         adminHomePage = new AdminHomePage(adminController);
-        header = new Header();
+        header = new AdminHeader();
         getContentPane().add(header, BorderLayout.NORTH);
         getContentPane().add(adminHomePage, BorderLayout.CENTER);
         header.setVisible(false);
@@ -60,7 +60,7 @@ public class AdminMainFrame extends JFrame {
         setVisible(true);
     }
 
-    public Header getHeader() {
+    public AdminHeader getAdminHeader() {
         return header;
     }
 

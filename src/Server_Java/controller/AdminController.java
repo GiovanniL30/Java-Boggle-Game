@@ -68,28 +68,30 @@ public class AdminController {
 
                 switch (adminViews) {
                     case SIGN_UP: {
-                        adminMainFrame.getHeader().setVisible(false);
+                        adminMainFrame.getAdminHeader().setVisible(false);
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setSignUp(new Signup(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getSignUp(), 1);
                         break;
                     }
                     case GAME_SETTINGS: {
-                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setText("Game Settings");
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setGameSettings(new GameSettings(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getGameSettings(), 1);
                         break;
                     }
                     case PLAYERS: {
-                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setText("Boggled Players");
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setUsersPanel(new UsersPanel(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getUsersPanel(), 1);
                         break;
                     }
                     case HOME_PAGE: {
-                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setVisible(false);
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setAdminHomePage(new AdminHomePage(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getAdminHomePage(), 1);

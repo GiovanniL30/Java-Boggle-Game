@@ -20,7 +20,6 @@ public class UsersPanel extends JPanel {
         JLabel boggledUsers = new JLabel("Boggled Users");
         boggledUsers.setFont(FontFactory.newPoppinsBold(30));
 
-        add(header);
         SearchBar searchbar = new SearchBar(adminController);
         add(searchbar);
 
