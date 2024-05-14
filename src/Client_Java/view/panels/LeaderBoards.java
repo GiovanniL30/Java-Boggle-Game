@@ -6,6 +6,7 @@ import Client_Java.utilities.ClientViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.Button;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,14 +16,19 @@ public class LeaderBoards extends JPanel {
     private JLabel top1 = new JLabel();
     private JLabel top2 = new JLabel();
     private JLabel top3 = new JLabel();
-    private JLabel header = new JLabel("Leaderboards");
+    private JPanel header = new JPanel();
 
     public LeaderBoards(ClientController clientController) {
+        setBackground(ColorFactory.beige());
 
         header.setFont(FontFactory.newPoppinsBold(45));
         header.setBackground(ColorFactory.beige());
 
         setLayout(new GridBagLayout());
+        header.setPreferredSize(new Dimension(800, 150));
+
+        Picture picture = new Picture("src/shared/images/leaderboards.png", 800, 150);
+        picture.setBackground(ColorFactory.beige());
 
         JScrollPane playerList = createPlayerListPanel(clientController);
 
@@ -31,6 +37,8 @@ public class LeaderBoards extends JPanel {
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
+
+        header.add(picture, gbc);
 
         add(header, gbc);
 
@@ -60,6 +68,7 @@ public class LeaderBoards extends JPanel {
 
         JPanel playersPanel = new JPanel();
         playersPanel.setLayout(new BoxLayout(playersPanel, BoxLayout.Y_AXIS));
+        playersPanel.setBackground(ColorFactory.cream());
 
         JScrollPane otherPlayers = new JScrollPane(playersPanel);
         otherPlayers.setPreferredSize(new Dimension(300, 100));
@@ -84,6 +93,7 @@ public class LeaderBoards extends JPanel {
     private Button createBackButton(ClientController clientController) {
         Button button = new Button("Back", new Dimension(100, 50), FontFactory.newPoppinsDefault(14));
         button.addActionListener(e -> clientController.changeFrame(ClientViews.HOME_PAGE));
+        button.setBackground(ColorFactory.blue());
         return button;
     }
 }
