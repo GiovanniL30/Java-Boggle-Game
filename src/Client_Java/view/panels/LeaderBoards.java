@@ -9,6 +9,7 @@ import shared.viewComponents.Button;
 import shared.viewComponents.Picture;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class LeaderBoards extends JPanel {
@@ -16,19 +17,15 @@ public class LeaderBoards extends JPanel {
     private JLabel top1 = new JLabel();
     private JLabel top2 = new JLabel();
     private JLabel top3 = new JLabel();
-    private JPanel header = new JPanel();
 
     public LeaderBoards(ClientController clientController) {
         setBackground(ColorFactory.beige());
 
-        header.setFont(FontFactory.newPoppinsBold(45));
-        header.setBackground(ColorFactory.beige());
-
         setLayout(new GridBagLayout());
-        header.setPreferredSize(new Dimension(800, 150));
 
         Picture picture = new Picture("src/shared/images/leaderboards.png", 800, 150);
         picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
 
         JScrollPane playerList = createPlayerListPanel(clientController);
 
@@ -38,10 +35,7 @@ public class LeaderBoards extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
 
-        header.add(picture, gbc);
-
-        add(header, gbc);
-
+        add(picture, gbc);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
         add(top1, gbc);
