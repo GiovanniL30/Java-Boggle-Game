@@ -26,4 +26,14 @@ public class ColorFactory {
 
     public static Color nude() { return new Color(178, 147, 119); }
 
+    public static Color purple() { return new Color(120, 37, 198); }
+
+    public static Color green(){
+        return new Color(43, 152, 43);
+    }
+
+    public static Color red(){
+        return new Color(120, 20, 20);
+    }
+
 }
