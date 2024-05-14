@@ -30,14 +30,14 @@ public class GameSettings extends JPanel {
 
         constraints.gridy = 0;
         constraints.gridx = 1;
-        //        String[] wtOptions = {"30", "45", "60", "90"}; // Example options
+//        Integer[] wtOptions = {30, 45, 60, 90}; // Example options
         Integer[] time = new Integer[adminController.getTime().length];
         for (int i = 0; i < adminController.getTime().length; i++) {
             time[i] = adminController.getTime()[i];
         }
 
-        DefaultComboBoxModel<Integer> timeOptions = new DefaultComboBoxModel<>(time);
-        waitingTimeOptions = new JComboBox<>(timeOptions);
+//        DefaultComboBoxModel<Integer> timeOptions = new DefaultComboBoxModel<>(time);
+        waitingTimeOptions = new JComboBox<>(time);
         waitingTimeOptions.setPreferredSize(new Dimension(200,30));
         centerPanel.add(waitingTimeOptions, constraints);
 
@@ -48,8 +48,8 @@ public class GameSettings extends JPanel {
 
         constraints.gridy = 1;
         constraints.gridx = 1;
-//        String[] gtOptions = {"30", "45", "60", "90"}; // Example options
-        gameTimeOptions = new JComboBox<>(timeOptions);
+//        Integer[] gtOptions = {30, 45, 60, 90}; // Example options
+        gameTimeOptions = new JComboBox<>(time);
         gameTimeOptions.setPreferredSize(new Dimension(200,30));
         centerPanel.add(gameTimeOptions, constraints);
 
@@ -65,7 +65,10 @@ public class GameSettings extends JPanel {
         centerPanel.add(updateButton, constraints);
 
         cancelButton.addActionListener(e -> {
-            adminController.changeFrame(AdminViews.HOME_PAGE);
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel?", "Cancel", JOptionPane.YES_NO_OPTION);
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.changeFrame(AdminViews.HOME_PAGE);
+            }
         });
         add(centerPanel, BorderLayout.CENTER);
     }
