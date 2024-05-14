@@ -6,6 +6,7 @@ import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
 import Server_Java.utilities.AdminViews;
 import Server_Java.view.AdminMainFrame;
+import Server_Java.view.panels.UsersPanel;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.IconButton;
@@ -14,11 +15,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
+import java.util.List;
 
 public class SearchBar extends JPanel {
     private FieldInput searchField;
     private User[] users;
+    private UsersList usersList;
+    private AdminController adminController;
+    private UsersPanel usersPanel;
     public SearchBar(AdminController adminController){
+        this.adminController = adminController;
         setBackground(Color.white);
         setLayout(new BorderLayout(0, 50));
 
@@ -85,8 +92,17 @@ public class SearchBar extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String searchTerm = searchField.getInput();
                     if (!searchTerm.isEmpty()) {
-                        searchUsers(searchTerm);
+                        User[] users = Database.getPlayers();
+
+                        User[] filteredUsers = Arrays.stream(users)
+                                .filter(user -> user.firstName.contains(searchTerm) ||
+                                        user.lastName.contains(searchTerm) ||
+                                        user.userName.contains(searchTerm))
+                                .toArray(User[]::new);
+
+                        setUserList(filteredUsers);
                     }
+
                 }
             }
 
@@ -116,5 +132,12 @@ public class SearchBar extends JPanel {
                 user.firstName.contains(searchTerm) ||
                 user.lastName.contains(searchTerm) ||
                 user.userName.contains(searchTerm);
+    }
+    public void setUserList(User[] users) {
+        usersPanel.remove(1);
+        usersList = new UsersList(users, adminController);
+        usersPanel.add(usersList);
+        revalidate();
+        repaint();
     }
 }

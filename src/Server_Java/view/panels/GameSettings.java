@@ -1,4 +1,5 @@
 package Server_Java.view.panels;
+import Server_Java.dataBase.Database;
 import Server_Java.utilities.AdminViews;
 import Server_Java.controller.AdminController;
 import shared.utilities.ColorFactory;
@@ -39,6 +40,7 @@ public class GameSettings extends JPanel {
 //        DefaultComboBoxModel<Integer> timeOptions = new DefaultComboBoxModel<>(time);
         waitingTimeOptions = new JComboBox<>(time);
         waitingTimeOptions.setPreferredSize(new Dimension(200,30));
+        waitingTimeOptions.setSelectedItem(Database.getWaitingTime());
         centerPanel.add(waitingTimeOptions, constraints);
 
         constraints.gridy = 1;
@@ -51,6 +53,7 @@ public class GameSettings extends JPanel {
 //        Integer[] gtOptions = {30, 45, 60, 90}; // Example options
         gameTimeOptions = new JComboBox<>(time);
         gameTimeOptions.setPreferredSize(new Dimension(200,30));
+        gameTimeOptions.setSelectedItem(Database.getGameTime());
         centerPanel.add(gameTimeOptions, constraints);
 
         constraints.gridx = 0;
