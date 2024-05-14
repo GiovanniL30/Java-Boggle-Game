@@ -258,6 +258,24 @@ public class Database {
 
         return false;
     }
+    public static synchronized boolean isAccountPlaying(String userId) {
+
+        openConnection();
+        String query = "SELECT isPlaying FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
 
     public static synchronized void startGame(String lobbyId) {
         openConnection();
@@ -327,7 +345,7 @@ public class Database {
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                time.add(resultSet.getInt(2));
+                time.add(resultSet.getInt(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -416,6 +434,7 @@ public class Database {
     }
 
     public static synchronized boolean deleteUser(String userId) {
+
         openConnection();
 
         String query = "DELETE FROM users WHERE userID = ?";
@@ -501,7 +520,6 @@ public class Database {
 
     public static Response<User> logIn(String userName, String password) {
         openConnection();
-
 
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
