@@ -13,11 +13,13 @@ import Server_Java.view.panels.UsersPanel;
 import org.omg.CORBA.ORB;
 
 import javax.swing.*;
+import java.util.LinkedList;
 
 public class AdminController {
     private final ApplicationServer applicationServer;
     private final ORB orb;
     private AdminMainFrame adminMainFrame;
+    private LinkedList<User> users;
 
     public AdminController(ApplicationServer applicationServer, ORB orb) {
         this.applicationServer = applicationServer;
@@ -83,7 +85,7 @@ public class AdminController {
                     case PLAYERS: {
                         adminMainFrame.getHeader().setVisible(true);
                         adminMainFrame.getContentPane().remove(1);
-                        adminMainFrame.setUsersPanel(new UsersPanel(AdminController.this));
+                        adminMainFrame.setUsersPanel(new UsersPanel(users, AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getUsersPanel(), 1);
                         break;
                     }
