@@ -84,7 +84,7 @@ CREATE TABLE `lobbyplayers` (
   PRIMARY KEY (`playerID`,`lobbyID`),
   KEY `lobbyID_idx` (`lobbyID`) /*!80000 INVISIBLE */,
   CONSTRAINT `lobbyID` FOREIGN KEY (`lobbyID`) REFERENCES `lobby` (`lobbyID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `playerID2` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `playerID2` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,4 +188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-13 18:54:16
+-- Dump completed on 2024-05-14 23:32:41
