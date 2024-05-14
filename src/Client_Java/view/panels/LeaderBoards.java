@@ -3,6 +3,7 @@ package Client_Java.view.panels;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
+import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.Button;
 
@@ -19,6 +20,7 @@ public class LeaderBoards extends JPanel {
     public LeaderBoards(ClientController clientController) {
 
         header.setFont(FontFactory.newPoppinsBold(45));
+        header.setBackground(ColorFactory.beige());
 
         setLayout(new GridBagLayout());
 

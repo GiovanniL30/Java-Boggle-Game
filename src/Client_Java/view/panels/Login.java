@@ -33,7 +33,7 @@ public class Login extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new GridLayout());
 
-        Picture picture = new Picture("src/shared/images/welcome.png", 500, 100);
+        Picture picture = new Picture("src/shared/images/welcome.png", 500, 150);
         picture.setBackground(ColorFactory.beige());
         Picture logo = new Picture("src/shared/images/logo.png", 550, 550);
         logo.setBackground(ColorFactory.beige());
