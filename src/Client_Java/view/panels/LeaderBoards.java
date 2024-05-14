@@ -18,6 +18,8 @@ public class LeaderBoards extends JPanel {
     private JLabel top2 = new JLabel();
     private JLabel top3 = new JLabel();
 
+    private JPanel top1Panel = new JPanel();
+
     public LeaderBoards(ClientController clientController) {
         setBackground(ColorFactory.beige());
 
@@ -38,7 +40,22 @@ public class LeaderBoards extends JPanel {
         add(picture, gbc);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
-        add(top1, gbc);
+
+        top1Panel.setLayout(null);
+        top1Panel.setPreferredSize(new Dimension(800, 50));  // Use preferred size instead of setSize
+        top1Panel.setBackground(ColorFactory.beige());
+
+        Picture crown = new Picture("src/shared/images/crownCapy.png", 100 ,100);
+        crown.setBackground(ColorFactory.beige());
+        crown.setBounds(-20, -25, 100, 80);
+
+
+        top1.setBounds(0, 0, 800, 50);
+        top1Panel.add(top1);
+        top1Panel.add(crown);
+
+
+        add(top1Panel, gbc);
         gbc.gridy++;
         add(top2, gbc);
         gbc.gridy++;
