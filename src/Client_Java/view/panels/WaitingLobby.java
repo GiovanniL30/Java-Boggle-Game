@@ -18,7 +18,7 @@ public class WaitingLobby extends JPanel {
     private JPanel waitingList = new JPanel();
     private String gameLobby;
     private JLabel waitingTime = new JLabel("(GAME WILL START IN:...)");
-    private FilledButton leaveLobby = new FilledButton("Leave Lobby", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.white);
+    private FilledButton leaveLobby = new FilledButton("Leave Lobby", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.mahogany(), ColorFactory.cream());
 
     public WaitingLobby(ClientController clientController, String gameLobby) {
         this.clientController = clientController;

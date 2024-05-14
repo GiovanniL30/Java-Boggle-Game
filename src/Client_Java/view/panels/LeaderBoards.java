@@ -93,7 +93,8 @@ public class LeaderBoards extends JPanel {
     private Button createBackButton(ClientController clientController) {
         Button button = new Button("Back", new Dimension(100, 50), FontFactory.newPoppinsDefault(14));
         button.addActionListener(e -> clientController.changeFrame(ClientViews.HOME_PAGE));
-        button.setBackground(ColorFactory.blue());
+        button.setBackground(ColorFactory.mahogany());
+        button.setForeground(ColorFactory.cream());
         return button;
     }
 }

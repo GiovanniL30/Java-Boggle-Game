@@ -93,6 +93,9 @@ public class Login extends JPanel {
         userName.setBackground(ColorFactory.beige());
         password.setBackground(ColorFactory.beige());
 
+        loginButton.setBackground(ColorFactory.mahogany());
+        loginButton.setForeground(ColorFactory.cream());
+
         loginButton.addActionListener( e -> {
 
             String name = userName.getInput();

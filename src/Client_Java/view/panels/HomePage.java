@@ -44,6 +44,9 @@ public class HomePage extends JPanel {
         constraints.gridy = 4;
         centerPanel.add(leaderBoards, constraints);
 
+        joinLobby.setBackground(ColorFactory.mahogany());
+        joinLobby.setForeground(ColorFactory.cream());
+
         joinLobby.addActionListener( e -> {
 
             String id = lobbyId.getInput();
