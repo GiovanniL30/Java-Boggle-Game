@@ -557,5 +557,26 @@ public class Database {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
     }
 
+    public static synchronized Response<User> banUser(String userID) {
+        openConnection();
 
+        String query = "UPDATE users SET isBanned = 1 WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                User bannedUser = getUser(userID);
+                return new Response<>(bannedUser, true);
+            } else {
+                return new Response<>(new User("User not found", "", "", "", "", 0), false);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return new Response<>(new User("Error banning user", "", "", "", "", 0), false);
+        }
+    }
 }
