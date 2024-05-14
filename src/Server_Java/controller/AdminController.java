@@ -16,8 +16,8 @@ public class AdminController {
     }
 
 
-    public void getTime(int time) {
-        applicationServer.getTime(time);
+    public void getTime() {
+        applicationServer.getTime();
     }
 
 
