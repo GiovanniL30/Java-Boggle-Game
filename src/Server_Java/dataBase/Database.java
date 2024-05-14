@@ -316,13 +316,12 @@ public class Database {
         return false;
     }
 
-    public static synchronized List<Integer> getTime(){
+    public static synchronized int[] getTime(){
 
         openConnection();
 
-        List<Integer> time = new ArrayList<>();
+        LinkedList<Integer> time = new LinkedList<>();
         String query = "SELECT length FROM time";
-
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
@@ -334,8 +333,12 @@ public class Database {
             throw new RuntimeException(e);
         }
 
-        return time;
+        int[] timeArray = new int[time.size()];
+        for (int i = 0; i < time.size(); i++) {
+            timeArray[i] = time.get(i);
+        }
 
+        return timeArray;
     }
 
     public static synchronized int getGameTime() {
@@ -411,6 +414,8 @@ public class Database {
         }
 
     }
+
+
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
