@@ -8,6 +8,7 @@ import shared.viewComponents.*;
 import shared.viewComponents.Button;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class HomePage extends JPanel {
@@ -25,8 +26,9 @@ public class HomePage extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new BorderLayout());
 
-        Picture picture = new Picture("src/shared/images/boggled.png", 500, 150);
+        Picture picture = new Picture("src/shared/images/boggled.png", 700, 225);
         picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
 
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

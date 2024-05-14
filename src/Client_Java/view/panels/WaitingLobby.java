@@ -10,6 +10,7 @@ import Client_Java.view.components.PlayerNameBlock;
 import shared.viewComponents.Picture;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class WaitingLobby extends JPanel {
@@ -79,6 +80,7 @@ public class WaitingLobby extends JPanel {
 
         Picture picture = new Picture("src/shared/images/waiting.png", 500, 200);
         picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
 
         JLabel label = new JLabel("Waiting for other players to join...");
         label.setFont(FontFactory.newPoppinsBold(30));
@@ -93,7 +95,6 @@ public class WaitingLobby extends JPanel {
 
         waitingList.setBackground(ColorFactory.beige());
 
-        waitingList.add(Box.createVerticalStrut(100));
         waitingList.add(picture);
         waitingList.add(label);
         waitingList.add(waitingTime);
