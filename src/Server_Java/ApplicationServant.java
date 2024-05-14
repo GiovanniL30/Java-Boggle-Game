@@ -129,8 +129,8 @@ public class ApplicationServant extends ApplicationServerPOA {
     }
 
     @Override
-    public void getTime(int time) {
-
+    public int[] getTime() {
+        return Database.getTime();
     }
 
     @Override
@@ -158,8 +158,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public Response deleteUserAccount(String userId) {
-        return null;
+        return Database.deleteUser(userId);
     }
-
 
 }

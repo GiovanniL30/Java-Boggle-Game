@@ -2,6 +2,8 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
 import shared.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
@@ -433,35 +435,44 @@ public class Database {
 
     }
 
-    public static synchronized Response<String> deleteUser(String userId) {
+    public static synchronized App.Response deleteUser(String userId) {
 
         openConnection();
 
+        Any any = ORB.init().create_any();
         String query = "DELETE FROM users WHERE userID = ?";
 
         try {
             PreparedStatement checkUserId = connection.prepareStatement("SELECT userId FROM users WHERE userId = ?");
             checkUserId.setString(1, userId);
             ResultSet resultSet = checkUserId.executeQuery();
+
             if (resultSet.next()) {
                 if (resultSet.getInt(1) == 0) {
-                    return new Response<>("User does not exist", false);
+                    any.insert_string("Failed");
+                    return new App.Response(any, false);
                 }
             }
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userId);
 
             if(preparedStatement.executeUpdate() > 0) {
-                if (isAccountPlaying(userId))
-                    return new Response<>("User is Playing", false);
-                return new Response<>("Successfully Deleted User", true);
+                if (isAccountPlaying(userId)){
+                    any.insert_string("Failed");
+                    return new App.Response(any, false);
+                }
+
+                any.insert_string("Success");
+                return new App.Response(any, true);
             }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>("Failed to Delete User", false);
+        any.insert_string("Failed");
+        return new App.Response(any, false);
     }
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {

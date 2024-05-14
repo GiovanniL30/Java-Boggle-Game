@@ -67,7 +67,7 @@ module App {
 
     typedef sequence<Lobby> LobbyList;
     typedef sequence<User> Players;
-
+    typedef sequence<long> GameTimes;
 
     interface ApplicationServer {
         User login(in string userName, in string password, in Controller controller) raises(LogInException);
@@ -82,12 +82,12 @@ module App {
         void startGame(in string lobbyId);
         Players getAllUsers();
 
-           void getTime(in long time);
-                void updateGameTime(in long time);
-                void updateWaitingTime(in long time);
-                Response banUser(in string userId);
-                Response unBanUser(in string userId);
-                Response deleteUserAccount(in string userId);
+        GameTimes getTime();
+        void updateGameTime(in long time);
+        void updateWaitingTime(in long time);
+        Response banUser(in string userId);
+        Response unBanUser(in string userId);
+        Response deleteUserAccount(in string userId);
     };
 
     interface LobbyServer {
