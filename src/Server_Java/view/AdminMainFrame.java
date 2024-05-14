@@ -26,7 +26,7 @@ public class AdminMainFrame extends JFrame {
     public AdminMainFrame(AdminController adminController){
         init();
         adminHomePage = new AdminHomePage(adminController);
-        header = new AdminHeader();
+        header = new AdminHeader(adminController);
         getContentPane().add(header, BorderLayout.NORTH);
         getContentPane().add(adminHomePage, BorderLayout.CENTER);
         header.setVisible(false);

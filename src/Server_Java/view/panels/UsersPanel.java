@@ -5,7 +5,9 @@ import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
 import Server_Java.view.components.SearchBar;
 import Server_Java.view.components.UsersList;
+import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
+import shared.viewComponents.Button;
 
 import javax.swing.*;
 import javax.swing.border.Border;

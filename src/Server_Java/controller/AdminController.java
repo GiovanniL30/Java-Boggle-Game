@@ -68,33 +68,35 @@ public class AdminController {
 
                 switch (adminViews) {
                     case SIGN_UP: {
-                        adminMainFrame.getAdminHeader().setVisible(false);
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setSignUp(new Signup(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getSignUp(), 1);
+                        adminMainFrame.getAdminHeader().setVisible(false);
                         break;
                     }
                     case GAME_SETTINGS: {
-                        adminMainFrame.getAdminHeader().setVisible(true);
-                        adminMainFrame.getAdminHeader().setText("Game Settings");
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setGameSettings(new GameSettings(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getGameSettings(), 1);
+                        adminMainFrame.getAdminHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setText("Game Settings");
+                        adminMainFrame.getAdminHeader().getCreateAccount().setVisible(false);
                         break;
                     }
                     case PLAYERS: {
-                        adminMainFrame.getAdminHeader().setVisible(true);
-                        adminMainFrame.getAdminHeader().setText("Boggled Players");
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setUsersPanel(new UsersPanel(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getUsersPanel(), 1);
+                        adminMainFrame.getAdminHeader().setVisible(true);
+                        adminMainFrame.getAdminHeader().setText("Boggled Players");
+                        adminMainFrame.getAdminHeader().getCreateAccount().setVisible(true);
                         break;
                     }
                     case HOME_PAGE: {
-                        adminMainFrame.getAdminHeader().setVisible(false);
                         adminMainFrame.getContentPane().remove(1);
                         adminMainFrame.setAdminHomePage(new AdminHomePage(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getAdminHomePage(), 1);
+                        adminMainFrame.getAdminHeader().setVisible(false);
                         break;
                     }
                     default: {
