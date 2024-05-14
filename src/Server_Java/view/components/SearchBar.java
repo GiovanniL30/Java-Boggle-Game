@@ -113,26 +113,7 @@ public class SearchBar extends JPanel {
         });
 
     }
-    private void searchUsers(String searchTerm) {
-        int count = 0;
-        for (User user : users) {
-            if (userMatchesSearch(user, searchTerm)) {
-                System.out.println("Matching User: " + user);
-                count++;
-            }
-        }
 
-        if (count == 0) {
-            System.out.println("No matching users found for search term: " + searchTerm);
-        }
-    }
-
-    private boolean userMatchesSearch(User user, String searchTerm) {
-        return user.userID.contains(searchTerm) ||
-                user.firstName.contains(searchTerm) ||
-                user.lastName.contains(searchTerm) ||
-                user.userName.contains(searchTerm);
-    }
     public void setUserList(User[] users) {
         usersPanel.remove(1);
         usersList = new UsersList(users, adminController);
