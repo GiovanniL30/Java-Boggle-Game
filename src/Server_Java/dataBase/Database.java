@@ -22,7 +22,7 @@ public class Database {
         if (connection != null) return;
         try {
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/newschema1?user=root&password=");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -617,11 +617,11 @@ public class Database {
 
             if(preparedStatement.executeUpdate() > 0) {
                 if (isAccountPlaying(userID)){
-                    any.insert_string("Failed");
+                    any.insert_string("Player is currently playing, cannot ban");
                     return new App.Response(any, false);
                 }
 
-                any.insert_string("Success");
+                any.insert_string("Successfully banned player");
                 return new App.Response(any, true);
             }
 

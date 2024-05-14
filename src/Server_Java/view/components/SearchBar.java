@@ -4,6 +4,7 @@ import App.User;
 import Server_Java.ApplicationServant;
 import Server_Java.dataBase.Database;
 import Server_Java.view.AdminMainFrame;
+import Server_Java.view.panels.UsersPanel;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.IconButton;
@@ -12,11 +13,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.LinkedList;
 
 public class SearchBar extends JPanel {
     private FieldInput searchField;
     private User[] users;
-    public SearchBar(){
+    private UsersPanel usersPanel;
+
+    public SearchBar(UsersPanel usersPanel) {
+        this.usersPanel = usersPanel;  // Set the usersPanel reference
         setBackground(Color.white);
         setLayout(new BorderLayout(0, 50));
 
@@ -52,30 +57,18 @@ public class SearchBar extends JPanel {
 
         searchField.getTextField().addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) {}
 
-            }
             @Override
             public void keyPressed(KeyEvent e) {
-
-                if (!Character.isLetterOrDigit(e.getKeyChar())) {
-                    if (!(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) return;
+                if (!Character.isLetterOrDigit(e.getKeyChar()) && e.getKeyCode() != KeyEvent.VK_BACK_SPACE) return;
+                if (e.isAltDown() || e.isShiftDown() || e.isControlDown()) return;
+                if (e.getKeyCode() == KeyEvent.VK_SPACE && (searchField.getInput() == null || searchField.getInput().isEmpty())) {
+                    searchField.removeError();
                 }
-
-                if (e.isAltDown() || e.isShiftDown() || e.isControlDown()) {
-                    return;
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (searchField.getInput() != null && searchField.getInput().isEmpty()) {
-                        searchField.removeError();
-                    }
-                }
-
                 if (searchField.getInput() != null) {
                     searchField.removeError();
                 }
-
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String searchTerm = searchField.getInput();
                     if (!searchTerm.isEmpty()) {
@@ -85,22 +78,19 @@ public class SearchBar extends JPanel {
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
+            public void keyReleased(KeyEvent e) {}
         });
-
     }
+
     private void searchUsers(String searchTerm) {
-        int count = 0;
+        LinkedList<User> matchingUsers = new LinkedList<>();
         for (User user : users) {
             if (userMatchesSearch(user, searchTerm)) {
-                System.out.println("Matching User: " + user);
-                count++;
+                matchingUsers.add(user);
             }
         }
-
-        if (count == 0) {
+        SwingUtilities.invokeLater(() -> usersPanel.updateUsers(matchingUsers.toArray(new User[0])));
+        if (matchingUsers.isEmpty()) {
             System.out.println("No matching users found for search term: " + searchTerm);
         }
     }
