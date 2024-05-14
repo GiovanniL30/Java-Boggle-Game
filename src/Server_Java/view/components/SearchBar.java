@@ -1,5 +1,8 @@
 package Server_Java.view.components;
 
+import App.User;
+import Server_Java.ApplicationServant;
+import Server_Java.dataBase.Database;
 import Server_Java.view.AdminMainFrame;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
@@ -12,9 +15,12 @@ import java.awt.event.KeyListener;
 
 public class SearchBar extends JPanel {
     private FieldInput searchField;
+    private User[] users;
     public SearchBar(){
         setBackground(Color.white);
         setLayout(new BorderLayout(0, 50));
+
+        users = Database.getPlayers();
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(AdminMainFrame.WIDTH, 50));
@@ -53,7 +59,7 @@ public class SearchBar extends JPanel {
             public void keyPressed(KeyEvent e) {
 
                 if (!Character.isLetterOrDigit(e.getKeyChar())) {
-                    if(!(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) return;
+                    if (!(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) return;
                 }
 
                 if (e.isAltDown() || e.isShiftDown() || e.isControlDown()) {
@@ -61,24 +67,48 @@ public class SearchBar extends JPanel {
                 }
 
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-
                     if (searchField.getInput() != null && searchField.getInput().isEmpty()) {
                         searchField.removeError();
                     }
                 }
 
-
                 if (searchField.getInput() != null) {
                     searchField.removeError();
                 }
 
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String searchTerm = searchField.getInput();
+                    if (!searchTerm.isEmpty()) {
+                        searchUsers(searchTerm);
+                    }
+                }
             }
-
 
             @Override
             public void keyReleased(KeyEvent e) {
 
             }
         });
+
+    }
+    private void searchUsers(String searchTerm) {
+        int count = 0;
+        for (User user : users) {
+            if (userMatchesSearch(user, searchTerm)) {
+                System.out.println("Matching User: " + user);
+                count++;
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("No matching users found for search term: " + searchTerm);
+        }
+    }
+
+    private boolean userMatchesSearch(User user, String searchTerm) {
+        return user.userID.contains(searchTerm) ||
+                user.firstName.contains(searchTerm) ||
+                user.lastName.contains(searchTerm) ||
+                user.userName.contains(searchTerm);
     }
 }
