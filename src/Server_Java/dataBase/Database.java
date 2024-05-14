@@ -449,7 +449,7 @@ public class Database {
 
             if (resultSet.next()) {
                 if (resultSet.getInt(1) == 0) {
-                    any.insert_string("Failed");
+                    any.insert_string("Account does not exist");
                     return new App.Response(any, false);
                 }
             }
@@ -459,11 +459,11 @@ public class Database {
 
             if(preparedStatement.executeUpdate() > 0) {
                 if (isAccountPlaying(userId)){
-                    any.insert_string("Failed");
+                    any.insert_string("Account is still playing");
                     return new App.Response(any, false);
                 }
 
-                any.insert_string("Success");
+                any.insert_string("Account is Deleted successfully");
                 return new App.Response(any, true);
             }
 
@@ -471,7 +471,7 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        any.insert_string("Failed");
+        any.insert_string("Failed to Delete account");
         return new App.Response(any, false);
     }
 
