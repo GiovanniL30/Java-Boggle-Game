@@ -14,7 +14,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class AdminMainFrame extends JFrame {
-    public static final int WIDTH = 900;
+    public static final int WIDTH = 980;
     public static final int HEIGHT = 600;
     private JPanel mainLayout = new JPanel();
     private AdminHomePage adminHomePage;

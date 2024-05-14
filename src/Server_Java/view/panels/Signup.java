@@ -1,10 +1,11 @@
 package Server_Java.view.panels;
 
 import Server_Java.controller.AdminController;
+import Server_Java.utilities.AdminViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.utilities.UtilityMethods;
-import Client_Java.view.MainFrame;
+import Server_Java.view.AdminMainFrame;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.FilledButton;
 import shared.viewComponents.Picture;
@@ -27,7 +28,7 @@ public class Signup extends JPanel {
 
         setBackground(ColorFactory.beige());
         setLayout(new GridBagLayout());
-        setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT));
+        setPreferredSize(new Dimension(AdminMainFrame.WIDTH, AdminMainFrame.HEIGHT));
 
         GridBagConstraints layoutConstraints = new GridBagConstraints();
         layoutConstraints.gridy = 0;
@@ -52,9 +53,16 @@ public class Signup extends JPanel {
 
 
 
-        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(950, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
+        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
         layoutConstraints.gridy = 4;
         add(createAccountButton, layoutConstraints);
+
+        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.whitishGrey(), Color.WHITE);
+        cancelButton.setForeground(Color.BLACK);
+        layoutConstraints.gridy = 5;
+        add(cancelButton, layoutConstraints);
+
+        cancelButton.addActionListener(e -> adminController.changeFrame(AdminViews.HOME_PAGE));
 
 
         createAccountButton.addActionListener(action -> {
@@ -101,10 +109,10 @@ public class Signup extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
 
 
-        firstName = new FieldInput("First Name", new Dimension(450, 50), 30, 1, false);
-        lastName = new FieldInput("Last Name", new Dimension(450, 50), 30, 1, false);
-        userName = new FieldInput("User Name", new Dimension(450, 50), 20, 1, false);
-        password = new FieldInput("Password", new Dimension(450, 50), 20, 1, true);
+        firstName = new FieldInput("First Name", new Dimension(250, 35), 30, 1, false);
+        lastName = new FieldInput("Last Name", new Dimension(250, 35), 30, 1, false);
+        userName = new FieldInput("User Name", new Dimension(250, 35), 20, 1, false);
+        password = new FieldInput("Password", new Dimension(250, 35), 20, 1, true);
 
         firstName.setBackground(ColorFactory.beige());
         lastName.setBackground(ColorFactory.beige());
