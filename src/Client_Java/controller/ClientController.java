@@ -148,10 +148,35 @@ public class ClientController extends ControllerPOA {
     }
 
 
-
     @Override
     public void setIdleTimeLeft(String message) {
         idleTimePopup.updateText(message);
+    }
+
+    @Override
+    public void receiveBanNotification() {
+        new Thread(() -> {
+            applicationServer.logout(loggedInUser.userID);
+            loggedInUser = null;
+            gameLobby = "";
+            gameStarted = false;
+            randomLetters = null;
+            changeFrame(ClientViews.LOGIN);
+            JOptionPane.showMessageDialog(mainFrame, "Your account was banned by the admin");
+        }).start();
+    }
+
+    @Override
+    public void receiveDeleteAccountNotification() {
+        new Thread(() -> {
+            applicationServer.logout(loggedInUser.userID);
+            loggedInUser = null;
+            gameLobby = "";
+            gameStarted = false;
+            randomLetters = null;
+            changeFrame(ClientViews.LOGIN);
+            JOptionPane.showMessageDialog(mainFrame, "Your account was deleted by the admin");
+        }).start();
     }
 
     public void submitWord(String word) {

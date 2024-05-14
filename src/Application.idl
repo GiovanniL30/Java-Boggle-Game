@@ -62,6 +62,9 @@ module App {
         void stopIdleTime();
         void startIdleTime(in User roundWinner, in long score, in long round);
         void setIdleTimeLeft(in string message);
+        void receiveBanNotification();
+        void receiveDeleteAccountNotification();
+
 
    };
 

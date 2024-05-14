@@ -135,27 +135,45 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public void updateGameTime(int time) {
-
+        Database.updateGameTime(time);
     }
 
     @Override
     public void updateWaitingTime(int time) {
-
+        Database.updateWaitingTime(time);
     }
 
     @Override
     public Response banUser(String userId) {
-        return Database.banUser(userId);
+        Response response = Database.banUser(userId);
+
+        if(response.isSuccess) {
+
+            if(controllerHashMap.containsKey(userId)) {
+                controllerHashMap.get(userId).receiveBanNotification();
+            }
+
+        }
+        return response;
     }
 
     @Override
     public Response unBanUser(String userId) {
-        return null;
+        return Database.unBanUser(userId);
     }
 
     @Override
     public Response deleteUserAccount(String userId) {
-        return Database.deleteUser(userId);
+        Response response = Database.deleteUser(userId);
+
+        if(response.isSuccess) {
+
+            if(controllerHashMap.containsKey(userId)) {
+                controllerHashMap.get(userId).receiveDeleteAccountNotification();
+            }
+
+        }
+        return response;
     }
 
 }

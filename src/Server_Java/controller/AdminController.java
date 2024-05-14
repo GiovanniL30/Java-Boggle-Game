@@ -47,9 +47,9 @@ public class AdminController {
         try {
             Response response = applicationServer.banUser(userId);
             if (response.isSuccess) {
-                JOptionPane.showMessageDialog(null, "User has been banned");
                 changeFrame(AdminViews.PLAYERS);
             }
+            JOptionPane.showMessageDialog(null, response.payload.extract_string());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -60,9 +60,9 @@ public class AdminController {
         try {
             Response response = applicationServer.unBanUser(userId);
             if (response.isSuccess) {
-                JOptionPane.showMessageDialog(null, "User has been unbanned");
                 changeFrame(AdminViews.PLAYERS);
             }
+            JOptionPane.showMessageDialog(null, response.payload.extract_string());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -72,9 +72,11 @@ public class AdminController {
         try {
             Response response = applicationServer.deleteUserAccount(userId);
             if (response.isSuccess) {
-                JOptionPane.showMessageDialog(null, "User has been deleted");
                 changeFrame(AdminViews.PLAYERS);
+
             }
+
+            JOptionPane.showMessageDialog(null, response.payload.extract_string());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

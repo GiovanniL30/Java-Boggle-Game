@@ -73,6 +73,21 @@ public class GameSettings extends JPanel {
                 adminController.changeFrame(AdminViews.HOME_PAGE);
             }
         });
+
+        updateButton.addActionListener(e -> {
+
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to update?", "Save", JOptionPane.YES_NO_OPTION);
+
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.updateGameTime((Integer) gameTimeOptions.getSelectedItem());
+                adminController.updateWaitingTime((Integer) waitingTimeOptions.getSelectedItem());
+
+                JOptionPane.showMessageDialog(null, "Updated Successfully");
+                adminController.changeFrame(AdminViews.HOME_PAGE);
+            }
+
+
+        });
         add(centerPanel, BorderLayout.CENTER);
     }
 }
