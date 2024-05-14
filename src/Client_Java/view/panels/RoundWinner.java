@@ -1,6 +1,7 @@
 package Client_Java.view.panels;
 
 import App.User;
+import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ public class RoundWinner extends JPanel {
 
     public RoundWinner(User roundWinner, int score, int round) {
         setLayout(new GridBagLayout());
+        setBackground(ColorFactory.beige());
 
         JLabel label = new JLabel("Round " + round + " Winner: " + roundWinner.userName + ": " + score);
         label.setFont(FontFactory.newPoppinsBold(20));

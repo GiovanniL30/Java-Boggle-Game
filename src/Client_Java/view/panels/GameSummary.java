@@ -19,7 +19,7 @@ public class GameSummary extends JPanel {
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(Color.white);
+        contentPanel.setBackground(ColorFactory.beige());
 
         JLabel label = new JLabel("Winner: " + winner.userName + ": " + score);
         label.setFont(FontFactory.newPoppinsBold(20));
