@@ -57,8 +57,7 @@ public class Signup extends JPanel {
         layoutConstraints.gridy = 4;
         add(createAccountButton, layoutConstraints);
 
-        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.whitishGrey(), Color.WHITE);
-        cancelButton.setForeground(Color.BLACK);
+        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.red(), Color.WHITE);
         layoutConstraints.gridy = 5;
         add(cancelButton, layoutConstraints);
 
