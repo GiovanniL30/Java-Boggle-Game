@@ -27,7 +27,7 @@ public class UsersList extends JPanel {
 
         // Add scroll pane
         JScrollPane scrollPane = new JScrollPane(holder);
-        scrollPane.setPreferredSize(new Dimension(920, 550));
+        scrollPane.setPreferredSize(new Dimension(840, 300));
         add(scrollPane);
     }
 
