@@ -11,6 +11,7 @@ import Server_Java.view.panels.GameSettings;
 import Server_Java.view.panels.Signup;
 import Server_Java.view.panels.UsersPanel;
 import org.omg.CORBA.ORB;
+import shared.utilities.UtilityMethods;
 
 import javax.swing.*;
 import java.util.LinkedList;
@@ -43,22 +44,40 @@ public class AdminController {
 
 
     public void banUser(String userId) {
-        Response response = applicationServer.banUser(userId);
-
-        // handle the response
+        try {
+            Response response = applicationServer.banUser(userId);
+            if (response.isSuccess) {
+                JOptionPane.showMessageDialog(null, "User has been banned");
+                changeFrame(AdminViews.PLAYERS);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
     public void unBanUser(String userId) {
-        Response response = applicationServer.unBanUser(userId);
-
-        // handle the response
+        try {
+            Response response = applicationServer.unBanUser(userId);
+            if (response.isSuccess) {
+                JOptionPane.showMessageDialog(null, "User has been unbanned");
+                changeFrame(AdminViews.PLAYERS);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void deleteUserAccount(String userId) {
-        Response response = applicationServer.deleteUserAccount(userId);
-
-        //handle the response
+        try {
+            Response response = applicationServer.deleteUserAccount(userId);
+            if (response.isSuccess) {
+                JOptionPane.showMessageDialog(null, "User has been deleted");
+                changeFrame(AdminViews.PLAYERS);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void changeFrame(AdminViews adminViews) {
