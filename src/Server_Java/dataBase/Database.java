@@ -258,6 +258,24 @@ public class Database {
 
         return false;
     }
+    public static synchronized boolean isAccountPlaying(String userId) {
+
+        openConnection();
+        String query = "SELECT isPlaying FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
 
     public static synchronized void startGame(String lobbyId) {
         openConnection();
@@ -316,26 +334,29 @@ public class Database {
         return false;
     }
 
-    public static synchronized List<Integer> getTime(){
+    public static synchronized int[] getTime(){
 
         openConnection();
 
-        List<Integer> time = new ArrayList<>();
+        LinkedList<Integer> time = new LinkedList<>();
         String query = "SELECT length FROM time";
-
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                time.add(resultSet.getInt(2));
+                time.add(resultSet.getInt(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return time;
+        int[] timeArray = new int[time.size()];
+        for (int i = 0; i < time.size(); i++) {
+            timeArray[i] = time.get(i);
+        }
 
+        return timeArray;
     }
 
     public static synchronized int getGameTime() {
@@ -412,6 +433,29 @@ public class Database {
 
     }
 
+    public static synchronized boolean deleteUser(String userId) {
+
+        openConnection();
+
+        String query = "DELETE FROM users WHERE userID = ?";
+
+        try {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+
+            if(preparedStatement.executeUpdate() > 0) {
+                if (isAccountBanned(userId))
+                    return false;
+                return true;
+            }else return false;
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return false;
+    }
+
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
 
@@ -476,7 +520,6 @@ public class Database {
 
     public static Response<User> logIn(String userName, String password) {
         openConnection();
-
 
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
