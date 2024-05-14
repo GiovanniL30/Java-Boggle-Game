@@ -130,7 +130,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public int[] getTime() {
-        Database.getTime();
+        return Database.getTime();
     }
 
     @Override
