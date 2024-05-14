@@ -433,27 +433,35 @@ public class Database {
 
     }
 
-    public static synchronized boolean deleteUser(String userId) {
+    public static synchronized Response<String> deleteUser(String userId) {
 
         openConnection();
 
         String query = "DELETE FROM users WHERE userID = ?";
 
         try {
-
+            PreparedStatement checkUserId = connection.prepareStatement("SELECT userId FROM users WHERE userId = ?");
+            checkUserId.setString(1, userId);
+            ResultSet resultSet = checkUserId.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getInt(1) == 0) {
+                    return new Response<>("User does not exist", false);
+                }
+            }
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userId);
 
             if(preparedStatement.executeUpdate() > 0) {
-                if (isAccountBanned(userId))
-                    return false;
-                return true;
-            }else return false;
+                if (isAccountPlaying(userId))
+                    return new Response<>("User is Playing", false);
+                return new Response<>("Successfully Deleted User", true);
+            }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return false;
+
+        return new Response<>("Failed to Delete User", false);
     }
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
