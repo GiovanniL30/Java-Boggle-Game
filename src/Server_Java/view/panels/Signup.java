@@ -1,14 +1,10 @@
 package Server_Java.view.panels;
 
-import App.CreateException;
-import App.User;
-import Client_Java.controller.ClientController;
-import Client_Java.utilities.ClientViews;
+import Server_Java.controller.AdminController;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.utilities.UtilityMethods;
 import Client_Java.view.MainFrame;
-import shared.viewComponents.ClickableText;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.FilledButton;
 import shared.viewComponents.Picture;
@@ -27,7 +23,7 @@ public class Signup extends JPanel {
     private FieldInput userName;
     private FieldInput password;
 
-    public Signup() {
+    public Signup(AdminController adminController) {
 
         setBackground(ColorFactory.beige());
         setLayout(new GridBagLayout());

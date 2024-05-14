@@ -1,14 +1,12 @@
 package Server_Java.view.panels;
 
-import shared.utilities.ColorFactory;
+import Server_Java.controller.AdminController;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class UsersPanel extends JPanel {
-    public UsersPanel(){
-        setBackground(ColorFactory.beige());
-        setLayout(new BorderLayout());
+
+    public UsersPanel(AdminController adminController) {
 
     }
 }
