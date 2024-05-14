@@ -12,7 +12,7 @@ public class UsersList extends JPanel {
     private AdminController adminController;
     private final JPanel holder = new JPanel();
 
-    public UsersList(LinkedList<User> users, AdminController adminController) {
+    public UsersList(User[] users, AdminController adminController) {
         this.adminController = adminController;
         setBackground(Color.white);
 
@@ -34,13 +34,13 @@ public class UsersList extends JPanel {
     /**
      * Updates the view with the given list of students.
      */
-    public void updateView(LinkedList<User> users) {
+    public void updateView(User[] users) {
         // Use SwingWorker to update the view in the background
         new SwingWorker<Object, Object>() {
             @Override
             protected Object doInBackground() {
                 // Clear the holder panel if the list is empty
-                if (users.isEmpty()) {
+                if (users.length == 0) {
                     holder.revalidate();
                     holder.repaint();
                 }
