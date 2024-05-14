@@ -24,14 +24,9 @@ public class GameStartedLobby extends JPanel {
     private final LinkedList<WordBlock> wordBlocks = new LinkedList<>();
     private final JPanel playerListPanel = new JPanel();
     private final JPanel randomLettersPanel = new JPanel();
-
     private final JPanel topPanel = new JPanel();
-
-
     private final JPanel middlePanel = new JPanel();
     private final JPanel roundTimePanel = new JPanel();
-
-
     private final ClientController clientController;
     private final String gameLobby;
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();

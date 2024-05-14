@@ -81,7 +81,7 @@ public class Login extends JPanel {
     private JPanel fieldInputs(){
 
         JPanel fieldInputPanel = new JPanel();
-        fieldInputPanel.setBackground(ColorFactory.blue());
+        fieldInputPanel.setBackground(ColorFactory.mahogany());
         fieldInputPanel.setLayout(new BoxLayout(fieldInputPanel, BoxLayout.Y_AXIS));
 
 
