@@ -25,7 +25,7 @@ public class SearchBar extends JPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
 
-        //IconButton back
+        IconButton back = new IconButton("src/shared/images/back.png", 40, 40);
         buttonsPanel.add(back, constraints);
         constraints.gridx = 1;
         constraints.insets = new Insets(0, 40, 0, 0);
@@ -65,19 +65,13 @@ public class SearchBar extends JPanel {
                     if (searchField.getInput() != null && searchField.getInput().isEmpty()) {
                         searchField.removeError();
                     }
-                    return;
                 }
 
 
-//                if (searchField.getInput() != null) {
-//                    searchField.removeError();
-//
-//                    if (adminPanel.equals(AdminPanel.PERFORMER)) {
-//                        adminControllerObserver.searchPerformers(searchField.getInput());
-//                    } else {
-//                        adminControllerObserver.searchLiveSetsAdmin(searchField.getInput());
-//                    }
-//                }
+                if (searchField.getInput() != null) {
+                    searchField.removeError();
+                }
+
             }
 
 
