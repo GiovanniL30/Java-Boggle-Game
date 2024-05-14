@@ -7,6 +7,7 @@ import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FilledButton;
 import Client_Java.view.components.PlayerNameBlock;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +28,6 @@ public class WaitingLobby extends JPanel {
         waitingPanel();
         setLayout(new BorderLayout());
         setBackground(ColorFactory.beige());
-
 
         add(waitingList, BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(playerListPanel);
@@ -74,7 +74,11 @@ public class WaitingLobby extends JPanel {
     }
 
     private void waitingPanel() {
+        setPreferredSize(new Dimension(500, 500));
         waitingList.setLayout(new BoxLayout(waitingList, BoxLayout.Y_AXIS));
+
+        Picture picture = new Picture("src/shared/images/waiting.png", 500, 200);
+        picture.setBackground(ColorFactory.beige());
 
         JLabel label = new JLabel("Waiting for other players to join...");
         label.setFont(FontFactory.newPoppinsBold(30));
@@ -90,6 +94,7 @@ public class WaitingLobby extends JPanel {
         waitingList.setBackground(ColorFactory.beige());
 
         waitingList.add(Box.createVerticalStrut(100));
+        waitingList.add(picture);
         waitingList.add(label);
         waitingList.add(waitingTime);
         waitingList.add(lobbyID);
