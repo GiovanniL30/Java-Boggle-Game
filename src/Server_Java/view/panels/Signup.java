@@ -61,7 +61,12 @@ public class Signup extends JPanel {
         layoutConstraints.gridy = 5;
         add(cancelButton, layoutConstraints);
 
-        cancelButton.addActionListener(e -> adminController.changeFrame(AdminViews.HOME_PAGE));
+        cancelButton.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel?", "Cancel", JOptionPane.YES_NO_OPTION);
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.changeFrame(AdminViews.HOME_PAGE);
+            }
+        });
 
 
         createAccountButton.addActionListener(action -> {
