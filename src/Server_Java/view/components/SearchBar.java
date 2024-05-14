@@ -2,7 +2,9 @@ package Server_Java.view.components;
 
 import App.User;
 import Server_Java.ApplicationServant;
+import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
+import Server_Java.utilities.AdminViews;
 import Server_Java.view.AdminMainFrame;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
@@ -16,7 +18,7 @@ import java.awt.event.KeyListener;
 public class SearchBar extends JPanel {
     private FieldInput searchField;
     private User[] users;
-    public SearchBar(){
+    public SearchBar(AdminController adminController){
         setBackground(Color.white);
         setLayout(new BorderLayout(0, 50));
 
@@ -49,6 +51,10 @@ public class SearchBar extends JPanel {
 
         add(labelPanel, BorderLayout.NORTH);
         add(centerPanel, BorderLayout.CENTER);
+
+        back.addActionListener(e -> {
+            adminController.changeFrame(AdminViews.HOME_PAGE);
+        });
 
         searchField.getTextField().addKeyListener(new KeyListener() {
             @Override

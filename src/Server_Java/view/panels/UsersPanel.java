@@ -21,7 +21,7 @@ public class UsersPanel extends JPanel {
         boggledUsers.setFont(FontFactory.newPoppinsBold(30));
 
         add(header);
-        SearchBar searchbar = new SearchBar();
+        SearchBar searchbar = new SearchBar(adminController);
         add(searchbar);
 
         User[] users = Database.getPlayers();
