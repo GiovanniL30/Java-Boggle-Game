@@ -12,8 +12,8 @@ public class GameSettings extends JPanel {
     private FilledButton updateButton = new FilledButton("Update", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.WHITE);
     private JLabel waitingTime = new JLabel("Waiting Time:", SwingConstants.CENTER);
     private JLabel gameTime = new JLabel("Game Time:", SwingConstants.CENTER);
-    private JComboBox<String> waitingTimeOptions;
-    private JComboBox<String> gameTimeOptions;
+    private JComboBox<Integer> waitingTimeOptions;
+    private JComboBox<Integer> gameTimeOptions;
 
     public GameSettings(AdminController adminController) {
         setBackground(ColorFactory.beige());
@@ -30,8 +30,14 @@ public class GameSettings extends JPanel {
 
         constraints.gridy = 0;
         constraints.gridx = 1;
-        String[] wtOptions = {"30", "45", "60", "90"}; // Example options
-        waitingTimeOptions = new JComboBox<>(wtOptions);
+        //        String[] wtOptions = {"30", "45", "60", "90"}; // Example options
+        Integer[] time = new Integer[adminController.getTime().length];
+        for (int i = 0; i < adminController.getTime().length; i++) {
+            time[i] = adminController.getTime()[i];
+        }
+
+        DefaultComboBoxModel<Integer> timeOptions = new DefaultComboBoxModel<>(time);
+        waitingTimeOptions = new JComboBox<>(timeOptions);
         waitingTimeOptions.setPreferredSize(new Dimension(200,30));
         centerPanel.add(waitingTimeOptions, constraints);
 
@@ -42,8 +48,8 @@ public class GameSettings extends JPanel {
 
         constraints.gridy = 1;
         constraints.gridx = 1;
-        String[] gtOptions = {"30", "45", "60", "90"}; // Example options
-        gameTimeOptions = new JComboBox<>(gtOptions);
+//        String[] gtOptions = {"30", "45", "60", "90"}; // Example options
+        gameTimeOptions = new JComboBox<>(timeOptions);
         gameTimeOptions.setPreferredSize(new Dimension(200,30));
         centerPanel.add(gameTimeOptions, constraints);
 
