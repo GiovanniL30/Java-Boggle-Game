@@ -1,8 +1,18 @@
 package Server_Java.controller;
 
 import App.*;
+import Client_Java.controller.ClientController;
+import Client_Java.utilities.ClientViews;
+import Client_Java.view.panels.*;
+import Server_Java.utilities.AdminViews;
 import Server_Java.view.AdminMainFrame;
+import Server_Java.view.panels.AdminHomePage;
+import Server_Java.view.panels.GameSettings;
+import Server_Java.view.panels.Signup;
+import Server_Java.view.panels.UsersPanel;
 import org.omg.CORBA.ORB;
+
+import javax.swing.*;
 
 public class AdminController {
     private final ApplicationServer applicationServer;
@@ -48,6 +58,57 @@ public class AdminController {
         Response response = applicationServer.deleteUserAccount(userId);
 
         //handle the response
+    }
+
+    public void changeFrame(AdminViews adminViews) {
+        new SwingWorker<Object, Object>() {
+            @Override
+            protected Object doInBackground() {
+
+                switch (adminViews) {
+                    case SIGN_UP: {
+                        adminMainFrame.getHeader().setVisible(false);
+                        adminMainFrame.getContentPane().remove(1);
+                        adminMainFrame.setSignUp(new Signup(AdminController.this));
+                        adminMainFrame.getContentPane().add(adminMainFrame.getSignUp(), 1);
+                        break;
+                    }
+                    case GAME_SETTINGS: {
+                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getContentPane().remove(1);
+                        adminMainFrame.setGameSettings(new GameSettings(AdminController.this));
+                        adminMainFrame.getContentPane().add(adminMainFrame.getGameSettings(), 1);
+                        break;
+                    }
+                    case PLAYERS: {
+                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getContentPane().remove(1);
+                        adminMainFrame.setUsersPanel(new UsersPanel(AdminController.this));
+                        adminMainFrame.getContentPane().add(adminMainFrame.getUsersPanel(), 1);
+                        break;
+                    }
+                    case HOME_PAGE: {
+                        adminMainFrame.getHeader().setVisible(true);
+                        adminMainFrame.getContentPane().remove(1);
+                        adminMainFrame.setAdminHomePage(new AdminHomePage(AdminController.this));
+                        adminMainFrame.getContentPane().add(adminMainFrame.getAdminHomePage(), 1);
+                        break;
+                    }
+                    default: {
+                        System.out.println("Error changing frame");
+                    }
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                adminMainFrame.getContentPane().revalidate();
+                adminMainFrame.getContentPane().repaint();
+            }
+
+        }.execute();
     }
 
     public void setAdminMainFrame(AdminMainFrame adminMainFrame) {
