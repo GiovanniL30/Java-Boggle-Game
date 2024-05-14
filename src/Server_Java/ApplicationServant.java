@@ -145,10 +145,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public Response banUser(String userId) {
-        shared.referenceClasses.Response<User> response = Database.banUser(userId);
-        Any anyData = ORB.init().create_any();
-        UserHelper.insert(anyData, response.getData());
-        return new Response(anyData, response.isSuccess());
+        return Database.banUser(userId);
     }
 
     @Override

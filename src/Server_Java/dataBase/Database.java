@@ -594,26 +594,42 @@ public class Database {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
     }
 
-    public static synchronized Response<User> banUser(String userID) {
+    public static synchronized App.Response banUser(String userID) {
         openConnection();
 
+        Any any = ORB.init().create_any();
         String query = "UPDATE users SET isBanned = 1 WHERE userID = ?";
 
         try {
+            PreparedStatement checkUserId = connection.prepareStatement("SELECT userId FROM users WHERE userId = ?");
+            checkUserId.setString(1, userID);
+            ResultSet resultSet = checkUserId.executeQuery();
+
+            if (resultSet.next()) {
+                if (resultSet.getInt(1) == 0) {
+                    any.insert_string("Failed");
+                    return new App.Response(any, false);
+                }
+            }
+
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userID);
-            int rowsUpdated = preparedStatement.executeUpdate();
 
-            if (rowsUpdated > 0) {
-                User bannedUser = getUser(userID);
-                return new Response<>(bannedUser, true);
-            } else {
-                return new Response<>(new User("User not found", "", "", "", "", 0), false);
+            if(preparedStatement.executeUpdate() > 0) {
+                if (isAccountPlaying(userID)){
+                    any.insert_string("Failed");
+                    return new App.Response(any, false);
+                }
+
+                any.insert_string("Success");
+                return new App.Response(any, true);
             }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            return new Response<>(new User("Error banning user", "", "", "", "", 0), false);
         }
+
+        any.insert_string("Failed");
+        return new App.Response(any, false);
     }
 }
