@@ -415,18 +415,18 @@ public class Database {
 
     }
 
-    public static synchronized boolean deleteUser(String playerId) {
+    public static synchronized boolean deleteUser(String userId) {
         openConnection();
 
-        String query = "DELETE FROM users WHERE playerID = ?";
+        String query = "DELETE FROM users WHERE userID = ?";
 
         try {
 
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, playerId);
+            preparedStatement.setString(1, userId);
 
             if(preparedStatement.executeUpdate() > 0) {
-                if (isAccountBanned(playerId))
+                if (isAccountBanned(userId))
                     return false;
                 return true;
             }else return false;
