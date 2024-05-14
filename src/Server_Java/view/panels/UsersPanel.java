@@ -16,10 +16,6 @@ public class UsersPanel extends JPanel {
     public UsersPanel(AdminController adminController) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel header = new JPanel();
-        JLabel boggledUsers = new JLabel("Boggled Users");
-        boggledUsers.setFont(FontFactory.newPoppinsBold(30));
-
         SearchBar searchbar = new SearchBar(adminController);
         add(searchbar);
 
