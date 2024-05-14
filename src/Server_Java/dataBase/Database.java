@@ -433,27 +433,35 @@ public class Database {
 
     }
 
-    public static synchronized boolean deleteUser(String userId) {
+    public static synchronized Response<String> deleteUser(String userId) {
 
         openConnection();
 
         String query = "DELETE FROM users WHERE userID = ?";
 
         try {
-
+            PreparedStatement checkUserId = connection.prepareStatement("SELECT userId FROM users WHERE userId = ?");
+            checkUserId.setString(1, userId);
+            ResultSet resultSet = checkUserId.executeQuery();
+            if (resultSet.next()) {
+                if (resultSet.getInt(1) == 0) {
+                    return new Response<>("User does not exist", false);
+                }
+            }
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, userId);
 
             if(preparedStatement.executeUpdate() > 0) {
-                if (isAccountBanned(userId))
-                    return false;
-                return true;
-            }else return false;
+                if (isAccountPlaying(userId))
+                    return new Response<>("User is Playing", false);
+                return new Response<>("Successfully Deleted User", true);
+            }
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        return false;
+
+        return new Response<>("Failed to Delete User", false);
     }
 
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
@@ -575,5 +583,26 @@ public class Database {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
     }
 
+    public static synchronized Response<User> banUser(String userID) {
+        openConnection();
 
+        String query = "UPDATE users SET isBanned = 1 WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                User bannedUser = getUser(userID);
+                return new Response<>(bannedUser, true);
+            } else {
+                return new Response<>(new User("User not found", "", "", "", "", 0), false);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            return new Response<>(new User("Error banning user", "", "", "", "", 0), false);
+        }
+    }
 }
