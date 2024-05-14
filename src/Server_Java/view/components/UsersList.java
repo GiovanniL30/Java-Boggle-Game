@@ -22,37 +22,40 @@ public class UsersList extends JPanel {
         holder.setLayout(gridLayout);
         holder.setBackground(Color.white);
 
-        // Update the view with the given list of students
+        // Update the view with the given list of users
         updateView(users);
 
         // Add scroll pane
         JScrollPane scrollPane = new JScrollPane(holder);
         scrollPane.setPreferredSize(new Dimension(920, 550));
         add(scrollPane);
-    } // end of constructor
+    }
 
     /**
-     * Updates the view with the given list of students.
+     * Updates the view with the given list of users.
      */
     public void updateView(User[] users) {
         // Use SwingWorker to update the view in the background
-        new SwingWorker<Object, Object>() {
+        new SwingWorker<Void, Void>() {
             @Override
-            protected Object doInBackground() {
-                // Clear the holder panel if the list is empty
-                if (users.length == 0) {
+            protected Void doInBackground() throws Exception {
+                // Clear the holder panel
+                SwingUtilities.invokeLater(() -> {
+                    holder.removeAll();
                     holder.revalidate();
                     holder.repaint();
-                }
+                });
 
-                // Add account cards for each student to the holder panel
-                for(User user: users) {
-                    holder.add(new UsersCard(user, adminController));
-                    holder.revalidate();
-                    holder.repaint();
+                // Add user cards for each user to the holder panel
+                for (User user : users) {
+                    SwingUtilities.invokeLater(() -> {
+                        holder.add(new UsersCard(user, adminController));
+                        holder.revalidate();
+                        holder.repaint();
+                    });
                 }
                 return null;
             }
         }.execute();
-    } // end of updateView method
-} // end of ManageAccountList class
+    }
+}
