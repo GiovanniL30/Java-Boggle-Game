@@ -4,7 +4,6 @@ import Server_Java.controller.AdminController;
 import Server_Java.utilities.AdminViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
-import shared.viewComponents.Button;
 import shared.viewComponents.ClickableText;
 import shared.viewComponents.Picture;
 
@@ -44,16 +43,5 @@ public class AdminHeader extends JPanel {
     public ClickableText getCreateAccount() {
         return createAccount;
     }
-    //    public void setUserName(String name) {
-//        new SwingWorker<Object, Object>() {
-//            @Override
-//            protected Object doInBackground() throws Exception {
-//                label.setText(name);
-//                label.revalidate();
-//                label.repaint();
-//                return null;
-//            }
-//        }.execute();
-//    }
 
 }
