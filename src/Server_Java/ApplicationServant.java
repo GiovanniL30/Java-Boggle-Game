@@ -7,6 +7,7 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -128,8 +129,8 @@ public class ApplicationServant extends ApplicationServerPOA {
     }
 
     @Override
-    public void getTime(int time) {
-
+    public int[] getTime() {
+        return Database.getTime();
     }
 
     @Override
@@ -144,7 +145,10 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public Response banUser(String userId) {
-        return null;
+        shared.referenceClasses.Response<User> response = Database.banUser(userId);
+        Any anyData = ORB.init().create_any();
+        UserHelper.insert(anyData, response.getData());
+        return new Response(anyData, response.isSuccess());
     }
 
     @Override
@@ -154,8 +158,7 @@ public class ApplicationServant extends ApplicationServerPOA {
 
     @Override
     public Response deleteUserAccount(String userId) {
-        return null;
+        return Database.deleteUser(userId);
     }
-
 
 }

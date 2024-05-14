@@ -209,21 +209,6 @@ public class ClientController extends ControllerPOA {
 
     }
 
-    public void createAccount(User user) throws CreateException {
-
-
-        Response response = applicationServer.createAccount(user);
-        if (response.isSuccess) {
-            new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "Created Account Successfully")).start();
-            changeFrame(ClientViews.LOGIN);
-        } else {
-            if (response.payload.extract_string().contains("User name already exist")) {
-                mainFrame.getSignup().getUserName().enableError("Username already exist");
-            } else {
-                JOptionPane.showMessageDialog(mainFrame, response.payload.extract_string());
-            }
-        }
-    }
 
     public void createNewLobby() {
 
@@ -296,13 +281,6 @@ public class ClientController extends ControllerPOA {
                         mainFrame.getContentPane().remove(1);
                         mainFrame.setLogin(new Login(ClientController.this));
                         mainFrame.getContentPane().add(mainFrame.getLogin(), 1);
-                        break;
-                    }
-                    case SIGN_UP: {
-                        mainFrame.getHeader().setVisible(true);
-                        mainFrame.getContentPane().remove(1);
-                        mainFrame.setSignup(new Signup(ClientController.this));
-                        mainFrame.getContentPane().add(mainFrame.getSignup(), 1);
                         break;
                     }
                     case HOME_PAGE: {

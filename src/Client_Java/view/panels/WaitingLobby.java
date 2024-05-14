@@ -7,8 +7,10 @@ import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FilledButton;
 import Client_Java.view.components.PlayerNameBlock;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class WaitingLobby extends JPanel {
@@ -18,7 +20,7 @@ public class WaitingLobby extends JPanel {
     private JPanel waitingList = new JPanel();
     private String gameLobby;
     private JLabel waitingTime = new JLabel("(GAME WILL START IN:...)");
-    private FilledButton leaveLobby = new FilledButton("Leave Lobby", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.white);
+    private FilledButton leaveLobby = new FilledButton("Leave Lobby", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.mahogany(), ColorFactory.cream());
 
     public WaitingLobby(ClientController clientController, String gameLobby) {
         this.clientController = clientController;
@@ -27,7 +29,6 @@ public class WaitingLobby extends JPanel {
         waitingPanel();
         setLayout(new BorderLayout());
         setBackground(ColorFactory.beige());
-
 
         add(waitingList, BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(playerListPanel);
@@ -74,7 +75,12 @@ public class WaitingLobby extends JPanel {
     }
 
     private void waitingPanel() {
+        setPreferredSize(new Dimension(500, 500));
         waitingList.setLayout(new BoxLayout(waitingList, BoxLayout.Y_AXIS));
+
+        Picture picture = new Picture("src/shared/images/waiting.png", 500, 200);
+        picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
 
         JLabel label = new JLabel("Waiting for other players to join...");
         label.setFont(FontFactory.newPoppinsBold(30));
@@ -89,7 +95,7 @@ public class WaitingLobby extends JPanel {
 
         waitingList.setBackground(ColorFactory.beige());
 
-        waitingList.add(Box.createVerticalStrut(100));
+        waitingList.add(picture);
         waitingList.add(label);
         waitingList.add(waitingTime);
         waitingList.add(lobbyID);
