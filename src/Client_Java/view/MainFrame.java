@@ -1,7 +1,8 @@
 package Client_Java.view;
 
 import Client_Java.controller.ClientController;
-import Client_Java.utilities.ColorFactory;
+import Server_Java.view.panels.Signup;
+import shared.utilities.ColorFactory;
 import Client_Java.view.components.Header;
 import Client_Java.view.panels.*;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
@@ -9,8 +10,6 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame {
     public static final int WIDTH = 1200;
@@ -18,7 +17,6 @@ public class MainFrame extends JFrame {
     private JPanel mainLayout = new JPanel();
     private Login login;
     private HomePage homePage;
-    private Signup signup;
     private WaitingLobby waitingLobby;
     private GameStartedLobby gameStartedLobby;
     private LeaderBoards leaderBoards;
@@ -77,14 +75,6 @@ public class MainFrame extends JFrame {
 
     public void setHomePage(HomePage homePage) {
         this.homePage = homePage;
-    }
-
-    public Signup getSignup() {
-        return signup;
-    }
-
-    public void setSignup(Signup signup) {
-        this.signup = signup;
     }
 
     public WaitingLobby getWaitingLobby() {

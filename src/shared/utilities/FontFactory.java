@@ -1,4 +1,4 @@
-package Client_Java.utilities;
+package shared.utilities;
 
 import java.awt.*;
 

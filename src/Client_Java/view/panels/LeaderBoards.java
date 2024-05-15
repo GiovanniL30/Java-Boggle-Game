@@ -3,10 +3,13 @@ package Client_Java.view.panels;
 import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.FontFactory;
-import Client_Java.view.components.Button;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.viewComponents.Button;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class LeaderBoards extends JPanel {
@@ -14,13 +17,17 @@ public class LeaderBoards extends JPanel {
     private JLabel top1 = new JLabel();
     private JLabel top2 = new JLabel();
     private JLabel top3 = new JLabel();
-    private JLabel header = new JLabel("Leaderboards");
+
+    private JPanel top1Panel = new JPanel();
 
     public LeaderBoards(ClientController clientController) {
-
-        header.setFont(FontFactory.newPoppinsBold(45));
+        setBackground(ColorFactory.beige());
 
         setLayout(new GridBagLayout());
+
+        Picture picture = new Picture("src/shared/images/leaderboards.png", 800, 150);
+        picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
 
         JScrollPane playerList = createPlayerListPanel(clientController);
 
@@ -30,11 +37,25 @@ public class LeaderBoards extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
 
-        add(header, gbc);
-
+        add(picture, gbc);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridy++;
-        add(top1, gbc);
+
+        top1Panel.setLayout(null);
+        top1Panel.setPreferredSize(new Dimension(800, 50));  // Use preferred size instead of setSize
+        top1Panel.setBackground(ColorFactory.beige());
+
+        Picture crown = new Picture("src/shared/images/crownCapy.png", 100 ,100);
+        crown.setBackground(ColorFactory.beige());
+        crown.setBounds(-20, -25, 100, 80);
+
+
+        top1.setBounds(0, 0, 800, 50);
+        top1Panel.add(top1);
+        top1Panel.add(crown);
+
+
+        add(top1Panel, gbc);
         gbc.gridy++;
         add(top2, gbc);
         gbc.gridy++;
@@ -58,6 +79,7 @@ public class LeaderBoards extends JPanel {
 
         JPanel playersPanel = new JPanel();
         playersPanel.setLayout(new BoxLayout(playersPanel, BoxLayout.Y_AXIS));
+        playersPanel.setBackground(ColorFactory.cream());
 
         JScrollPane otherPlayers = new JScrollPane(playersPanel);
         otherPlayers.setPreferredSize(new Dimension(300, 100));
@@ -82,6 +104,8 @@ public class LeaderBoards extends JPanel {
     private Button createBackButton(ClientController clientController) {
         Button button = new Button("Back", new Dimension(100, 50), FontFactory.newPoppinsDefault(14));
         button.addActionListener(e -> clientController.changeFrame(ClientViews.HOME_PAGE));
+        button.setBackground(ColorFactory.mahogany());
+        button.setForeground(ColorFactory.cream());
         return button;
     }
 }

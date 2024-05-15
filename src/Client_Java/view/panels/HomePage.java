@@ -1,16 +1,14 @@
 package Client_Java.view.panels;
 
-import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
-import Client_Java.utilities.UtilityMethods;
-import Client_Java.view.components.*;
-import Client_Java.view.components.Button;
-import Client_Java.view.components.Timer;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.viewComponents.*;
+import shared.viewComponents.Button;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class HomePage extends JPanel {
@@ -28,19 +26,28 @@ public class HomePage extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new BorderLayout());
 
+        Picture picture = new Picture("src/shared/images/boggled.png", 700, 225);
+        picture.setBackground(ColorFactory.beige());
+        picture.setBorder(new EmptyBorder(0,0,50,0));
+
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridy = 0;
         centerPanel.setBackground(ColorFactory.beige());
         lobbyId.setBackground(ColorFactory.beige());
+        centerPanel.add(picture, constraints);
+        constraints.gridy = 1;
         centerPanel.add(lobbyId, constraints);
         constraints.insets = new Insets(0, 0, 20, 0);
-        constraints.gridy = 1;
-        centerPanel.add(joinLobby, constraints);
         constraints.gridy = 2;
-        centerPanel.add(createNewLobby, constraints);
+        centerPanel.add(joinLobby, constraints);
         constraints.gridy = 3;
+        centerPanel.add(createNewLobby, constraints);
+        constraints.gridy = 4;
         centerPanel.add(leaderBoards, constraints);
+
+        joinLobby.setBackground(ColorFactory.mahogany());
+        joinLobby.setForeground(ColorFactory.cream());
 
         joinLobby.addActionListener( e -> {
 

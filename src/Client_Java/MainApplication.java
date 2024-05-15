@@ -9,6 +9,7 @@ import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+import shared.utilities.UtilityMethods;
 
 import javax.swing.*;
 import java.util.Properties;
@@ -19,9 +20,9 @@ public class MainApplication {
         try {
             Properties props = new Properties();
             props.put("org.omg.CORBA.ORBInitialPort", "1099");
-            props.put("org.omg.CORBA.ORBInitialHost", "192.168.25.135");
+            props.put("org.omg.CORBA.ORBInitialHost", UtilityMethods.getIp("Please enter IP of the server"));
 
-            ORB orb = ORB.init(args, null);
+            ORB orb = ORB.init(args, props);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));
@@ -33,7 +34,7 @@ public class MainApplication {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Server Not Found");
         }
     }
 }

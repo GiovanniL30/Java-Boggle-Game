@@ -84,7 +84,7 @@ CREATE TABLE `lobbyplayers` (
   PRIMARY KEY (`playerID`,`lobbyID`),
   KEY `lobbyID_idx` (`lobbyID`) /*!80000 INVISIBLE */,
   CONSTRAINT `lobbyID` FOREIGN KEY (`lobbyID`) REFERENCES `lobby` (`lobbyID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `playerID2` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `playerID2` FOREIGN KEY (`playerID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -136,6 +136,8 @@ CREATE TABLE `users` (
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
   `totalScore` int NOT NULL,
+  `isBanned` tinyint NOT NULL DEFAULT '0',
+  `isPlaying` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -147,7 +149,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('1','1','1','1','1',87),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc',880),('uID','Alfred','Ngaosi','albert123','qwerty',99),('uID1','Giovanni','Leo','vanni123','abcdef',8);
+INSERT INTO `users` VALUES ('1','1','1','1','1',87,0,0),('c60ee31f-47f5-475c','ascasc','ascasc','albert12ascasc3','ascascasc',880,0,0),('uID','Alfred','Ngaosi','albert123','qwerty',99,0,0),('uID1','Giovanni','Leo','vanni123','abcdef',8,0,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,4 +188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-10 20:34:41
+-- Dump completed on 2024-05-14 23:32:41

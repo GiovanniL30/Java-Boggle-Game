@@ -2,7 +2,9 @@ package Server_Java.dataBase;
 
 import App.Lobby;
 import App.User;
-import Client_Java.utilities.UtilityMethods;
+import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
+import shared.utilities.UtilityMethods;
 import shared.referenceClasses.Response;
 
 import java.sql.*;
@@ -19,7 +21,6 @@ public class Database {
     private static void openConnection() {
         if (connection != null) return;
         try {
-
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -174,7 +175,9 @@ public class Database {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, lobbyId);
             preparedStatement.setString(2, playerId);
-            return preparedStatement.executeUpdate() >  0;
+            boolean res = preparedStatement.executeUpdate() >  0;
+            updateIsPlaying(playerId, res);
+            return res;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -205,21 +208,74 @@ public class Database {
 
     }
 
-    public static synchronized void finishedGame(String topPlayerId, String lobbyId, int score) {
+    public static synchronized void updateIsPlaying(String playerId, boolean p) {
+
+        int i = p ? 1 : 0;
 
         openConnection();
-
-        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ?,  lobbyStatus = 'Finished' WHERE lobbyID = ?";
+        String query = "UPDATE users SET isPlaying = ? WHERE (userID = ?)";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, topPlayerId);
-            preparedStatement.setInt(2, score);
-            preparedStatement.setString(3, lobbyId);
+            preparedStatement.setInt(1, i);
+            preparedStatement.setString(2, playerId);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+
+    }
+
+    public static synchronized void finishedGame(String lobbyId) {
+
+        openConnection();
+
+        String query = "UPDATE lobby SET  lobbyStatus = 'Finished' WHERE lobbyID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, lobbyId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public static synchronized boolean isAccountBanned(String userId) {
+
+        openConnection();
+        String query = "SELECT isBanned FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+               return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
+    }
+    public static synchronized boolean isAccountPlaying(String userId) {
+
+        openConnection();
+        String query = "SELECT isPlaying FROM users WHERE userID = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                return resultSet.getInt(1) == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        return false;
     }
 
     public static synchronized void startGame(String lobbyId) {
@@ -279,26 +335,29 @@ public class Database {
         return false;
     }
 
-    public static synchronized List<Integer> getTime(){
+    public static synchronized int[] getTime(){
 
         openConnection();
 
-        List<Integer> time = new ArrayList<>();
+        LinkedList<Integer> time = new LinkedList<>();
         String query = "SELECT length FROM time";
-
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                time.add(resultSet.getInt(2));
+                time.add(resultSet.getInt(1));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return time;
+        int[] timeArray = new int[time.size()];
+        for (int i = 0; i < time.size(); i++) {
+            timeArray[i] = time.get(i);
+        }
 
+        return timeArray;
     }
 
     public static synchronized int getGameTime() {
@@ -349,7 +408,7 @@ public class Database {
 
         openConnection();
 
-        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE timeID = (SELECT timeID FROM time WHERE length = ?))";
+        String query = "UPDATE gamesettings SET gameTime = (SELECT timeID FROM time WHERE length = ?)";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, length);
@@ -375,6 +434,35 @@ public class Database {
 
     }
 
+    public static synchronized App.Response deleteUser(String userId) {
+
+        Any any = ORB.init().create_any();
+        openConnection();
+
+        if (isAccountPlaying(userId)){
+            any.insert_string("Cannot delete account. Account is still playing");
+            return new App.Response(any, false);
+        }
+
+        String query = "DELETE FROM users WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userId);
+
+            if(preparedStatement.executeUpdate() > 0) {
+                any.insert_string("Account is Deleted successfully");
+                return new App.Response(any, true);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        any.insert_string("Failed to Delete account");
+        return new App.Response(any, false);
+    }
+
     public static synchronized boolean removePlayer( String playerId, String lobbyId) {
         openConnection();
 
@@ -390,6 +478,8 @@ public class Database {
                 if(lobbyPlayers(lobbyId).length == 0) { //delete the lobby if there are no players already
                     deleteLobby(lobbyId);
                 }
+
+                updateIsPlaying(playerId, false);
                 return true;
             }else  return false;
 
@@ -413,14 +503,15 @@ public class Database {
                 }
             }
 
-            PreparedStatement newUser = connection.prepareStatement("INSERT INTO users (userId, firstName, lastName, username, password, isLoggedIn, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement newUser = connection.prepareStatement("INSERT INTO users (userId, firstName, lastName, username, password, totalScore, isBanned, isPlaying) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             newUser.setString(1, user.userID);
             newUser.setString(2, user.firstName);
             newUser.setString(3, user.lastName);
             newUser.setString(4, user.userName);
             newUser.setString(5, user.password);
             newUser.setInt(6, 0);
-            newUser.setString(7, "Offline");
+            newUser.setInt(7, 0);
+            newUser.setInt(8, 0);
             if (newUser.executeUpdate() > 0) {
                 return new Response<>("Created Account Successfully", true);
             }
@@ -447,7 +538,13 @@ public class Database {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                return new Response<>(getUser(resultSet), true) ;
+                User user = getUser(resultSet);
+
+                if(isAccountBanned(user.userID)) {
+                    return new Response<>(new User("Your account is banned", "", "", "", "", 0), false);
+                }
+
+                return new Response<>(user, true) ;
             }
 
             resultSet.close();
@@ -480,9 +577,62 @@ public class Database {
         return new User();
     }
 
+
+
     private static User getUser(ResultSet resultSet) throws SQLException {
         return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
     }
 
+    public static synchronized App.Response banUser(String userID) {
 
+        Any any = ORB.init().create_any();
+        openConnection();
+
+
+        if (isAccountPlaying(userID)){
+            any.insert_string("Player is currently playing, cannot ban");
+            return new App.Response(any, false);
+        }
+
+        String query = "UPDATE users SET isBanned = 1 WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+
+            if(preparedStatement.executeUpdate() > 0) {
+                any.insert_string("Successfully banned player");
+                return new App.Response(any, true);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        any.insert_string("Failed to ban user");
+        return new App.Response(any, false);
+    }
+
+    public static synchronized App.Response unBanUser(String userID) {
+        openConnection();
+
+        Any any = ORB.init().create_any();
+        String query = "UPDATE users SET isBanned = 0 WHERE userID = ?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+
+            if(preparedStatement.executeUpdate() > 0) {
+                any.insert_string("Successfully unBanned player");
+                return new App.Response(any, true);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+        any.insert_string("Failed to unban user");
+        return new App.Response(any, false);
+    }
 }

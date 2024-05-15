@@ -1,17 +1,16 @@
-package Client_Java.view.panels;
+package Server_Java.view.panels;
 
 import App.CreateException;
 import App.User;
-import Client_Java.controller.ClientController;
-import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
-import Client_Java.utilities.UtilityMethods;
-import Client_Java.view.MainFrame;
-import Client_Java.view.components.ClickableText;
-import Client_Java.view.components.FieldInput;
-import Client_Java.view.components.FilledButton;
-import Client_Java.view.components.Picture;
+import Server_Java.controller.AdminController;
+import Server_Java.utilities.AdminViews;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.utilities.UtilityMethods;
+import Server_Java.view.AdminMainFrame;
+import shared.viewComponents.FieldInput;
+import shared.viewComponents.FilledButton;
+import shared.viewComponents.Picture;
 
 
 
@@ -27,11 +26,11 @@ public class Signup extends JPanel {
     private FieldInput userName;
     private FieldInput password;
 
-    public Signup(ClientController clientControllerObserver) {
+    public Signup(AdminController adminController) {
 
         setBackground(ColorFactory.beige());
         setLayout(new GridBagLayout());
-        setPreferredSize(new Dimension(MainFrame.WIDTH, MainFrame.HEIGHT));
+        setPreferredSize(new Dimension(AdminMainFrame.WIDTH, AdminMainFrame.HEIGHT));
 
         GridBagConstraints layoutConstraints = new GridBagConstraints();
         layoutConstraints.gridy = 0;
@@ -53,18 +52,24 @@ public class Signup extends JPanel {
         layoutConstraints.gridy = 2;
         add(fieldInputHolders, layoutConstraints);
 
-        ClickableText loginButton = new ClickableText("Already have an account? Login", 400, 50, FontFactory.newPoppinsDefault(11));
-        loginButton.setForeground(ColorFactory.lightGrey());
-        loginButton.setBackground(ColorFactory.beige());
-        layoutConstraints.gridy = 3;
-        add(loginButton, layoutConstraints);
 
 
-        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(950, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
+
+        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
         layoutConstraints.gridy = 4;
         add(createAccountButton, layoutConstraints);
 
-        loginButton.addActionListener(e -> clientControllerObserver.changeFrame(ClientViews.LOGIN));
+        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.red(), Color.WHITE);
+        layoutConstraints.gridy = 5;
+        add(cancelButton, layoutConstraints);
+
+        cancelButton.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to cancel?", "Cancel", JOptionPane.YES_NO_OPTION);
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.changeFrame(AdminViews.PLAYERS);
+            }
+        });
+
 
         createAccountButton.addActionListener(action -> {
 
@@ -95,7 +100,7 @@ public class Signup extends JPanel {
 
             User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0);
             try {
-                clientControllerObserver.createAccount(newUser);
+                adminController.createAccount(newUser);
             } catch (CreateException e) {
                 throw new RuntimeException(e);
             }
@@ -110,10 +115,10 @@ public class Signup extends JPanel {
         constraints.anchor = GridBagConstraints.CENTER;
 
 
-        firstName = new FieldInput("First Name", new Dimension(450, 50), 30, 1, false);
-        lastName = new FieldInput("Last Name", new Dimension(450, 50), 30, 1, false);
-        userName = new FieldInput("User Name", new Dimension(450, 50), 20, 1, false);
-        password = new FieldInput("Password", new Dimension(450, 50), 20, 1, true);
+        firstName = new FieldInput("First Name", new Dimension(250, 35), 30, 1, false);
+        lastName = new FieldInput("Last Name", new Dimension(250, 35), 30, 1, false);
+        userName = new FieldInput("User Name", new Dimension(250, 35), 20, 1, false);
+        password = new FieldInput("Password", new Dimension(250, 35), 20, 1, true);
 
         firstName.setBackground(ColorFactory.beige());
         lastName.setBackground(ColorFactory.beige());

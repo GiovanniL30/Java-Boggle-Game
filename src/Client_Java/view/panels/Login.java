@@ -2,13 +2,13 @@ package Client_Java.view.panels;
 
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
-import Client_Java.utilities.ColorFactory;
-import Client_Java.utilities.FontFactory;
-import Client_Java.utilities.UtilityMethods;
-import Client_Java.view.components.Button;
-import Client_Java.view.components.FieldInput;
-import Client_Java.view.components.FilledButton;
-import Client_Java.view.components.Picture;
+import shared.utilities.ColorFactory;
+import shared.utilities.FontFactory;
+import shared.utilities.UtilityMethods;
+import shared.viewComponents.Button;
+import shared.viewComponents.FieldInput;
+import shared.viewComponents.FilledButton;
+import shared.viewComponents.Picture;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +33,7 @@ public class Login extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new GridLayout());
 
-        Picture picture = new Picture("src/shared/images/welcome.png", 500, 100);
+        Picture picture = new Picture("src/shared/images/welcome.png", 500, 150);
         picture.setBackground(ColorFactory.beige());
         Picture logo = new Picture("src/shared/images/logo.png", 550, 550);
         logo.setBackground(ColorFactory.beige());
@@ -56,9 +56,8 @@ public class Login extends JPanel {
         buttonPanel.setBackground(ColorFactory.beige());
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20,0 ));
 
-        signUpButton = new Button("Sign up", new Dimension(200, 50) , FontFactory.newPoppinsDefault(12));
-        buttonPanel.add(signUpButton);
-        loginButton = new FilledButton("Login", new Dimension(200, 50) ,FontFactory.newPoppinsDefault(12), ColorFactory.blue(), Color.white);
+
+        loginButton = new FilledButton("Login", new Dimension(420, 50) ,FontFactory.newPoppinsDefault(12), ColorFactory.blue(), Color.white);
         buttonPanel.add(loginButton);
 
         JPanel fieldInputs = fieldInputs();
@@ -77,13 +76,12 @@ public class Login extends JPanel {
         add(rightSide, constraints);
 
 
-        signUpButton.addActionListener( e -> controller.changeFrame(ClientViews.SIGN_UP));
     }
 
     private JPanel fieldInputs(){
 
         JPanel fieldInputPanel = new JPanel();
-        fieldInputPanel.setBackground(ColorFactory.blue());
+        fieldInputPanel.setBackground(ColorFactory.mahogany());
         fieldInputPanel.setLayout(new BoxLayout(fieldInputPanel, BoxLayout.Y_AXIS));
 
 
@@ -94,6 +92,9 @@ public class Login extends JPanel {
         fieldInputPanel.add(password);
         userName.setBackground(ColorFactory.beige());
         password.setBackground(ColorFactory.beige());
+
+        loginButton.setBackground(ColorFactory.mahogany());
+        loginButton.setForeground(ColorFactory.cream());
 
         loginButton.addActionListener( e -> {
 

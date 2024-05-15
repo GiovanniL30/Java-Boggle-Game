@@ -7,6 +7,7 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -58,6 +59,11 @@ public class ApplicationServant extends ApplicationServerPOA {
     public Response joinLobby(User user, String lobbyId, Controller clientController) {
 
         Any any = ORB.init().create_any();
+
+        if(clientController == null) {
+            any.insert_string("Connection CORBA Error!");
+            return new Response(any, false);
+        }
 
         if(!Database.lobbyExist(lobbyId)) {
             any.insert_string("Lobby not found");
@@ -127,6 +133,52 @@ public class ApplicationServant extends ApplicationServerPOA {
         return Database.getPlayers();
     }
 
+    @Override
+    public int[] getTime() {
+        return Database.getTime();
+    }
 
+    @Override
+    public void updateGameTime(int time) {
+        Database.updateGameTime(time);
+    }
+
+    @Override
+    public void updateWaitingTime(int time) {
+        Database.updateWaitingTime(time);
+    }
+
+    @Override
+    public Response banUser(String userId) {
+        Response response = Database.banUser(userId);
+
+        if(response.isSuccess) {
+
+            if(controllerHashMap.containsKey(userId)) {
+                controllerHashMap.get(userId).receiveBanNotification();
+            }
+
+        }
+        return response;
+    }
+
+    @Override
+    public Response unBanUser(String userId) {
+        return Database.unBanUser(userId);
+    }
+
+    @Override
+    public Response deleteUserAccount(String userId) {
+        Response response = Database.deleteUser(userId);
+
+        if(response.isSuccess) {
+
+            if(controllerHashMap.containsKey(userId)) {
+                controllerHashMap.get(userId).receiveDeleteAccountNotification();
+            }
+
+        }
+        return response;
+    }
 
 }
