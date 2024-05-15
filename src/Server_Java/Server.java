@@ -21,7 +21,7 @@ public class Server {
             Properties props = new Properties();
             props.put("org.omg.CORBA.ORBInitialPort", "1099");
             props.put("org.omg.CORBA.ORBInitialHost", "localhost");
-            ORB orb = ORB.init(args, props);
+            ORB orb = ORB.init(args, null);
 
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();

@@ -15,6 +15,7 @@ import java.awt.*;
 import java.util.LinkedList;
 
 public class UsersPanel extends JPanel {
+
     public UsersPanel(AdminController adminController) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -23,6 +24,9 @@ public class UsersPanel extends JPanel {
 
         User[] users = Database.getPlayers();
         UsersList userList = new UsersList(users, adminController);
+        searchbar.setUsersList(userList);
         add(userList);
+
     }
+
 }

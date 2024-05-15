@@ -1,5 +1,7 @@
 package Server_Java.view.panels;
 
+import App.CreateException;
+import App.User;
 import Server_Java.controller.AdminController;
 import Server_Java.utilities.AdminViews;
 import shared.utilities.ColorFactory;
@@ -96,12 +98,12 @@ public class Signup extends JPanel {
             }
 
 
-//            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0);
-//            try {
-//                clientControllerObserver.createAccount(newUser);
-//            } catch (CreateException e) {
-//                throw new RuntimeException(e);
-//            }
+            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0);
+            try {
+                adminController.createAccount(newUser);
+            } catch (CreateException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 

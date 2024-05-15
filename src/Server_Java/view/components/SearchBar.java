@@ -1,12 +1,10 @@
 package Server_Java.view.components;
 
 import App.User;
-import Server_Java.ApplicationServant;
 import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
 import Server_Java.utilities.AdminViews;
 import Server_Java.view.AdminMainFrame;
-import Server_Java.view.panels.UsersPanel;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.IconButton;
@@ -16,20 +14,17 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-import java.util.List;
 
 public class SearchBar extends JPanel {
-    private FieldInput searchField;
-    private User[] users;
+    private final FieldInput searchField;
     private UsersList usersList;
-    private AdminController adminController;
-    private UsersPanel usersPanel;
-    public SearchBar(AdminController adminController){
-        this.adminController = adminController;
+
+    public SearchBar(AdminController adminController) {
+
         setBackground(Color.white);
         setLayout(new BorderLayout(0, 50));
 
-        users = Database.getPlayers();
+        User[] users = Database.getPlayers();
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(AdminMainFrame.WIDTH, 50));
@@ -67,43 +62,18 @@ public class SearchBar extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
 
+                String searchTerm = searchField.getInput().toUpperCase();
+
+
+                User[] filteredUsers = Arrays.stream(users).filter(user -> user.firstName.toUpperCase().contains(searchTerm) || user.lastName.toUpperCase().contains(searchTerm) || user.userName.toUpperCase().contains(searchTerm)).toArray(User[]::new);
+
+                usersList.updateView(filteredUsers);
+
             }
+
             @Override
             public void keyPressed(KeyEvent e) {
 
-                if (!Character.isLetterOrDigit(e.getKeyChar())) {
-                    if (!(e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) return;
-                }
-
-                if (e.isAltDown() || e.isShiftDown() || e.isControlDown()) {
-                    return;
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    if (searchField.getInput() != null && searchField.getInput().isEmpty()) {
-                        searchField.removeError();
-                    }
-                }
-
-                if (searchField.getInput() != null) {
-                    searchField.removeError();
-                }
-
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    String searchTerm = searchField.getInput();
-                    if (!searchTerm.isEmpty()) {
-                        User[] users = Database.getPlayers();
-
-                        User[] filteredUsers = Arrays.stream(users)
-                                .filter(user -> user.firstName.contains(searchTerm) ||
-                                        user.lastName.contains(searchTerm) ||
-                                        user.userName.contains(searchTerm))
-                                .toArray(User[]::new);
-
-                        setUserList(filteredUsers);
-                    }
-
-                }
             }
 
             @Override
@@ -114,11 +84,7 @@ public class SearchBar extends JPanel {
 
     }
 
-    public void setUserList(User[] users) {
-        usersPanel.remove(1);
-        usersList = new UsersList(users, adminController);
-        usersPanel.add(usersList);
-        revalidate();
-        repaint();
+    public void setUsersList(UsersList usersList) {
+        this.usersList = usersList;
     }
 }

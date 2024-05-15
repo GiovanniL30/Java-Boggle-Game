@@ -21,8 +21,7 @@ public class Database {
     private static void openConnection() {
         if (connection != null) return;
         try {
-
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -504,14 +503,15 @@ public class Database {
                 }
             }
 
-            PreparedStatement newUser = connection.prepareStatement("INSERT INTO users (userId, firstName, lastName, username, password, isLoggedIn, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement newUser = connection.prepareStatement("INSERT INTO users (userId, firstName, lastName, username, password, totalScore, isBanned, isPlaying) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             newUser.setString(1, user.userID);
             newUser.setString(2, user.firstName);
             newUser.setString(3, user.lastName);
             newUser.setString(4, user.userName);
             newUser.setString(5, user.password);
             newUser.setInt(6, 0);
-            newUser.setString(7, "Offline");
+            newUser.setInt(7, 0);
+            newUser.setInt(8, 0);
             if (newUser.executeUpdate() > 0) {
                 return new Response<>("Created Account Successfully", true);
             }

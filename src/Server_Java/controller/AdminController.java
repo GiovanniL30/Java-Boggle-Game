@@ -140,4 +140,15 @@ public class AdminController {
     public void setAdminMainFrame(AdminMainFrame adminMainFrame) {
         this.adminMainFrame = adminMainFrame;
     }
+
+    public void createAccount(User newUser) throws CreateException {
+
+        Response response = applicationServer.createAccount(newUser);
+        if(response.isSuccess) {
+            changeFrame(AdminViews.PLAYERS);
+        }
+
+        JOptionPane.showMessageDialog(adminMainFrame, response.payload.extract_string());
+
+    }
 }
