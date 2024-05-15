@@ -86,8 +86,7 @@ public class ClientController extends ControllerPOA {
     }
 
     @Override
-    public void endGameUpdate(User winner, int score) {
-
+    public void endGameUpdate(User winner, int score, GamePlayer[] otherPlayers) {
         randomLetters = null;
         gameLobby = "";
         gameStarted = false;
@@ -96,7 +95,7 @@ public class ClientController extends ControllerPOA {
             @Override
             protected Object doInBackground() {
                 mainFrame.getContentPane().remove(1);
-                mainFrame.getContentPane().add(new GameSummary(winner, score, ClientController.this));
+                mainFrame.getContentPane().add(new GameSummary(ClientController.this, otherPlayers, 0, true));
                 return null;
             }
 
@@ -106,8 +105,8 @@ public class ClientController extends ControllerPOA {
                 mainFrame.getContentPane().repaint();
             }
         }.execute();
-
     }
+
 
     @Override
     public void stopIdleTime() {
@@ -127,15 +126,14 @@ public class ClientController extends ControllerPOA {
     }
 
     @Override
-    public void startIdleTime(User roundWinner, int score, int round) {
+    public void startIdleTime(User roundWinner, int score, int round, GamePlayer[] otherPlayers) {
         new Thread(() -> {
 
             new SwingWorker<Object, Object>() {
                 @Override
                 protected Object doInBackground() {
-                    mainFrame.getHeader().setVisible(false);
                     mainFrame.getContentPane().remove(1);
-                    mainFrame.getContentPane().add(new RoundWinner(roundWinner, score, round), 1);
+                    mainFrame.getContentPane().add(new GameSummary(ClientController.this, otherPlayers,round,  false));
                     mainFrame.revalidate();
                     mainFrame.repaint();
                     return null;
@@ -193,9 +191,11 @@ public class ClientController extends ControllerPOA {
         }else {
 
             if(response.payload.extract_long() == 0) {
-                mainFrame.getGameStartedLobby().setError("Word is not a valid word");
-            }else {
-                mainFrame.getGameStartedLobby().setError("You have already entered this word");
+                mainFrame.getGameStartedLobby().enableError("Word is not a valid!");
+            }else if(response.payload.extract_long() == 1) {
+                mainFrame.getGameStartedLobby().enableError("You have already entered this word!");
+            }else if(response.payload.extract_long() == 2) {
+                mainFrame.getGameStartedLobby().enableError("Word was already entered by other player!");
             }
 
         }

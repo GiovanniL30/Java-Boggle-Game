@@ -60,6 +60,11 @@ public class ApplicationServant extends ApplicationServerPOA {
 
         Any any = ORB.init().create_any();
 
+        if(clientController == null) {
+            any.insert_string("Connection CORBA Error!");
+            return new Response(any, false);
+        }
+
         if(!Database.lobbyExist(lobbyId)) {
             any.insert_string("Lobby not found");
             return new Response(any, false);

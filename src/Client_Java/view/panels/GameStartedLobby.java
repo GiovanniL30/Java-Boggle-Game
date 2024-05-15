@@ -2,12 +2,15 @@ package Client_Java.view.panels;
 
 import App.User;
 import Client_Java.controller.ClientController;
+import Client_Java.view.components.LetterBlock;
+import Client_Java.view.components.PlayerNameBlock;
+import Client_Java.view.components.WordBlock;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
-import Client_Java.view.components.*;
 import shared.viewComponents.FieldInput;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -32,6 +35,7 @@ public class GameStartedLobby extends JPanel {
     private LinkedList<PlayerNameBlock> playerNameBlocks = new LinkedList<>();
     private LinkedList<LetterBlock> unUsedLetterBlocks = new LinkedList<>();
     private LinkedList<LetterBlock> usedLetterBlocks = new LinkedList<>();
+    private final JLabel errorLabel = new JLabel();
 
     private String[] randomLetters;
     private int typeCode = 0;
@@ -74,7 +78,7 @@ public class GameStartedLobby extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
 
-                if(typeCode == 10) return;
+                if (typeCode == 10) return;
 
                 if (e.isAltDown() || e.isControlDown() || e.isShiftDown()) {
                     return;
@@ -153,9 +157,15 @@ public class GameStartedLobby extends JPanel {
         topPanel.setLayout(new BorderLayout());
         topPanel.setBackground(ColorFactory.beige());
 
+        errorLabel.setFont(FontFactory.newPoppinsDefault(14));
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setVisible(false);
+        errorLabel.setBorder(new EmptyBorder(0, 30, 0, 0));
+
         initRoundTimePanel();
         roundTimePanel.setBackground(ColorFactory.beige());
         topPanel.add(roundTimePanel, BorderLayout.EAST);
+        topPanel.add(errorLabel, BorderLayout.CENTER);
         topPanel.add(scoreLabel, BorderLayout.WEST);
 
     }
@@ -229,7 +239,7 @@ public class GameStartedLobby extends JPanel {
             @Override
             protected Object doInBackground() {
 
-                for(WordBlock wordBlock : wordBlocks) {
+                for (WordBlock wordBlock : wordBlocks) {
                     wordEnteredPanel.add(wordBlock);
                 }
 
@@ -286,12 +296,10 @@ public class GameStartedLobby extends JPanel {
     }
 
     public void setError(String error) {
-         fieldInput.enableError(error);
+        fieldInput.enableError(error);
     }
 
-    public void removeError() {
-        fieldInput.removeError();
-    }
+
 
     public void clearText() {
         fieldInput.clearText();
@@ -318,9 +326,16 @@ public class GameStartedLobby extends JPanel {
         return false;
     }
 
-    private void idleTime(){
+    public void enableError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.revalidate();
+        errorLabel.repaint();
 
+    }
 
+    public void removeError(){
+        errorLabel.setVisible(false);
     }
 
 }

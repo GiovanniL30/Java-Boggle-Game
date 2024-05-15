@@ -9,6 +9,7 @@ import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+import shared.utilities.UtilityMethods;
 
 import java.util.Properties;
 
@@ -20,8 +21,8 @@ public class Server {
 
             Properties props = new Properties();
             props.put("org.omg.CORBA.ORBInitialPort", "1099");
-            props.put("org.omg.CORBA.ORBInitialHost", "localhost");
-            ORB orb = ORB.init(args, null);
+            props.put("org.omg.CORBA.ORBInitialHost", UtilityMethods.getIp("Please enter IP address of this machine"));
+            ORB orb = ORB.init(args, props);
 
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
@@ -40,7 +41,7 @@ public class Server {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("ORB not found |  ORB not started | Wrong IP address");
         }
 
     }

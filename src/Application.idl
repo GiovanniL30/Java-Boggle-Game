@@ -43,24 +43,25 @@ module App {
         string errorMessage;
     };
 
-
-
+struct GamePlayer {
+    User user;
+    long score;
+};
 
     typedef sequence<string> Letters;
+    typedef sequence<GamePlayer> OtherPlayers;
 
    interface Controller {
         void receiveUpdates(in ClientActions clientActions);
-
         void updatePlayerListView();
-
         void setWaitingTime(in long time);
         void setGameTime(in long time);
         void setRound(in long round);
         void updatePlayerScore(in string id, in long newScore);
         void receiveLetter(in Letters letters);
-        void endGameUpdate(in User winner, in long score);
+        void endGameUpdate(in User winner, in long score, in OtherPlayers otherPlayers);
         void stopIdleTime();
-        void startIdleTime(in User roundWinner, in long score, in long round);
+        void startIdleTime(in User roundWinner, in long score, in long round,  in OtherPlayers otherPlayers);
         void setIdleTimeLeft(in string message);
         void receiveBanNotification();
         void receiveDeleteAccountNotification();

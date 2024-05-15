@@ -7,6 +7,7 @@ import Server_Java.view.AdminMainFrame;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
+import shared.utilities.UtilityMethods;
 
 import javax.swing.*;
 import java.util.Properties;
@@ -16,9 +17,9 @@ public class AdminMainApplication {
         try {
             Properties props = new Properties();
             props.put("org.omg.CORBA.ORBInitialPort", "1099");
-            props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+            props.put("org.omg.CORBA.ORBInitialHost", UtilityMethods.getIp("Enter the IP of the server"));
 
-            ORB orb = ORB.init(args, null);
+            ORB orb = ORB.init(args, props);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(obj);
             ApplicationServer server = ApplicationServerHelper.narrow(ncRef.resolve_str("Application"));
@@ -30,7 +31,7 @@ public class AdminMainApplication {
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Server Not Found");
         }
     }
 }
