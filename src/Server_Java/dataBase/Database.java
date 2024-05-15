@@ -22,7 +22,7 @@ public class Database {
         if (connection != null) return;
         try {
 
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }

@@ -25,8 +25,7 @@ public class AdminHeader extends JPanel {
 
         label.setFont(FontFactory.newPoppinsBold(26));
         label.setBorder(new EmptyBorder(0,0,10,0));
-        createAccount.setForeground(Color.BLACK);
-        createAccount.setBackground(ColorFactory.blue());
+        createAccount.setForeground(ColorFactory.mahogany());
         createAccount.setVisible(false);
 
         add(picture, BorderLayout.WEST);

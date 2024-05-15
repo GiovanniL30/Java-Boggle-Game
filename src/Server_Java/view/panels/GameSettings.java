@@ -9,8 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameSettings extends JPanel {
-    private FilledButton cancelButton = new FilledButton("Cancel", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.WHITE);
-    private FilledButton updateButton = new FilledButton("Update", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.WHITE);
+    private FilledButton cancelButton = new FilledButton("Cancel", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.whitishGrey(), Color.BLACK);
+    private FilledButton updateButton = new FilledButton("Update", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.mahogany(), Color.WHITE);
     private JLabel waitingTime = new JLabel("Waiting Time:", SwingConstants.CENTER);
     private JLabel gameTime = new JLabel("Game Time:", SwingConstants.CENTER);
     private JComboBox<Integer> waitingTimeOptions;
@@ -59,8 +59,6 @@ public class GameSettings extends JPanel {
         constraints.gridx = 0;
         constraints.gridy = 2;
         centerPanel.setBackground(ColorFactory.beige());
-        cancelButton.setBackground(ColorFactory.whitishGrey());
-        cancelButton.setForeground(Color.BLACK);
         centerPanel.add(cancelButton, constraints);
 
         constraints.gridx = 1;

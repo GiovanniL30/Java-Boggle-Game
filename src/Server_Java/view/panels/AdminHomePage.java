@@ -9,8 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AdminHomePage extends JPanel {
-    private FilledButton gameSettings = new FilledButton("Game Settings", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.WHITE);
-    private FilledButton players = new FilledButton("Players", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.WHITE);
+    private FilledButton gameSettings = new FilledButton("Game Settings", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.whitishGrey(), Color.black);
+    private FilledButton players = new FilledButton("Players", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.mahogany(), Color.WHITE);
     private JLabel title = new JLabel("Boggled Game Settings", SwingConstants.CENTER);
 
     public AdminHomePage(AdminController adminController) {
@@ -28,8 +28,6 @@ public class AdminHomePage extends JPanel {
 
         constraints.gridy = 1;
         centerPanel.setBackground(ColorFactory.beige());
-        gameSettings.setBackground(ColorFactory.whitishGrey());
-        gameSettings.setForeground(Color.BLACK);
         centerPanel.add(gameSettings, constraints);
 
         constraints.gridy = 2;
