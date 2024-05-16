@@ -8,10 +8,11 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 
 import javax.swing.Timer;
+import java.io.Serializable;
 import java.util.*;
 
 
-public class GameLobby {
+public class GameLobby implements Serializable {
 
     private final String lobbyId;
     private final HashMap<String, LinkedList<String>> playerEnteredWords = new HashMap<>(); //player id -> word list entered valid

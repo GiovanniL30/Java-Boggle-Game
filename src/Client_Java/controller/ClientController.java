@@ -12,10 +12,11 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.Arrays;
 
 
-public class ClientController extends ControllerPOA {
+public class ClientController extends ControllerPOA implements Serializable {
 
     private final ApplicationServer applicationServer;
     private final ORB orb;
@@ -50,11 +51,17 @@ public class ClientController extends ControllerPOA {
 
     @Override
     public void updatePlayerListView() {
-        if(gameStarted) {
-            mainFrame.getGameStartedLobby().updatePlayerList();
-        }else {
-            mainFrame.getWaitingLobby().updatePlayerList();
+
+        try {
+            if(gameStarted) {
+                mainFrame.getGameStartedLobby().updatePlayerList();
+            }else {
+                mainFrame.getWaitingLobby().updatePlayerList();
+            }
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+
     }
 
 
@@ -253,7 +260,7 @@ public class ClientController extends ControllerPOA {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
         }
 
 
@@ -274,7 +281,7 @@ public class ClientController extends ControllerPOA {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
         }
 
     }
@@ -287,13 +294,19 @@ public class ClientController extends ControllerPOA {
         return applicationServer.getPlayers(lobbyId);
     }
     public void leaveLobby(String lobbyId) throws LobbyException {
-        Response response =  applicationServer.leaveLobby(loggedInUser.userID, lobbyId);
 
-        if(response.isSuccess) {
-            gameLobby = "";
-            gameStarted = false;
-            changeFrame(ClientViews.HOME_PAGE);
+        try {
+            Response response =  applicationServer.leaveLobby(loggedInUser.userID, lobbyId);
+
+            if(response.isSuccess) {
+                gameLobby = "";
+                gameStarted = false;
+                changeFrame(ClientViews.HOME_PAGE);
+            }
+        }catch (Exception e) {
+            System.err.println(e.getMessage());
         }
+
 
     }
 
