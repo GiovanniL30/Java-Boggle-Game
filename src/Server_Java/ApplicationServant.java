@@ -48,11 +48,7 @@ public class ApplicationServant extends ApplicationServerPOA {
         LinkedList<User> users = new LinkedList<>();
 
         for(User u : Database.getPlayers() ) {
-
-            if(controllerHashMap.containsKey(u.userID)) {
-                u.isOnline = true;
-            }
-
+            u.isOnline = controllerHashMap.containsKey(u.userID);
             users.add(u);
         }
 
