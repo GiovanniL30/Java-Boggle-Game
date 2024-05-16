@@ -32,7 +32,7 @@ public class Database {
         openConnection();
 
         LinkedList<User> users = new LinkedList<>();
-        String query = "SELECT * FROM users WHERE totalScore != 0 ORDER BY 6 desc";
+        String query = "SELECT * FROM users ORDER BY 6 desc";
 
         try {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
