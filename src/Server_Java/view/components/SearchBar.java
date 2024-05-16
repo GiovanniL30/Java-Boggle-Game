@@ -25,7 +25,7 @@ public class SearchBar extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new BorderLayout(0, 5));
 
-        User[] users = Database.getPlayers();
+        User[] users = adminController.getUsers();
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(AdminMainFrame.WIDTH, 50));
@@ -61,13 +61,14 @@ public class SearchBar extends JPanel {
         });
 
         searchField.getTextField().addKeyListener(new KeyListener() {
+
             @Override
             public void keyTyped(KeyEvent e) {
-
+                User[] users111 = adminController.getUsers();
                 String searchTerm = searchField.getInput().toUpperCase();
 
 
-                User[] filteredUsers = Arrays.stream(users).filter(user -> user.firstName.toUpperCase().contains(searchTerm) || user.lastName.toUpperCase().contains(searchTerm) || user.userName.toUpperCase().contains(searchTerm)).toArray(User[]::new);
+                User[] filteredUsers = Arrays.stream(users111).filter(user -> user.firstName.toUpperCase().contains(searchTerm) || user.lastName.toUpperCase().contains(searchTerm) || user.userName.toUpperCase().contains(searchTerm)).toArray(User[]::new);
 
                 usersList.updateView(filteredUsers);
 
