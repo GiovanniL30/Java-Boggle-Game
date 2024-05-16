@@ -22,7 +22,7 @@ public class UsersCard extends JPanel{
         // Panel for buttons
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(Color.white);
-        GridLayout buttonsGrid = new GridLayout(2, 2);
+        GridLayout buttonsGrid = new GridLayout(1, 3);
         buttonsGrid.setHgap(10);
         buttonsGrid.setVgap(10);
         buttonsPanel.setLayout(buttonsGrid);
