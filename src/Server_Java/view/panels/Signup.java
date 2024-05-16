@@ -98,7 +98,7 @@ public class Signup extends JPanel {
             }
 
 
-            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0);
+            User newUser = new User(UtilityMethods.generateRandomID(),fName, lName, uName, p, 0, false);
             try {
                 adminController.createAccount(newUser);
             } catch (CreateException e) {

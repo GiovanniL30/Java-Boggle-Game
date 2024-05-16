@@ -21,7 +21,7 @@ public class Database {
     private static void openConnection() {
         if (connection != null) return;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/newschema1?user=root&password=");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -559,7 +559,7 @@ public class Database {
                 User user = getUser(resultSet);
 
                 if(isAccountBanned(user.userID)) {
-                    return new Response<>(new User("Your account is banned", "", "", "", "", 0), false);
+                    return new Response<>(new User("Your account is banned", "", "", "", "", 0, false), false);
                 }
 
                 return new Response<>(user, true) ;
@@ -570,7 +570,7 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", 0), false);
+        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", 0, false), false);
     }
 
     public static User getUser(String id) {
@@ -598,7 +598,7 @@ public class Database {
 
 
     private static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
+        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6), true);
     }
 
     public static synchronized App.Response banUser(String userID) {

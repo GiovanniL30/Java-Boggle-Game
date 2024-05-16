@@ -7,6 +7,7 @@ module App {
         string userName;
         string password;
         long score;
+        boolean isOnline;
     };
 
     struct Lobby {
@@ -92,6 +93,7 @@ struct GamePlayer {
         Response banUser(in string userId);
         Response unBanUser(in string userId);
         Response deleteUserAccount(in string userId);
+        Players getPlayerWithOnlineStatus();
     };
 
     interface LobbyServer {
