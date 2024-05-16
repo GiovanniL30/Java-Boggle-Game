@@ -139,6 +139,24 @@ public class Database {
         return words;
     }
 
+    public static synchronized void setTopPlayer(String userID, int score,  String lobbyID) {
+        openConnection();
+
+        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ? WHERE (lobbyID = ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, score);
+            preparedStatement.setString(3, lobbyID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+
+    }
+
     public static synchronized Response<String> createNewLobby(String creatorId) {
 
         openConnection();

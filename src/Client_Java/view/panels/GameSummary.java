@@ -53,7 +53,7 @@ public class GameSummary extends JPanel {
                     .map(player -> player.user.userName + " (" + player.score + ")")
                     .collect(Collectors.joining(", "));
 
-            result.append(roundEnd ? "Game Winner " : rank == 1 ? "Round " + currentRound + " Winner" : "").append(rank == 1 ? "" : rank).append(". ").append(playersWithScores);
+            result.append(roundEnd ? players.size() > 1 ? "Tie " : "Game Winner " : rank == 1 ? (players.size() > 1 ? "Tie on " : "Round ") + currentRound + (players.size() > 1 ? "" : "Winner ")  : "").append(rank == 1 ? "" : rank).append(". ").append(playersWithScores);
             if(rank == 1) {
                 winnerLabel.setText(result.toString());
             }else {
@@ -61,7 +61,6 @@ public class GameSummary extends JPanel {
                otherPlayer.setFont(FontFactory.newPoppinsDefault(14));
                otherPlayers.add(otherPlayer);
             }
-
             rank++;
         }
 
