@@ -95,7 +95,6 @@ public class GameSummary extends JPanel {
         LinkedList<LinkedList<GamePlayer>> gamePlayersSorted = new LinkedList<>();
         playerScores.forEach((score, gamePlayers) -> sortedScores.add(score));
         sortedScores.sort(Comparator.reverseOrder());
-        sortedScores.forEach(System.out::println);
         sortedScores.forEach(score -> gamePlayersSorted.add(playerScores.get(score)));
         return gamePlayersSorted;
     }
