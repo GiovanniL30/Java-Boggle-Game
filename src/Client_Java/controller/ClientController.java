@@ -12,10 +12,11 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
 import javax.swing.*;
+import java.io.Serializable;
 import java.util.Arrays;
 
 
-public class ClientController extends ControllerPOA {
+public class ClientController extends ControllerPOA implements Serializable {
 
     private final ApplicationServer applicationServer;
     private final ORB orb;

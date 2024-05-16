@@ -5,9 +5,10 @@ import Server_Java.dataBase.Database;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class LobbyServant extends LobbyServerPOA {
+public class LobbyServant extends LobbyServerPOA implements Serializable {
 
     private final HashMap<String, GameLobby> lobbies = new HashMap<>();
 
