@@ -49,6 +49,14 @@ public class UsersCard extends JPanel{
         JLabel userName = new JLabel("Username: " + user.userName);
         JLabel name = new JLabel("Name: " + user.firstName + " " + user.lastName);
         JLabel userPassword = new JLabel("Password: " + user.password);
+        JLabel isOnline = new JLabel(user.isOnline ? "Online" : "Offline");
+        isOnline.setFont(FontFactory.newPoppinsDefault(13));
+
+        if(user.isOnline) {
+            isOnline.setForeground(Color.green);
+        }else {
+            isOnline.setForeground(Color.red);
+        }
 
         name.setFont(FontFactory.newPoppinsBold(14));
         userName.setFont(FontFactory.newPoppinsDefault(13));
@@ -64,6 +72,7 @@ public class UsersCard extends JPanel{
         accountInfo.add(name);
         accountInfo.add(userName);
         accountInfo.add(userPassword);
+        accountInfo.add(isOnline);
 
         JPanel rightSide = new JPanel();
         rightSide.setBackground(Color.white);

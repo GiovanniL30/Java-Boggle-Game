@@ -42,6 +42,9 @@ public class AdminController {
         applicationServer.updateWaitingTime(time);
     }
 
+    public User[] getUsers() {
+        return applicationServer.getPlayerWithOnlineStatus();
+    }
 
     public void banUser(String userId) {
         try {
