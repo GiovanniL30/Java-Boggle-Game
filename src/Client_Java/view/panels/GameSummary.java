@@ -47,13 +47,9 @@ public class GameSummary extends JPanel {
 
         int rank = 1;
 
-        HashMap<Integer, LinkedList<GamePlayer>> revers = new HashMap<>();
 
-        for(Map.Entry<Integer, LinkedList<GamePlayer>> player: groupedByScore.entrySet()) {
-            revers.put(player.getKey(), player.getValue());
-        }
 
-        for (Map.Entry<Integer, LinkedList<GamePlayer>> entry : revers.entrySet()) {
+        for (Map.Entry<Integer, LinkedList<GamePlayer>> entry : sortMapByKey(groupedByScore).entrySet()) {
             StringBuilder result = new StringBuilder();
             LinkedList<GamePlayer> players = entry.getValue();
 
@@ -66,9 +62,9 @@ public class GameSummary extends JPanel {
                 winnerLabel.setText(result.toString());
             }else {
 
-               JLabel otherPlayer = new JLabel(result.toString());
-               otherPlayer.setFont(FontFactory.newPoppinsDefault(14));
-               otherPlayers.add(otherPlayer);
+                JLabel otherPlayer = new JLabel(result.toString());
+                otherPlayer.setFont(FontFactory.newPoppinsDefault(14));
+                otherPlayers.add(otherPlayer);
             }
             rank++;
         }
@@ -91,6 +87,24 @@ public class GameSummary extends JPanel {
 
         contentPanel.add(Box.createVerticalGlue());
         add(contentPanel, BorderLayout.CENTER);
+    }
+
+    public static <K extends Comparable<? super K>, V> Map<K, V> sortMapByKey(Map<K, V> map) {
+        // Create a new LinkedHashMap to store the sorted map
+        Map<K, V> sortedMap = new LinkedHashMap<>();
+
+        // Get the entries of the original map
+        LinkedList<Map.Entry<K, V>> entryList = new LinkedList<>(map.entrySet());
+
+        // Sort the entryList based on keys
+        entryList.sort(Map.Entry.comparingByKey());
+
+        // Populate the sortedMap with the sorted entries
+        for (Map.Entry<K, V> entry : entryList) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
     }
 
 
