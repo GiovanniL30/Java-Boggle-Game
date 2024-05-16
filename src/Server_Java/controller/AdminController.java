@@ -85,6 +85,17 @@ public class AdminController {
         }
     }
 
+    public void createAccount(User newUser) throws CreateException {
+
+        Response response = applicationServer.createAccount(newUser);
+        if(response.isSuccess) {
+            changeFrame(AdminViews.PLAYERS);
+        }
+
+        JOptionPane.showMessageDialog(adminMainFrame, response.payload.extract_string());
+
+    }
+
     public void changeFrame(AdminViews adminViews) {
         new SwingWorker<Object, Object>() {
             @Override
@@ -144,14 +155,4 @@ public class AdminController {
         this.adminMainFrame = adminMainFrame;
     }
 
-    public void createAccount(User newUser) throws CreateException {
-
-        Response response = applicationServer.createAccount(newUser);
-        if(response.isSuccess) {
-            changeFrame(AdminViews.PLAYERS);
-        }
-
-        JOptionPane.showMessageDialog(adminMainFrame, response.payload.extract_string());
-
-    }
 }
