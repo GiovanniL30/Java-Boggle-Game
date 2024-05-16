@@ -25,7 +25,7 @@ public class SearchBar extends JPanel {
         setBackground(ColorFactory.beige());
         setLayout(new BorderLayout(0, 5));
 
-        User[] users = Database.getPlayers();
+        User[] users = adminController.getUsers();
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(AdminMainFrame.WIDTH, 50));
