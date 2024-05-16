@@ -114,13 +114,25 @@ public class GameLobby {
 
                     new Thread(() -> {
                         if (players.isEmpty()) {
-                            Database.deleteLobby(lobbyId);
+
                         } else {
+
+                            if(haveTie()) {
+                               Database.deleteLobby(lobbyId);
+                               return;
+                            }
+
+                            Database.setTopPlayer(topPlayer, playerScores.get(topPlayer), lobbyId);
                             Database.finishedGame(lobbyId);
                         }
                     }).start();
+
                     new Thread(() -> Database.updatePlayerScores(playerScores)).start();
-                    new Thread(() -> players.keySet().forEach(player -> Database.removePlayer(player, lobbyId))).start();
+                    new Thread(() -> {
+                        if(!haveTie()) {
+                            players.keySet().forEach(player -> Database.removePlayer(player, lobbyId));
+                        }
+                    } ).start();
 
                     gameTimer.stop();
                 } else {
@@ -277,6 +289,15 @@ public class GameLobby {
         System.out.println(topPlayer);
         return topPlayer;
     }
+
+    private boolean haveTie() {
+        int topPlayerScore =  playerScores.get(getTopPlayer());
+      for(Map.Entry<String, Integer> player: playerScores.entrySet()) {
+          if(topPlayerScore == player.getValue()) return true;
+      }
+
+      return false;
+    };
 
     private String checkUniqueWord(String word) {
 
