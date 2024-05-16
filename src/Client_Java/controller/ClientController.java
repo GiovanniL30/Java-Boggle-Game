@@ -202,6 +202,7 @@ public class ClientController extends ControllerPOA {
 
         mainFrame.getGameStartedLobby().clearText();
     }
+
     public void logIn(String userName, String password) {
 
         try {
