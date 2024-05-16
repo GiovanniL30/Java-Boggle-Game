@@ -7,6 +7,7 @@ module App {
         string userName;
         string password;
         long score;
+        boolean isOnline;
     };
 
     struct Lobby {
@@ -28,7 +29,8 @@ module App {
         NEW_MESSAGE,
         START_GAME,
         NEW_GAME_ROUND,
-        NO_PLAYER_LOBBY
+        NO_PLAYER_LOBBY,
+        WORD_IS_REMOVED_SCORE
     };
 
     exception LogInException {
@@ -92,6 +94,7 @@ struct GamePlayer {
         Response banUser(in string userId);
         Response unBanUser(in string userId);
         Response deleteUserAccount(in string userId);
+        Players getPlayerWithOnlineStatus();
     };
 
     interface LobbyServer {

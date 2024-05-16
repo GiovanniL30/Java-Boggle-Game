@@ -26,13 +26,14 @@ public class ApplicationServant extends ApplicationServerPOA {
        if(response.isSuccess()) {
 
            if(controllerHashMap.containsKey(user.userID)) {
-               return new User("You are already logged in on another machine", "", "", "", "", 0);
+               return new User("You are already logged in on another machine", "", "", "", "", 0, false);
            }
 
            controllerHashMap.put(user.userID, controller);
            System.out.println("A new user Logged in total users online: " + controllerHashMap.size() );
        }
 
+        user.isOnline = true;
         return user;
     }
 
@@ -40,6 +41,19 @@ public class ApplicationServant extends ApplicationServerPOA {
     public void logout(String userID) {
         controllerHashMap.remove(userID);
         System.out.println("A user logged out total users online: " + controllerHashMap.size() );
+    }
+
+    public LinkedList<User> getAllUsersLinkedList() {
+
+        LinkedList<User> users = new LinkedList<>();
+
+        for(User u : Database.getPlayers() ) {
+            u.isOnline = controllerHashMap.containsKey(u.userID);
+            users.add(u);
+        }
+
+
+        return users;
     }
 
     @Override
@@ -180,5 +194,11 @@ public class ApplicationServant extends ApplicationServerPOA {
         }
         return response;
     }
+
+    @Override
+    public User[] getPlayerWithOnlineStatus() {
+        return getAllUsersLinkedList().toArray(new User[0]);
+    }
+
 
 }

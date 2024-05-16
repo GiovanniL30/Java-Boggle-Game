@@ -87,7 +87,7 @@ public class LeaderBoards extends JPanel {
         for(int i = 0; i < users.length ; i++ ) {
             User currentUser = users[i];
             if(i == 0) {
-                top1.setText("1. " + currentUser.userName +  ": " + currentUser.score);
+                top1.setText("       " + currentUser.userName +  ": " + currentUser.score);
             } else if (i == 1) {
                 top2.setText("2. " + currentUser.userName +  ": " + currentUser.score);
             } else if (i == 2) {

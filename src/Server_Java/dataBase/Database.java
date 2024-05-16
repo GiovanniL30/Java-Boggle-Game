@@ -21,7 +21,7 @@ public class Database {
     private static void openConnection() {
         if (connection != null) return;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=password");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/boggled?user=root&password=");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -32,7 +32,7 @@ public class Database {
         openConnection();
 
         LinkedList<User> users = new LinkedList<>();
-        String query = "SELECT * FROM users WHERE totalScore != 0 ORDER BY 6 desc";
+        String query = "SELECT * FROM users ORDER BY 6 desc";
 
         try {
             Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -137,6 +137,24 @@ public class Database {
         }
 
         return words;
+    }
+
+    public static synchronized void setTopPlayer(String userID, int score,  String lobbyID) {
+        openConnection();
+
+        String query = "UPDATE lobby SET topPlayerID = ?, topPlayerScore = ? WHERE (lobbyID = ?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, userID);
+            preparedStatement.setInt(2, score);
+            preparedStatement.setString(3, lobbyID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
+
+
     }
 
     public static synchronized Response<String> createNewLobby(String creatorId) {
@@ -541,7 +559,7 @@ public class Database {
                 User user = getUser(resultSet);
 
                 if(isAccountBanned(user.userID)) {
-                    return new Response<>(new User("Your account is banned", "", "", "", "", 0), false);
+                    return new Response<>(new User("Your account is banned", "", "", "", "", 0, false), false);
                 }
 
                 return new Response<>(user, true) ;
@@ -552,7 +570,7 @@ public class Database {
             System.err.println(e.getMessage());
         }
 
-        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", 0), false);
+        return new Response<>(new User("Invalid Login Credentials", "", "", "", "", 0, false), false);
     }
 
     public static User getUser(String id) {
@@ -580,7 +598,7 @@ public class Database {
 
 
     private static User getUser(ResultSet resultSet) throws SQLException {
-        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6));
+        return new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getInt(6), true);
     }
 
     public static synchronized App.Response banUser(String userID) {

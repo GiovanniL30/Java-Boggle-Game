@@ -42,6 +42,9 @@ public class AdminController {
         applicationServer.updateWaitingTime(time);
     }
 
+    public User[] getUsers() {
+        return applicationServer.getPlayerWithOnlineStatus();
+    }
 
     public void banUser(String userId) {
         try {
@@ -100,7 +103,7 @@ public class AdminController {
                         adminMainFrame.setGameSettings(new GameSettings(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getGameSettings(), 1);
                         adminMainFrame.getAdminHeader().setVisible(true);
-                        adminMainFrame.getAdminHeader().setText("Game Settings");
+                        adminMainFrame.getAdminHeader().setText("src/shared/images/GAME SETTINGS.png", 75, 400);
                         adminMainFrame.getAdminHeader().getCreateAccount().setVisible(false);
                         break;
                     }
@@ -109,7 +112,7 @@ public class AdminController {
                         adminMainFrame.setUsersPanel(new UsersPanel(AdminController.this));
                         adminMainFrame.getContentPane().add(adminMainFrame.getUsersPanel(), 1);
                         adminMainFrame.getAdminHeader().setVisible(true);
-                        adminMainFrame.getAdminHeader().setText("Boggled Players");
+                        adminMainFrame.getAdminHeader().setText("src/shared/images/PLAYERS.png", 100, 300);
                         adminMainFrame.getAdminHeader().getCreateAccount().setVisible(true);
                         break;
                     }

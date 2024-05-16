@@ -5,6 +5,7 @@ import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
 import Server_Java.utilities.AdminViews;
 import Server_Java.view.AdminMainFrame;
+import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FieldInput;
 import shared.viewComponents.IconButton;
@@ -21,29 +22,30 @@ public class SearchBar extends JPanel {
 
     public SearchBar(AdminController adminController) {
 
-        setBackground(Color.white);
-        setLayout(new BorderLayout(0, 50));
+        setBackground(ColorFactory.beige());
+        setLayout(new BorderLayout(0, 5));
 
-        User[] users = Database.getPlayers();
+        User[] users = adminController.getUsers();
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setPreferredSize(new Dimension(AdminMainFrame.WIDTH, 50));
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(ColorFactory.beige());
 
         JPanel buttonsPanel = new JPanel(new GridBagLayout());
-        buttonsPanel.setBackground(Color.white);
+        buttonsPanel.setBackground(ColorFactory.beige());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
 
         IconButton back = new IconButton("src/shared/images/back.png", 40, 40);
+        back.setBackground(ColorFactory.beige());
         buttonsPanel.add(back, constraints);
         constraints.gridx = 1;
         constraints.insets = new Insets(0, 40, 0, 0);
 
         searchField = new FieldInput("", new Dimension(600, 50), Integer.MAX_VALUE, 0, false);
-
+        searchField.setBackground(ColorFactory.beige());
         JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        labelPanel.setBackground(Color.WHITE);
+        labelPanel.setBackground(ColorFactory.beige());
         JLabel label = new JLabel();
         label.setFont(FontFactory.newPoppinsBold(14));
         labelPanel.add(label);
@@ -59,13 +61,14 @@ public class SearchBar extends JPanel {
         });
 
         searchField.getTextField().addKeyListener(new KeyListener() {
+
             @Override
             public void keyTyped(KeyEvent e) {
-
+                User[] users111 = adminController.getUsers();
                 String searchTerm = searchField.getInput().toUpperCase();
 
 
-                User[] filteredUsers = Arrays.stream(users).filter(user -> user.firstName.toUpperCase().contains(searchTerm) || user.lastName.toUpperCase().contains(searchTerm) || user.userName.toUpperCase().contains(searchTerm)).toArray(User[]::new);
+                User[] filteredUsers = Arrays.stream(users111).filter(user -> user.firstName.toUpperCase().contains(searchTerm) || user.lastName.toUpperCase().contains(searchTerm) || user.userName.toUpperCase().contains(searchTerm)).toArray(User[]::new);
 
                 usersList.updateView(filteredUsers);
 

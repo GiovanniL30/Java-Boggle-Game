@@ -2,6 +2,7 @@ package Server_Java.view.components;
 
 import App.User;
 import Server_Java.controller.AdminController;
+import shared.utilities.ColorFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +15,7 @@ public class UsersList extends JPanel {
 
     public UsersList(User[] users, AdminController adminController) {
         this.adminController = adminController;
-        setBackground(Color.white);
+        setBackground(ColorFactory.beige());
 
         // Set layout for the holder panel
         GridLayout gridLayout = new GridLayout(0, 1);

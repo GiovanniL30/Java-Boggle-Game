@@ -22,8 +22,7 @@ public class UsersPanel extends JPanel {
         SearchBar searchbar = new SearchBar(adminController);
         add(searchbar);
 
-        User[] users = Database.getPlayers();
-        UsersList userList = new UsersList(users, adminController);
+        UsersList userList = new UsersList(adminController.getUsers() ,adminController);
         searchbar.setUsersList(userList);
         add(userList);
 

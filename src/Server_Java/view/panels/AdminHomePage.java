@@ -5,13 +5,14 @@ import Server_Java.utilities.AdminViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FilledButton;
+import shared.viewComponents.Picture;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class AdminHomePage extends JPanel {
     private FilledButton gameSettings = new FilledButton("Game Settings", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.whitishGrey(), Color.black);
     private FilledButton players = new FilledButton("Players", new Dimension(300, 50), FontFactory.newPoppinsDefault(14), ColorFactory.mahogany(), Color.WHITE);
-    private JLabel title = new JLabel("Boggled Game Settings", SwingConstants.CENTER);
 
     public AdminHomePage(AdminController adminController) {
         setBackground(ColorFactory.beige());
@@ -23,7 +24,8 @@ public class AdminHomePage extends JPanel {
 
         constraints.gridy = 0;
         centerPanel.setBackground(ColorFactory.beige());
-        title.setFont(FontFactory.newPoppinsBold(40));
+        Picture title = new Picture("src/shared/images/AdminMainBanner.png", 750, 200);
+        title.setBackground(ColorFactory.beige());
         centerPanel.add(title, constraints);
 
         constraints.gridy = 1;
