@@ -29,7 +29,8 @@ module App {
         NEW_MESSAGE,
         START_GAME,
         NEW_GAME_ROUND,
-        NO_PLAYER_LOBBY
+        NO_PLAYER_LOBBY,
+        WORD_IS_REMOVED_SCORE
     };
 
     exception LogInException {
