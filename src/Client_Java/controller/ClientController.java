@@ -42,6 +42,8 @@ public class ClientController extends ControllerPOA {
         } else if (clientActions.equals(ClientActions.NO_PLAYER_LOBBY)) {
             new Thread(() -> JOptionPane.showMessageDialog(mainFrame, "The game won't start there are no players :(")).start();
             changeFrame(ClientViews.HOME_PAGE);
+        }else  if(clientActions.equals(ClientActions.WORD_IS_REMOVED_SCORE)) {
+            mainFrame.getGameStartedLobby().enableError("One of your unique words have been entered by another player, score will be nulled");
         }
     }
 

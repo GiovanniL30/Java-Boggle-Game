@@ -87,6 +87,10 @@ public class GameLobby {
     public void removePlayer(String userId) {
         players.remove(userId);
         playerScores.remove(userId);
+
+        if(players.size() == 1) {
+            endGame();
+        }
     }
 
     public void startRound() {
@@ -98,43 +102,7 @@ public class GameLobby {
             if (secondsLeft <= 0) {
 
                 if (currentRound == 3) {
-
-                    LinkedList<GamePlayer> gamePlayers = new LinkedList<>();
-
-                    for (Map.Entry<String, Integer> player : playerScores.entrySet()) {
-                        gamePlayers.add(new GamePlayer(Database.getUser(player.getKey()), player.getValue()));
-                    }
-
-                    gameEnded = true;
-                    String topPlayer = getTopPlayer();
-
-                    for (Controller controller : players.values()) {
-                        controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer), gamePlayers.toArray(new GamePlayer[0]));
-                    }
-
-                    new Thread(() -> {
-                        if (players.isEmpty()) {
-
-                        } else {
-
-                            if(haveTie()) {
-                               Database.deleteLobby(lobbyId);
-                               return;
-                            }
-
-                            Database.setTopPlayer(topPlayer, playerScores.get(topPlayer), lobbyId);
-                            Database.finishedGame(lobbyId);
-                        }
-                    }).start();
-
-                    new Thread(() -> Database.updatePlayerScores(playerScores)).start();
-                    new Thread(() -> {
-                        if(!haveTie()) {
-                            players.keySet().forEach(player -> Database.removePlayer(player, lobbyId));
-                        }
-                    } ).start();
-
-                    gameTimer.stop();
+                    endGame();
                 } else {
 
                     secondsLeft = (Database.getGameTime() / 3 ) + 1;
@@ -229,6 +197,7 @@ public class GameLobby {
 
         if (matchingWordPlayer != null) {
             any.insert_long(2); //word is already entered by other user
+            players.get(matchingWordPlayer).receiveUpdates(ClientActions.WORD_IS_REMOVED_SCORE);
             return new App.Response(any, false);
         }
 
@@ -315,6 +284,46 @@ public class GameLobby {
         }
 
         return null;
+    }
+
+    private void endGame() {
+
+        LinkedList<GamePlayer> gamePlayers = new LinkedList<>();
+
+        for (Map.Entry<String, Integer> player : playerScores.entrySet()) {
+            gamePlayers.add(new GamePlayer(Database.getUser(player.getKey()), player.getValue()));
+        }
+
+        gameEnded = true;
+        String topPlayer = getTopPlayer();
+
+        for (Controller controller : players.values()) {
+            controller.endGameUpdate(Database.getUser(topPlayer), playerScores.get(topPlayer), gamePlayers.toArray(new GamePlayer[0]));
+        }
+
+        new Thread(() -> {
+            if (players.isEmpty()) {
+
+            } else {
+
+                if(haveTie()) {
+                    Database.deleteLobby(lobbyId);
+                    return;
+                }
+
+                Database.setTopPlayer(topPlayer, playerScores.get(topPlayer), lobbyId);
+                Database.finishedGame(lobbyId);
+            }
+        }).start();
+
+        new Thread(() -> Database.updatePlayerScores(playerScores)).start();
+        new Thread(() -> {
+            if(!haveTie()) {
+                players.keySet().forEach(player -> Database.removePlayer(player, lobbyId));
+            }
+        } ).start();
+
+        gameTimer.stop();
     }
 
 

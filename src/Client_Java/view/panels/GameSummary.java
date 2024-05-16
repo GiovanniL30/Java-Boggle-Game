@@ -7,6 +7,7 @@ import Client_Java.utilities.ClientViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FilledButton;
+import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,7 @@ public class GameSummary extends JPanel {
         otherPlayers.setLayout(new BoxLayout(otherPlayers, BoxLayout.Y_AXIS));
 
         Arrays.sort(gamePlayers, (o1, o2) -> Integer.compare(o2.score, o1.score));
+
         Map<Integer, LinkedList<GamePlayer>> groupedByScore = new HashMap<>();
 
         for (GamePlayer gamePlayer : gamePlayers) {
@@ -45,10 +47,16 @@ public class GameSummary extends JPanel {
 
         int rank = 1;
 
+        HashMap<Integer, LinkedList<GamePlayer>> revers = new HashMap<>();
 
-        for (Map.Entry<Integer, LinkedList<GamePlayer>> entry : groupedByScore.entrySet()) {
+        for(Map.Entry<Integer, LinkedList<GamePlayer>> player: groupedByScore.entrySet()) {
+            revers.put(player.getKey(), player.getValue());
+        }
+
+        for (Map.Entry<Integer, LinkedList<GamePlayer>> entry : revers.entrySet()) {
             StringBuilder result = new StringBuilder();
             LinkedList<GamePlayer> players = entry.getValue();
+
             String playersWithScores = players.stream()
                     .map(player -> player.user.userName + " (" + player.score + ")")
                     .collect(Collectors.joining(", "));
@@ -57,7 +65,8 @@ public class GameSummary extends JPanel {
             if(rank == 1) {
                 winnerLabel.setText(result.toString());
             }else {
-                JLabel otherPlayer = new JLabel(result.toString());
+
+               JLabel otherPlayer = new JLabel(result.toString());
                otherPlayer.setFont(FontFactory.newPoppinsDefault(14));
                otherPlayers.add(otherPlayer);
             }
