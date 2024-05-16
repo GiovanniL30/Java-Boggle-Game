@@ -1,27 +1,24 @@
 package Client_Java.view.panels;
 
 import App.GamePlayer;
-import App.User;
 import Client_Java.controller.ClientController;
 import Client_Java.utilities.ClientViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
 import shared.viewComponents.FilledButton;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.List;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
-
 
 public class GameSummary extends JPanel {
 
     private JLabel winnerLabel = new JLabel();
 
-    public GameSummary(ClientController clientController, GamePlayer[] gamePlayers, int currentRound,  boolean roundEnd) {
-
+    public GameSummary(ClientController clientController, GamePlayer[] gamePlayers, int currentRound, boolean roundEnd) {
         winnerLabel.setFont(FontFactory.newPoppinsBold(20));
         winnerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -34,9 +31,6 @@ public class GameSummary extends JPanel {
         FilledButton button = new FilledButton("Return to Home Page", new Dimension(100, 50), FontFactory.newPoppinsDefault(14), ColorFactory.blue(), Color.white);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel otherPlayers = new JPanel();
-        otherPlayers.setLayout(new BoxLayout(otherPlayers, BoxLayout.Y_AXIS));
-
         Arrays.sort(gamePlayers, (o1, o2) -> Integer.compare(o2.score, o1.score));
 
         Map<Integer, LinkedList<GamePlayer>> groupedByScore = new HashMap<>();
@@ -46,42 +40,49 @@ public class GameSummary extends JPanel {
         }
 
         int rank = 1;
+        LinkedList<LinkedList<GamePlayer>> sortedPlayers = sortPlayers(groupedByScore);
 
+        List<String[]> tableData = new ArrayList<>();
 
-
-        for (Map.Entry<Integer, LinkedList<GamePlayer>> entry : sortMapByKey(groupedByScore).entrySet()) {
-            StringBuilder result = new StringBuilder();
-            LinkedList<GamePlayer> players = entry.getValue();
+        for (LinkedList<GamePlayer> players : sortedPlayers) {
 
             String playersWithScores = players.stream()
                     .map(player -> player.user.userName + " (" + player.score + ")")
                     .collect(Collectors.joining(", "));
 
-            result.append(roundEnd ? players.size() > 1 ? "Tie " : "Game Winner " : rank == 1 ? (players.size() > 1 ? "Tie on " : "Round ") + currentRound + (players.size() > 1 ? "" : "Winner ")  : "").append(rank == 1 ? "" : rank).append(". ").append(playersWithScores);
-            if(rank == 1) {
-                winnerLabel.setText(result.toString());
-            }else {
+            String prefix = (roundEnd ? (rank == 1 ? (players.size() >1 ? "Tie: " : "Game winner: ")  : rank+"") : (rank == 1 ?  (players.size() > 1 ? "Tie: " : "Round " + currentRound + " winner: ") : rank+""));
 
-                JLabel otherPlayer = new JLabel(result.toString());
-                otherPlayer.setFont(FontFactory.newPoppinsDefault(14));
-                otherPlayers.add(otherPlayer);
+            String result = prefix + (rank == 1 ? "" : ". ") + playersWithScores;
+
+            if (rank == 1) {
+                winnerLabel.setText(result);
+            } else {
+                tableData.add(new String[]{result});
             }
             rank++;
         }
+
+        String[] columnNames = {"Players"};
+        DefaultTableModel model = new DefaultTableModel(tableData.toArray(new String[0][]), columnNames);
+        JTable otherPlayersTable = new JTable(model);
+        otherPlayersTable.setFont(FontFactory.newPoppinsDefault(15));
+        otherPlayersTable.setPreferredScrollableViewportSize(new Dimension(400, 100));
+        otherPlayersTable.setFillsViewportHeight(true);
+        JScrollPane tableScrollPane = new JScrollPane(otherPlayersTable);
+        tableScrollPane.setSize(new Dimension(400, 100));
 
         contentPanel.add(Box.createVerticalGlue());
         contentPanel.add(winnerLabel);
         contentPanel.add(Box.createVerticalStrut(10));
 
-        if(otherPlayers.getComponentCount() > 0) {
-            JScrollPane scrollPane = new JScrollPane(otherPlayers);
-            scrollPane.setBorder(null);
-            contentPanel.add(scrollPane);
+        if (!tableData.isEmpty()) {
+            tableScrollPane.setBorder(null);
+            contentPanel.add(tableScrollPane);
         }
 
-        if(roundEnd) {
+        if (roundEnd) {
+            contentPanel.add(Box.createVerticalStrut(10));
             contentPanel.add(button);
-
             button.addActionListener(e -> clientController.changeFrame(ClientViews.HOME_PAGE));
         }
 
@@ -89,23 +90,13 @@ public class GameSummary extends JPanel {
         add(contentPanel, BorderLayout.CENTER);
     }
 
-    public static <K extends Comparable<? super K>, V> Map<K, V> sortMapByKey(Map<K, V> map) {
-        // Create a new LinkedHashMap to store the sorted map
-        Map<K, V> sortedMap = new LinkedHashMap<>();
-
-        // Get the entries of the original map
-        LinkedList<Map.Entry<K, V>> entryList = new LinkedList<>(map.entrySet());
-
-        // Sort the entryList based on keys
-        entryList.sort(Map.Entry.comparingByKey());
-
-        // Populate the sortedMap with the sorted entries
-        for (Map.Entry<K, V> entry : entryList) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-
-        return sortedMap;
+    public static LinkedList<LinkedList<GamePlayer>> sortPlayers(Map<Integer, LinkedList<GamePlayer>> playerScores) {
+        LinkedList<Integer> sortedScores = new LinkedList<>();
+        LinkedList<LinkedList<GamePlayer>> gamePlayersSorted = new LinkedList<>();
+        playerScores.forEach((score, gamePlayers) -> sortedScores.add(score));
+        sortedScores.sort(Comparator.reverseOrder());
+        sortedScores.forEach(System.out::println);
+        sortedScores.forEach(score -> gamePlayersSorted.add(playerScores.get(score)));
+        return gamePlayersSorted;
     }
-
-
 }
