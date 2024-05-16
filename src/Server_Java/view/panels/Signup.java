@@ -55,11 +55,11 @@ public class Signup extends JPanel {
 
 
 
-        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.blue(), Color.WHITE);
+        FilledButton createAccountButton = new FilledButton("CREATE ACCOUNT", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.mahogany(), Color.WHITE);
         layoutConstraints.gridy = 4;
         add(createAccountButton, layoutConstraints);
 
-        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), ColorFactory.red(), Color.WHITE);
+        FilledButton cancelButton = new FilledButton("CANCEL", new Dimension(550, 50), FontFactory.newPoppinsBold(11), Color.white, ColorFactory.mahogany());
         layoutConstraints.gridy = 5;
         add(cancelButton, layoutConstraints);
 

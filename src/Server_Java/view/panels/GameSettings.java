@@ -76,7 +76,7 @@ public class GameSettings extends JPanel {
 
             int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to update?", "Save", JOptionPane.YES_NO_OPTION);
 
-            if (response  == JOptionPane.YES_OPTION) {
+            if (response == JOptionPane.YES_OPTION) {
                 adminController.updateGameTime((Integer) gameTimeOptions.getSelectedItem());
                 adminController.updateWaitingTime((Integer) waitingTimeOptions.getSelectedItem());
 

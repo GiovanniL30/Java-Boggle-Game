@@ -3,8 +3,10 @@ package Server_Java.view.components;
 import App.User;
 import Server_Java.controller.AdminController;
 import Server_Java.dataBase.Database;
+import Server_Java.utilities.AdminViews;
 import shared.utilities.ColorFactory;
 import shared.utilities.FontFactory;
+import shared.viewComponents.FilledButton;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -33,13 +35,8 @@ public class UsersCard extends JPanel{
         accountInfo.setLayout(new GridLayout(4, 1));
 
         //Buttons
-        shared.viewComponents.Button banButton = new shared.viewComponents.Button("Ban", new Dimension(100, 50), FontFactory.newPoppinsDefault(13));
-        banButton.setForeground(Color.white);
-        banButton.setBackground(ColorFactory.purple());
-
-        shared.viewComponents.Button unbanButton = new shared.viewComponents.Button("Unban", new Dimension(100, 50), FontFactory.newPoppinsDefault(13));
-        unbanButton.setForeground(Color.white);
-        unbanButton.setBackground(ColorFactory.green());
+        FilledButton banButton = new FilledButton("Ban", new Dimension(100, 50), FontFactory.newPoppinsDefault(13), ColorFactory.mahogany(),Color.white);
+        FilledButton unbanButton = new FilledButton("Unban", new Dimension(100, 50), FontFactory.newPoppinsDefault(13), ColorFactory.cream(), ColorFactory.mahogany());
 
         shared.viewComponents.Button deleteAccount = new shared.viewComponents.Button("Delete", new Dimension(100, 50), FontFactory.newPoppinsDefault(13));
         deleteAccount.setForeground(Color.white);
@@ -96,9 +93,30 @@ public class UsersCard extends JPanel{
         add(rightSide);
 
         // Action listeners for banning, unbanning, deleting, and editing account
-        banButton.addActionListener(e -> adminController.banUser(user.userID));
-        unbanButton.addActionListener(e -> adminController.unBanUser(user.userID));
-        deleteAccount.addActionListener(e -> adminController.deleteUserAccount(user.userID));
+        banButton.addActionListener(e -> {
+
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to ban " + user.userName + "?", "Ban User", JOptionPane.YES_NO_OPTION);
+
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.banUser(user.userID);
+            }
+        });
+
+        unbanButton.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to unban " + user.userName + "?", "Unban User", JOptionPane.YES_NO_OPTION);
+
+            if (response == JOptionPane.YES_OPTION) {
+                adminController.unBanUser(user.userID);
+            }
+        });
+
+        deleteAccount.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + user.userName + "?", "Delete User", JOptionPane.YES_NO_OPTION);
+
+            if (response  == JOptionPane.YES_OPTION) {
+                adminController.deleteUserAccount(user.userID);
+            }
+        });
 
     } // end AccountCard constructor
 }
