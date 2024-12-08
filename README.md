@@ -23,14 +23,24 @@ This project demonstrates a distributed application built using Java CORBA. Ensu
 ---
 ## Steps to Run the Project
 
-### 1. Start the ORB Daemon
+### 1. Import the Database
+- Navigate to `src/Server_Java/dataBase`.
+- Import the `boggled.sql` file into your localhost MySQL connection using a tool like phpMyAdmin or MySQL CLI.
+
+Example using MySQL CLI:
+
+```
+mysql -u your_username -p your_password your_database_name < src/Server_Java/dataBase/boggled.sql
+```
+
+### 2. Start the ORB Daemon
 Start the ORB daemon (ORBD) to initialize the Name Service:
    ```
    start orbd -ORBInitialPort 1099 -ORBInitialHost localhost
    ```
 This command starts the ORB daemon on port `1099` and binds it to `localhost`.
 
-### 2. Run the Server
+### 3. Run the Server
 1. Navigate to the `src/Server_Java` directory:
    ```
     cd src/Server_Java
@@ -41,7 +51,7 @@ This command starts the ORB daemon on port `1099` and binds it to `localhost`.
    ```
 Note: You can connect to the server by entering the IP address of the machine hosting the server.
 
-### 3. Run the Admin Application (Optional)
+### 4. Run the Admin Application (Optional)
 1. Navigate to the `src/Server_Java` directory:
    ```
    cd src/Server_Java
@@ -51,7 +61,7 @@ Note: You can connect to the server by entering the IP address of the machine ho
     java AdminMainApplication
    ```
    
-### 4.  Run the Game Application
+### 5.  Run the Game Application
 1. Navigate to the `src/Client_Java` directory:
    ```
    cd src/Client_Java
